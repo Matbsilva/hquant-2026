@@ -2,6 +2,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
 
+// --- HELPERS ---
+const cleanMd = (s) => (s || '').replace(/\*\*/g, '').trim();
+const parseNum = (s) => { if (!s) return null; const n = parseFloat(s.replace(/\./g, '').replace(',', '.')); return isNaN(n) ? null : n; };
+
 // --- PARSER ---
 function parseComp(text) {
   const ex = (p) => { const m = text.match(p); return m ? m[1].trim() : ''; };
@@ -17,6 +21,38 @@ function parseComp(text) {
   const hM = text.match(/\*\*TOTAL M\.O\.\*\*[^|]*\|\s*\*\*([\d.,]+)\*\*/);
   const hh = hM ? parseFloat(hM[1].replace(/\./g, '').replace(',', '.')) : null;
   return { codigo, titulo, unidade, grupo, qref, tags, custo, hh };
+}
+
+// --- EXTENDED PARSER (for detail view) ---
+function parseCompDetail(text) {
+  if (!text) return {};
+  // Custo material (SUBTOTAL da tabela de insumos)
+  const matM = text.match(/SUBTOTAL[^|]*\|[^R]*R\$\s*([\d.,]+)/i) || text.match(/\*\*SUBTOTAL\*\*[^R]*R\$\s*([\d.,]+)/i);
+  const custo_material = matM ? parseNum(matM[1]) : null;
+  // Custo M.O. total em R$
+  const moM = text.match(/TOTAL M\.O\.[^|]*\|[^|]*\|\s*(?:\*\*)?R\$\s*([\d.,]+)/i) || text.match(/CUSTO TOTAL.*?M[.ÃA]O.*?R\$\s*([\d.,]+)/i);
+  const custo_mo = moM ? parseNum(moM[1]) : null;
+  // Peso total
+  const pesoM = text.match(/SUBTOTAL[^|]*\|[^|]*R\$[^|]*\|\s*([\d.,]+)/i);
+  const peso_total = pesoM ? parseNum(pesoM[1]) : null;
+  // HH por profissão (da tabela M.O.)
+  const hhProfs = [];
+  const hhRegex = /\|\s*(?:\*\*)?([A-Za-zÀ-ú ]+?)(?:\*\*)?\s*\|\s*(?:\*\*)?([\d.,]+)(?:\*\*)?\s*\|\s*(?:\*\*)?R\$\s*[\d.,]+/gm;
+  let hhMatch;
+  while ((hhMatch = hhRegex.exec(text)) !== null) {
+    const nome = cleanMd(hhMatch[1]).trim();
+    const val = parseNum(hhMatch[2]);
+    if (nome && val && !nome.match(/TOTAL|SUBTOTAL|CATEGORIA|FUNÇÃO/i) && val < 100) {
+      hhProfs.push({ nome, hh: val });
+    }
+  }
+  // Equipe (do texto, ex: "1 Pedreiro + 1 Ajudante" ou de INCLUSO com M.O.)
+  const equipeM = text.match(/(?:equipe|mão de obra)[^)]*\(([^)]+)\)/i) || text.match(/m[ãa]o de obra[^(]*\(([^)]+)\)/i);
+  let equipe = equipeM ? cleanMd(equipeM[1]) : (hhProfs.length > 0 ? hhProfs.map(p => `1 ${p.nome}`).join(' + ') : null);
+  // Rendimento diário
+  const rendM = text.match(/rendimento[^:]*:\s*(?:\*\*)?([\d.,]+\s*[A-Za-zÀ-ú²³/]+(?:\/dia)?)/i) || text.match(/produtividade.*?equipe[^:]*:\s*(?:\*\*)?([\d.,]+\s*[A-Za-zÀ-ú²³/]+)/i);
+  const rendimento = rendM ? cleanMd(rendM[1]) : null;
+  return { custo_material, custo_mo, peso_total, hhProfs, equipe, rendimento };
 }
 
 function splitComps(text) {
@@ -89,7 +125,7 @@ function Md({ text }) {
 }
 
 // --- THEME ---
-const A = '#F59E0B', BG = '#0A0908', SF = '#161412', S2 = '#1C1A17', BD = 'rgba(245,158,11,0.08)', AD = 'rgba(245,158,11,0.12)', TX = '#F5F5F4', TD = '#A8A29E', TM = '#78716C', RD = '#EF4444', GR = '#22C55E', FN = "'JetBrains Mono',monospace", FS = "'DM Sans',system-ui,sans-serif";
+const A = '#F59E0B', BG = '#0A0908', SF = '#161412', S2 = '#1C1A17', BD = 'rgba(245,158,11,0.08)', AD = 'rgba(245,158,11,0.12)', TX = '#F5F5F4', TD = '#A8A29E', TM = '#A8A29E', TL = '#D6D3D1', RD = '#EF4444', GR = '#22C55E', BL = '#60A5FA', FN = "'JetBrains Mono',monospace", FS = "'DM Sans',system-ui,sans-serif";
 
 const ic = {
   folder: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" /></svg>,
@@ -208,31 +244,31 @@ export default function Home() {
     <div style={{ minHeight: '100vh', background: BG, color: TX, fontFamily: FS, display: 'flex' }}>
       {/* SIDEBAR */}
       <div style={{ width: 210, background: SF, borderRight: `1px solid ${BD}`, display: 'flex', flexDirection: 'column', position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 50 }}>
-        <div style={{ padding: '18px 14px', borderBottom: `1px solid ${BD}`, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div onClick={() => { setVw('home'); setPid(null); setCid(null); }} style={{ padding: '18px 14px', borderBottom: `1px solid ${BD}`, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
           <div style={{ width: 30, height: 30, borderRadius: 6, background: AD, display: 'flex', alignItems: 'center', justifyContent: 'center', color: A, fontSize: 15, fontWeight: 800, fontFamily: FN }}>H</div>
-          <div><div style={{ fontSize: 14, fontWeight: 700, fontFamily: FN, letterSpacing: '0.5px' }}>H-QUANT</div><div style={{ fontSize: 8, color: TM, letterSpacing: '2px' }}>COMPOSIÇÕES 2026</div></div>
+          <div><div style={{ fontSize: 14, fontWeight: 700, fontFamily: FN, letterSpacing: '0.5px' }}>H-QUANT</div><div style={{ fontSize: 10, color: TL, letterSpacing: '2px' }}>COMPOSIÇÕES 2026</div></div>
         </div>
         <div style={{ padding: '10px 0', flex: 1 }}>
           {[['home', ic.folder, 'Projetos'], ['busca', ic.search, 'Busca Global']].map(([id, icon, label]) => {
             const act = vw === id || (id === 'home' && ['proj', 'comp'].includes(vw));
-            return <div key={id} onClick={() => { setVw(id); setPid(null); setCid(null); if (id === 'busca') setQ(''); }} style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '10px 16px', cursor: 'pointer', color: act ? A : TD, background: act ? AD : 'transparent', borderLeft: act ? `2px solid ${A}` : '2px solid transparent', fontSize: 12, fontWeight: act ? 600 : 400 }}>{icon}<span>{label}</span></div>;
+            return <div key={id} onClick={() => { setVw(id); setPid(null); setCid(null); if (id === 'busca') setQ(''); }} style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '10px 16px', cursor: 'pointer', color: act ? A : TL, background: act ? AD : 'transparent', borderLeft: act ? `2px solid ${A}` : '2px solid transparent', fontSize: 13, fontWeight: act ? 600 : 400 }}>{icon}<span>{label}</span></div>;
           })}
         </div>
-        <div style={{ padding: '12px 16px', borderTop: `1px solid ${BD}`, fontSize: 10, color: TM }}>{projetos.length} projetos • {tot} composições</div>
+        <div style={{ padding: '12px 16px', borderTop: `1px solid ${BD}`, fontSize: 12, color: TL }}>{projetos.length} projetos • {tot} composições</div>
       </div>
 
       {/* MAIN */}
-      <div style={{ marginLeft: 210, flex: 1, padding: '0 32px 32px', minHeight: '100vh', maxWidth: 1100 }}>
+      <div style={{ marginLeft: 210, flex: 1, padding: '0 32px 32px', minHeight: '100vh', maxWidth: 1600 }}>
         {nt && <div style={{ position: 'fixed', top: 14, right: 14, zIndex: 999, padding: '10px 18px', borderRadius: 8, background: nt.ok ? GR : RD, color: '#fff', fontSize: 12, fontWeight: 600, boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>{nt.ok ? '✓' : '✕'} {nt.m}</div>}
 
         {/* HOME */}
         {vw === 'home' && <>
           <div style={{ padding: '24px 0 16px', borderBottom: `1px solid ${BD}`, marginBottom: 22, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div><h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, fontFamily: FN }}>Projetos</h1><p style={{ fontSize: 11, color: TM, margin: '4px 0 0' }}>Gerencie seus projetos de engenharia de custos</p></div>
+            <div><h1 style={{ fontSize: 22, fontWeight: 700, margin: 0, fontFamily: FN }}>Projetos</h1><p style={{ fontSize: 13, color: TL, margin: '4px 0 0' }}>Gerencie seus projetos de engenharia de custos</p></div>
             <button style={bt()} onClick={() => { setMl('np'); setFN(''); setFD(''); }}>{ic.plus} Novo Projeto</button>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 22 }}>
-            {[[projetos.length, 'Projetos'], [tot, 'Composições'], [projetos.length ? Math.round(tot / projetos.length) : 0, 'Média']].map(([v, l], i) => <div key={i} style={st}><div style={{ fontSize: 24, fontWeight: 700, color: A, fontFamily: FN }}>{v}</div><div style={{ fontSize: 9, color: TM, textTransform: 'uppercase', letterSpacing: '1px', marginTop: 4 }}>{l}</div></div>)}
+            {[[projetos.length, 'Projetos'], [tot, 'Composições'], [projetos.length ? Math.round(tot / projetos.length) : 0, 'Média']].map(([v, l], i) => <div key={i} style={st}><div style={{ fontSize: 26, fontWeight: 700, color: A, fontFamily: FN }}>{v}</div><div style={{ fontSize: 11, color: TL, textTransform: 'uppercase', letterSpacing: '1px', marginTop: 4, fontWeight: 600 }}>{l}</div></div>)}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 12 }}>
             {projetos.map(p => <div key={p.id} style={cd} onClick={() => { setPid(p.id); setVw('proj'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
@@ -240,7 +276,7 @@ export default function Home() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><span style={{ color: A }}>{ic.folder}</span><span style={{ fontSize: 14, fontWeight: 600 }}>{p.nome}</span></div>
                 <button onClick={e => { e.stopPropagation(); delP(p.id); }} style={{ ...bt('g'), padding: 3, border: 'none', opacity: 0.2 }}>{ic.trash}</button>
               </div>
-              {p.descricao && <p style={{ fontSize: 11, color: TD, margin: '8px 0 0', lineHeight: 1.4 }}>{p.descricao.slice(0, 80)}{p.descricao.length > 80 ? '...' : ''}</p>}
+              {p.descricao && <p style={{ fontSize: 13, color: TL, margin: '8px 0 0', lineHeight: 1.5 }}>{p.descricao.slice(0, 120)}{p.descricao.length > 120 ? '...' : ''}</p>}
               <div style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between' }}><span style={bg()}>{pCnt(p.id)} comp</span><span style={{ fontSize: 9, color: TM }}>{new Date(p.created_at).toLocaleDateString('pt-BR')}</span></div>
             </div>)}
             {!projetos.length && <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: 60, color: TM }}><div style={{ fontSize: 32, marginBottom: 10, opacity: 0.3 }}>📁</div><p style={{ fontSize: 14 }}>Nenhum projeto ainda</p></div>}
@@ -252,22 +288,22 @@ export default function Home() {
           <div style={{ padding: '24px 0 16px', borderBottom: `1px solid ${BD}`, marginBottom: 22, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <button style={{ ...bt('g'), padding: 6 }} onClick={() => { setVw('home'); setPid(null); }}>{ic.back}</button>
-              <div><h1 style={{ fontSize: 18, fontWeight: 700, margin: 0, fontFamily: FN }}>{proj?.nome}</h1>{proj?.descricao && <p style={{ fontSize: 11, color: TM, margin: '3px 0 0' }}>{proj.descricao}</p>}</div>
+              <div><h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, fontFamily: FN }}>{proj?.nome}</h1>{proj?.descricao && <p style={{ fontSize: 13, color: TL, margin: '3px 0 0' }}>{proj.descricao}</p>}</div>
             </div>
             <button style={bt()} onClick={() => { setMl('nc'); setFC(''); }}>{ic.plus} Composição</button>
           </div>
-          {pComps.map((c, i) => <div key={c.id} style={{ ...cd, padding: '14px 18px', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} onClick={() => { setCid(c.id); setVw('comp'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 }}>
-              <div style={{ color: TM, fontSize: 10, fontFamily: FN, minWidth: 22, textAlign: 'right' }}>{String(i + 1).padStart(2, '0')}</div>
-              <span style={{ color: A }}>{ic.file}</span>
+          {pComps.map((c, i) => <div key={c.id} style={{ ...cd, padding: '14px 18px', marginBottom: 8, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }} onClick={() => { setCid(c.id); setVw('comp'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, flex: 1, minWidth: 0 }}>
+              <div style={{ color: TM, fontSize: 11, fontFamily: FN, minWidth: 22, textAlign: 'right', marginTop: 2 }}>{String(i + 1).padStart(2, '0')}</div>
+              <span style={{ color: A, marginTop: 2 }}>{ic.file}</span>
               <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>{c.codigo && <span style={{ ...bg(), fontSize: 8 }}>{c.codigo}</span>}<span style={{ fontSize: 12, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.titulo}</span></div>
-                <div style={{ fontSize: 9, color: TM, marginTop: 3 }}>{c.unidade && `Un: ${c.unidade}`}{c.grupo && ` • ${c.grupo}`}</div>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6, flexWrap: 'wrap' }}>{c.codigo && <span style={{ ...bg(), fontSize: 9 }}>{c.codigo}</span>}<span style={{ fontSize: 13, fontWeight: 500, whiteSpace: 'normal', lineHeight: 1.5 }}>{cleanMd(c.titulo)}</span></div>
+                <div style={{ fontSize: 11, color: TL, marginTop: 4 }}>{c.unidade && `Un: ${c.unidade}`}{c.grupo && ` • ${c.grupo}`}</div>
               </div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
-              {c.hh_unitario && <span style={{ fontSize: 10, color: '#60A5FA', fontWeight: 600, fontFamily: FN }}>{c.hh_unitario} HH</span>}
-              {c.custo_unitario && <span style={{ fontSize: 12, color: A, fontWeight: 700, fontFamily: FN }}>R$ {Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0, marginTop: 2 }}>
+              {c.hh_unitario && <span style={{ fontSize: 11, color: BL, fontWeight: 600, fontFamily: FN }}>{c.hh_unitario} HH</span>}
+              {c.custo_unitario && <span style={{ fontSize: 13, color: A, fontWeight: 700, fontFamily: FN }}>R$ {Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>}
               <button onClick={e => { e.stopPropagation(); delC(c.id); }} style={{ ...bt('g'), padding: 3, border: 'none', opacity: 0.2 }}>{ic.trash}</button>
             </div>
           </div>)}
@@ -275,21 +311,59 @@ export default function Home() {
         </>}
 
         {/* COMP DETAIL */}
-        {vw === 'comp' && comp && <>
-          <div style={{ padding: '24px 0 16px', borderBottom: `1px solid ${BD}`, marginBottom: 22, display: 'flex', alignItems: 'center', gap: 12 }}>
-            <button style={{ ...bt('g'), padding: 6 }} onClick={() => { setVw(pid ? 'proj' : 'busca'); setCid(null); }}>{ic.back}</button>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>{comp.codigo && <span style={bg()}>{comp.codigo}</span>}<h1 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>{comp.titulo}</h1></div>
-              <p style={{ fontSize: 10, color: TM, margin: '4px 0 0' }}>Projeto: {pName(comp.projeto_id)}{comp.grupo && ` • ${comp.grupo}`}{comp.unidade && ` • Un: ${comp.unidade}`}</p>
+        {vw === 'comp' && comp && (() => {
+          const det = parseCompDetail(comp.conteudo_completo);
+          const un = comp.unidade || 'un';
+          const indicatorCard = (label, value, color, icon) => value != null ? (
+            <div style={{ ...st, flex: 1, minWidth: 140, padding: '16px 14px' }}>
+              <div style={{ fontSize: 10, marginBottom: 6, opacity: 0.5 }}>{icon}</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color, fontFamily: FN }}>{typeof value === 'number' ? `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : value}</div>
+              <div style={{ fontSize: 12, color: TL, marginTop: 4, fontWeight: 500 }}>{label}</div>
             </div>
-          </div>
-          {comp.tags?.length > 0 && <div style={{ marginBottom: 14 }}>{comp.tags.map((t, i) => <span key={i} style={{ display: 'inline-block', padding: '3px 8px', borderRadius: 4, fontSize: 9, background: 'rgba(255,255,255,0.04)', color: TM, marginRight: 5 }}>#{t}</span>)}</div>}
-          <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
-            {comp.custo_unitario && <div style={{ ...st, flex: 1 }}><div style={{ fontSize: 18, fontWeight: 700, color: A, fontFamily: FN }}>R$ {Number(comp.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div><div style={{ fontSize: 9, color: TM, marginTop: 3 }}>CUSTO/{comp.unidade || 'un'}</div></div>}
-            {comp.hh_unitario && <div style={{ ...st, flex: 1 }}><div style={{ fontSize: 18, fontWeight: 700, color: '#60A5FA', fontFamily: FN }}>{comp.hh_unitario} HH</div><div style={{ fontSize: 9, color: TM, marginTop: 3 }}>M.O./{comp.unidade || 'un'}</div></div>}
-          </div>
-          <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 10, padding: 26 }}><Md text={comp.conteudo_completo} /></div>
-        </>}
+          ) : null;
+          return <>
+            <div style={{ padding: '24px 0 16px', borderBottom: `1px solid ${BD}`, marginBottom: 22, display: 'flex', alignItems: 'center', gap: 12 }}>
+              <button style={{ ...bt('g'), padding: 6 }} onClick={() => { setVw(pid ? 'proj' : 'busca'); setCid(null); }}>{ic.back}</button>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>{comp.codigo && <span style={bg()}>{comp.codigo}</span>}<h1 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>{cleanMd(comp.titulo)}</h1></div>
+                <p style={{ fontSize: 12, color: TL, margin: '4px 0 0' }}>Projeto: {pName(comp.projeto_id)}{comp.grupo && ` • ${comp.grupo}`}{comp.unidade && ` • Un: ${comp.unidade}`}</p>
+              </div>
+            </div>
+            {comp.tags?.length > 0 && <div style={{ marginBottom: 14 }}>{comp.tags.map((t, i) => <span key={i} style={{ display: 'inline-block', padding: '3px 8px', borderRadius: 4, fontSize: 10, background: 'rgba(255,255,255,0.06)', color: TL, marginRight: 5 }}>#{t}</span>)}</div>}
+            {/* --- INDICATOR CARDS --- */}
+            <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
+              {indicatorCard(`CUSTO DIRETO/${un}`, comp.custo_unitario ? Number(comp.custo_unitario) : null, A, '💰')}
+              {indicatorCard(`MATERIAL/${un}`, det.custo_material, '#FBBF24', '🧱')}
+              {indicatorCard(`MÃO DE OBRA/${un}`, det.custo_mo, BL, '👷')}
+              {indicatorCard(`PESO/${un}`, det.peso_total != null ? `${det.peso_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} kg` : null, TL, '⚖️')}
+            </div>
+            {/* --- HH PER PROFESSION + TEAM --- */}
+            {(det.hhProfs.length > 0 || det.equipe || det.rendimento) && <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 10, padding: 20, marginBottom: 20 }}>
+              <div style={{ fontSize: 11, color: A, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 14 }}>👥 Equipe & Produtividade</div>
+              {det.hhProfs.length > 0 && <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: det.equipe || det.rendimento ? 14 : 0 }}>
+                {det.hhProfs.map((p, i) => <div key={i} style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 16px', flex: '1 1 180px', minWidth: 160 }}>
+                  <div style={{ fontSize: 12, color: TL, fontWeight: 500, marginBottom: 4 }}>{p.nome}</div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: BL, fontFamily: FN }}>{p.hh.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} <span style={{ fontSize: 12, color: TL, fontWeight: 500 }}>HH/{un}</span></div>
+                </div>)}
+              </div>}
+              <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+                {det.equipe && <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 4, fontWeight: 600 }}>Composição da Equipe</div>
+                  <div style={{ fontSize: 14, color: TX, fontWeight: 500 }}>{det.equipe}</div>
+                </div>}
+                {det.rendimento && <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 4, fontWeight: 600 }}>Rendimento Diário</div>
+                  <div style={{ fontSize: 14, color: GR, fontWeight: 600, fontFamily: FN }}>{det.rendimento}</div>
+                </div>}
+                {comp.hh_unitario && <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 4, fontWeight: 600 }}>HH Total Equipe/{un}</div>
+                  <div style={{ fontSize: 14, color: BL, fontWeight: 600, fontFamily: FN }}>{comp.hh_unitario}</div>
+                </div>}
+              </div>
+            </div>}
+            <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 10, padding: 26 }}><Md text={comp.conteudo_completo} /></div>
+          </>;
+        })()}
 
         {/* SEARCH */}
         {vw === 'busca' && <>
@@ -301,12 +375,12 @@ export default function Home() {
             <input type="text" placeholder="contrapiso, sóculo, CIV-SOCULO..." value={q} onChange={e => setQ(e.target.value)} style={{ ...inp, paddingLeft: 40, padding: '13px 14px 13px 40px' }} autoFocus />
           </div>
           {q && <p style={{ fontSize: 11, color: TM, marginBottom: 14 }}>{sR.length} resultado{sR.length !== 1 ? 's' : ''}</p>}
-          {sR.map(c => <div key={c.id} style={{ ...cd, padding: '14px 18px', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} onClick={() => { setCid(c.id); setPid(c.projeto_id); setVw('comp'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1 }}><span style={{ color: A }}>{ic.file}</span><div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>{c.codigo && <span style={{ ...bg(), fontSize: 8 }}>{c.codigo}</span>}<span style={{ fontSize: 12, fontWeight: 500 }}>{c.titulo}</span></div>
-              <div style={{ fontSize: 10, color: TM, marginTop: 3 }}>Projeto: {pName(c.projeto_id)}</div>
+          {sR.map(c => <div key={c.id} style={{ ...cd, padding: '14px 18px', marginBottom: 8, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }} onClick={() => { setCid(c.id); setPid(c.projeto_id); setVw('comp'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, flex: 1 }}><span style={{ color: A, marginTop: 2 }}>{ic.file}</span><div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6, flexWrap: 'wrap' }}>{c.codigo && <span style={{ ...bg(), fontSize: 9 }}>{c.codigo}</span>}<span style={{ fontSize: 13, fontWeight: 500, whiteSpace: 'normal', lineHeight: 1.5 }}>{cleanMd(c.titulo)}</span></div>
+              <div style={{ fontSize: 11, color: TL, marginTop: 4 }}>Projeto: {pName(c.projeto_id)}</div>
             </div></div>
-            {c.custo_unitario && <span style={{ fontSize: 11, color: A, fontWeight: 600, fontFamily: FN }}>R$ {Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>}
+            {c.custo_unitario && <span style={{ fontSize: 13, color: A, fontWeight: 600, fontFamily: FN, flexShrink: 0, marginTop: 2 }}>R$ {Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>}
           </div>)}
           {q && !sR.length && <div style={{ textAlign: 'center', padding: 50, color: TM }}>Nenhum resultado</div>}
           {!q && <div style={{ textAlign: 'center', padding: 60, color: TM, opacity: 0.3 }}><div style={{ fontSize: 28, marginBottom: 8 }}>🔍</div><p>Digite para buscar...</p></div>}
