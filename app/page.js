@@ -1,0 +1,353 @@
+'use client';
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '../lib/supabase';
+
+// --- PARSER ---
+function parseComp(text) {
+  const ex = (p) => { const m = text.match(p); return m ? m[1].trim() : ''; };
+  const codigo = ex(/COMPOSIÇÃO:\s*(.+)/i) || ex(/\*\*CÓDIGO:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/CÓDIGO:\s*(.+?)(?:\s*\||\s*$)/im);
+  const titulo = ex(/\*\*TÍTULO:\*\*\s*(.+)/i) || ex(/TÍTULO:\s*(.+)/i);
+  const unidade = ex(/\*\*UNIDADE:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/UNIDADE:\s*(.+?)(?:\s*\||\s*$)/im);
+  const grupo = ex(/\*\*GRUPO:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/GRUPO:\s*(.+?)(?:\s*\||\s*$)/im);
+  const qref = ex(/\*\*QUANTIDADE REF:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/QUANTIDADE REF:\s*(.+?)(?:\s*\||\s*$)/im) || ex(/\*\*REFERÊNCIA:\*\*\s*(.+?)(?:\s*\||\s*$)/im);
+  const tagsR = ex(/\*\*TAGS:\*\*\s*(.+)/i) || ex(/TAGS:\s*(.+)/i);
+  const tags = tagsR ? tagsR.split(',').map(t => t.trim().replace('#', '')).filter(Boolean) : [];
+  const cM = text.match(/\*\*CUSTO DIRETO TOTAL\*\*[^R]*R\$\s*([\d.,]+)/i) || text.match(/CUSTO DIRETO TOTAL[^R]*R\$\s*([\d.,]+)/i);
+  const custo = cM ? parseFloat(cM[1].replace(/\./g, '').replace(',', '.')) : null;
+  const hM = text.match(/\*\*TOTAL M\.O\.\*\*[^|]*\|\s*\*\*([\d.,]+)\*\*/);
+  const hh = hM ? parseFloat(hM[1].replace(/\./g, '').replace(',', '.')) : null;
+  return { codigo, titulo, unidade, grupo, qref, tags, custo, hh };
+}
+
+function splitComps(text) {
+  const parts = text.split(/(?=^#\s*🛠️\s*COMPOSIÇÃO:|^#\s*\*\*COMPOSIÇÃO:)/m).filter(t => t.trim().length > 50);
+  if (parts.length > 1) return parts;
+  const parts2 = text.split(/\n---\n(?=\s*#)/m).filter(t => t.trim().length > 50);
+  if (parts2.length > 1) return parts2;
+  return [text];
+}
+
+// --- MARKDOWN RENDERER ---
+function Md({ text }) {
+  if (!text) return null;
+  const lines = text.split('\n'), els = [];
+  let tR = [], tK = 0, lastH = '';
+  const C = { a: '#F59E0B', ay: '#FBBF24', d: '#A8A29E', t: '#F5F5F4', m: '#78716C', bd: 'rgba(245,158,11,0.08)', lt: '#D6D3D1' };
+
+  const flushT = () => {
+    if (!tR.length) return;
+    const hdr = tR[0].split('|').filter(Boolean).map(c => c.trim().replace(/\*\*/g, ''));
+    const rows = tR.slice(2);
+    const is73 = lastH.includes('7.3') || lastH.includes('PRODUTIVIDADE') || hdr.some(h => h.toLowerCase().includes('produtividade') || h.toLowerCase().includes('variação'));
+    els.push(
+      <div key={`t${tK++}`} style={{ overflowX: 'auto', margin: '12px 0', borderRadius: 8, border: `1px solid ${is73 ? 'rgba(245,158,11,0.25)' : C.bd}`, background: is73 ? 'rgba(245,158,11,0.03)' : 'transparent' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
+          <thead><tr>{hdr.map((h, i) => <th key={i} style={{ padding: '8px 10px', borderBottom: `2px solid ${C.a}`, textAlign: 'left', fontWeight: 700, color: C.a, fontSize: 10, letterSpacing: '0.4px', textTransform: 'uppercase', background: 'rgba(245,158,11,0.06)', whiteSpace: 'nowrap' }}>{h}</th>)}</tr></thead>
+          <tbody>{rows.map((row, ri) => {
+            const cells = row.split('|').filter(Boolean).map(c => c.trim());
+            const isHL = cells[0]?.includes('**') || cells.some(c => c.includes('TOTAL') || c.includes('SUBTOTAL') || c.includes('CUSTO DIRETO'));
+            return <tr key={ri} style={{ borderBottom: `1px solid ${C.bd}`, background: isHL ? 'rgba(245,158,11,0.06)' : 'transparent' }}>
+              {cells.map((cell, ci) => {
+                const bold = cell.includes('**'); const clean = cell.replace(/\*\*/g, ''); const isVal = clean.startsWith('R$') || /^[\d.,]+$/.test(clean.trim());
+                return <td key={ci} style={{ padding: '6px 10px', color: bold ? (isHL ? C.a : C.t) : (isVal ? C.ay : C.d), fontWeight: bold ? 700 : 400, fontSize: 11, fontFamily: isVal ? "'JetBrains Mono',monospace" : 'inherit' }}>{clean}</td>;
+              })}</tr>;
+          })}</tbody>
+        </table>
+      </div>
+    );
+    tR = [];
+  };
+
+  lines.forEach((l, i) => {
+    const t = l.trim();
+    if (t.startsWith('|') && t.endsWith('|')) { tR.push(t); return; }
+    if (tR.length) flushT();
+    if (!t || t === '---' || t === '***' || t === '* * *') { if (t) els.push(<hr key={i} style={{ border: 'none', borderTop: `1px solid ${C.bd}`, margin: '16px 0' }} />); return; }
+    if (t.startsWith('### ')) { const txt = t.slice(4).replace(/\*\*/g, ''); lastH = txt; els.push(<h3 key={i} style={{ color: C.ay, fontSize: 14, fontWeight: 700, margin: '24px 0 10px', padding: '6px 0', borderBottom: `1px solid ${C.bd}` }}>{txt}</h3>); return; }
+    if (t.startsWith('# ') && t.includes('🛠️')) { els.push(<h2 key={i} style={{ color: C.a, fontSize: 16, fontWeight: 800, margin: '10px 0 8px' }}>{t.slice(2).replace(/\*\*/g, '')}</h2>); return; }
+    const subMatch = t.match(/^\*\*(\d+\.\d+\s+[^:*]+)(?::\*\*\s*|\*\*\s*)(.*)/);
+    if (subMatch) {
+      const label = subMatch[1].trim(); const rest = subMatch[2]?.trim() || ''; lastH = label;
+      if (rest) { els.push(<div key={i} style={{ margin: '16px 0 6px' }}><span style={{ color: C.a, fontSize: 12, fontWeight: 700 }}>{label}:</span><span style={{ color: C.lt, fontSize: 12, fontWeight: 400, marginLeft: 4, lineHeight: 1.6 }}>{rest.replace(/\*\*/g, '')}</span></div>); }
+      else { els.push(<h4 key={i} style={{ color: C.a, fontSize: 12, fontWeight: 700, margin: '16px 0 6px' }}>{label}</h4>); }
+      return;
+    }
+    if (t.startsWith('**') && t.includes(':**')) {
+      const clean = t.replace(/\*\*/g, ''); const idx = clean.indexOf(':');
+      if (idx > 0) { els.push(<p key={i} style={{ margin: '4px 0', fontSize: 12, lineHeight: 1.6 }}><span style={{ color: C.a, fontWeight: 600 }}>{clean.slice(0, idx)}:</span> <span style={{ color: C.lt }}>{clean.slice(idx + 1).trim()}</span></p>); return; }
+    }
+    if (t.startsWith('- **')) {
+      const clean = t.slice(2).replace(/\*\*/g, ''); const idx = clean.indexOf(':');
+      if (idx > 0) { els.push(<div key={i} style={{ margin: '6px 0 6px 10px', fontSize: 12, lineHeight: 1.6, color: C.d }}><span style={{ color: C.a, marginRight: 5 }}>▸</span><span style={{ color: '#E7E5E4', fontWeight: 600 }}>{clean.slice(0, idx)}:</span> {clean.slice(idx + 1).trim()}</div>); return; }
+    }
+    if (t.startsWith('- ') || t.startsWith('* ')) { els.push(<div key={i} style={{ margin: '4px 0 4px 10px', fontSize: 12, lineHeight: 1.6, color: C.d }}><span style={{ color: C.a, marginRight: 5 }}>▸</span>{t.replace(/^[-*]\s*/, '').replace(/\*\*/g, '')}</div>); return; }
+    if (t.includes('**')) { const parts = t.split(/(\*\*[^*]+\*\*)/g); els.push(<p key={i} style={{ margin: '4px 0', fontSize: 12, color: C.d, lineHeight: 1.6 }}>{parts.map((p, pi) => p.startsWith('**') ? <strong key={pi} style={{ color: C.t, fontWeight: 600 }}>{p.replace(/\*\*/g, '')}</strong> : p)}</p>); return; }
+    if (t.length > 0) els.push(<p key={i} style={{ margin: '4px 0', fontSize: 12, color: C.d, lineHeight: 1.6 }}>{t}</p>);
+  });
+  flushT();
+  return <div>{els}</div>;
+}
+
+// --- THEME ---
+const A = '#F59E0B', BG = '#0A0908', SF = '#161412', S2 = '#1C1A17', BD = 'rgba(245,158,11,0.08)', AD = 'rgba(245,158,11,0.12)', TX = '#F5F5F4', TD = '#A8A29E', TM = '#78716C', RD = '#EF4444', GR = '#22C55E', FN = "'JetBrains Mono',monospace", FS = "'DM Sans',system-ui,sans-serif";
+
+const ic = {
+  folder: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" /></svg>,
+  search: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>,
+  plus: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 5v14M5 12h14" /></svg>,
+  back: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 19-7-7 7-7M19 12H5" /></svg>,
+  file: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" /></svg>,
+  trash: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" /></svg>,
+  x: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>,
+};
+
+export default function Home() {
+  const [projetos, setProjetos] = useState([]);
+  const [composicoes, setComposicoes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [vw, setVw] = useState('home');
+  const [pid, setPid] = useState(null);
+  const [cid, setCid] = useState(null);
+  const [q, setQ] = useState('');
+  const [ml, setMl] = useState(null);
+  const [nt, setNt] = useState(null);
+  const [fN, setFN] = useState(''); const [fD, setFD] = useState(''); const [fC, setFC] = useState('');
+  const [importing, setImporting] = useState(false);
+
+  const nf = (m, ok = true) => { setNt({ m, ok }); setTimeout(() => setNt(null), 3000); };
+
+  // Load data
+  const loadData = useCallback(async () => {
+    const [{ data: p }, { data: c }] = await Promise.all([
+      supabase.from('projetos').select('*').order('created_at', { ascending: false }),
+      supabase.from('composicoes').select('*').order('created_at', { ascending: true }),
+    ]);
+    setProjetos(p || []);
+    setComposicoes(c || []);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { loadData(); }, [loadData]);
+
+  const proj = pid ? projetos.find(p => p.id === pid) : null;
+  const comp = cid ? composicoes.find(c => c.id === cid) : null;
+  const pComps = pid ? composicoes.filter(c => c.projeto_id === pid) : [];
+  const pName = (id) => projetos.find(p => p.id === id)?.nome || '—';
+  const pCnt = (id) => composicoes.filter(c => c.projeto_id === id).length;
+  const tot = composicoes.length;
+  const sR = q.trim() ? composicoes.filter(c => {
+    const s = q.toLowerCase();
+    return [c.titulo, c.codigo, c.grupo, ...(c.tags || [])].some(f => (f || '').toLowerCase().includes(s));
+  }) : [];
+
+  // CRUD
+  const addP = async () => {
+    if (!fN.trim()) return;
+    const { data, error } = await supabase.from('projetos').insert({ nome: fN.trim(), descricao: fD.trim() }).select().single();
+    if (error) { nf('Erro ao criar projeto', false); return; }
+    setProjetos(prev => [data, ...prev]);
+    nf(`Projeto "${data.nome}" criado`);
+    setFN(''); setFD(''); setMl(null);
+  };
+
+  const delP = async (id) => {
+    if (!confirm('Excluir projeto e todas as composições?')) return;
+    await supabase.from('composicoes').delete().eq('projeto_id', id);
+    await supabase.from('projetos').delete().eq('id', id);
+    setProjetos(prev => prev.filter(p => p.id !== id));
+    setComposicoes(prev => prev.filter(c => c.projeto_id !== id));
+    if (pid === id) { setVw('home'); setPid(null); }
+    nf('Projeto excluído');
+  };
+
+  const addComp = async () => {
+    if (!fC.trim() || !pid) return;
+    setImporting(true);
+    const parts = splitComps(fC);
+    const rows = parts.map(txt => {
+      const p = parseComp(txt);
+      return {
+        projeto_id: pid,
+        codigo: p.codigo || 'SEM-CÓD',
+        titulo: p.titulo || txt.split('\n').find(l => l.trim().length > 5)?.replace(/[#*🛠️]/g, '').trim().slice(0, 100) || 'Composição',
+        unidade: p.unidade || '',
+        grupo: p.grupo || '',
+        tags: p.tags,
+        conteudo_completo: txt.trim(),
+        custo_unitario: p.custo,
+        hh_unitario: p.hh,
+      };
+    });
+    const { data, error } = await supabase.from('composicoes').insert(rows).select();
+    if (error) { nf('Erro ao salvar: ' + error.message, false); setImporting(false); return; }
+    setComposicoes(prev => [...prev, ...(data || [])]);
+    nf(`${rows.length} composiç${rows.length > 1 ? 'ões importadas' : 'ão salva'}!`);
+    setFC(''); setMl(null); setImporting(false);
+  };
+
+  const delC = async (id) => {
+    if (!confirm('Excluir composição?')) return;
+    await supabase.from('composicoes').delete().eq('id', id);
+    setComposicoes(prev => prev.filter(c => c.id !== id));
+    if (cid === id) { setVw('proj'); setCid(null); }
+    nf('Excluída');
+  };
+
+  const batchCount = fC.trim() ? splitComps(fC).length : 0;
+
+  // Styles
+  const bt = (v = 'p') => ({ display: 'inline-flex', alignItems: 'center', gap: 6, padding: v === 's' ? '5px 10px' : '8px 16px', borderRadius: 6, border: v === 'g' ? `1px solid ${BD}` : 'none', background: v === 'p' ? A : v === 'd' ? RD : 'transparent', color: v === 'p' ? BG : v === 'd' ? '#fff' : TD, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: FS });
+  const inp = { width: '100%', padding: '10px 14px', background: BG, border: `1px solid ${BD}`, borderRadius: 6, color: TX, fontSize: 13, fontFamily: FS, outline: 'none' };
+  const cd = { background: SF, border: `1px solid ${BD}`, borderRadius: 8, padding: 18, cursor: 'pointer', transition: 'all 0.15s' };
+  const bg = (c = A) => ({ display: 'inline-block', padding: '2px 8px', borderRadius: 4, fontSize: 9, fontWeight: 700, letterSpacing: '0.5px', background: `${c}20`, color: c, textTransform: 'uppercase' });
+  const st = { textAlign: 'center', padding: '14px 16px', background: SF, border: `1px solid ${BD}`, borderRadius: 8 };
+
+  if (loading) return <div style={{ background: BG, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: TM, fontFamily: FS }}>Carregando...</div>;
+
+  return (
+    <div style={{ minHeight: '100vh', background: BG, color: TX, fontFamily: FS, display: 'flex' }}>
+      {/* SIDEBAR */}
+      <div style={{ width: 210, background: SF, borderRight: `1px solid ${BD}`, display: 'flex', flexDirection: 'column', position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 50 }}>
+        <div style={{ padding: '18px 14px', borderBottom: `1px solid ${BD}`, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ width: 30, height: 30, borderRadius: 6, background: AD, display: 'flex', alignItems: 'center', justifyContent: 'center', color: A, fontSize: 15, fontWeight: 800, fontFamily: FN }}>H</div>
+          <div><div style={{ fontSize: 14, fontWeight: 700, fontFamily: FN, letterSpacing: '0.5px' }}>H-QUANT</div><div style={{ fontSize: 8, color: TM, letterSpacing: '2px' }}>COMPOSIÇÕES 2026</div></div>
+        </div>
+        <div style={{ padding: '10px 0', flex: 1 }}>
+          {[['home', ic.folder, 'Projetos'], ['busca', ic.search, 'Busca Global']].map(([id, icon, label]) => {
+            const act = vw === id || (id === 'home' && ['proj', 'comp'].includes(vw));
+            return <div key={id} onClick={() => { setVw(id); setPid(null); setCid(null); if (id === 'busca') setQ(''); }} style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '10px 16px', cursor: 'pointer', color: act ? A : TD, background: act ? AD : 'transparent', borderLeft: act ? `2px solid ${A}` : '2px solid transparent', fontSize: 12, fontWeight: act ? 600 : 400 }}>{icon}<span>{label}</span></div>;
+          })}
+        </div>
+        <div style={{ padding: '12px 16px', borderTop: `1px solid ${BD}`, fontSize: 10, color: TM }}>{projetos.length} projetos • {tot} composições</div>
+      </div>
+
+      {/* MAIN */}
+      <div style={{ marginLeft: 210, flex: 1, padding: '0 32px 32px', minHeight: '100vh', maxWidth: 1100 }}>
+        {nt && <div style={{ position: 'fixed', top: 14, right: 14, zIndex: 999, padding: '10px 18px', borderRadius: 8, background: nt.ok ? GR : RD, color: '#fff', fontSize: 12, fontWeight: 600, boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>{nt.ok ? '✓' : '✕'} {nt.m}</div>}
+
+        {/* HOME */}
+        {vw === 'home' && <>
+          <div style={{ padding: '24px 0 16px', borderBottom: `1px solid ${BD}`, marginBottom: 22, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div><h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, fontFamily: FN }}>Projetos</h1><p style={{ fontSize: 11, color: TM, margin: '4px 0 0' }}>Gerencie seus projetos de engenharia de custos</p></div>
+            <button style={bt()} onClick={() => { setMl('np'); setFN(''); setFD(''); }}>{ic.plus} Novo Projeto</button>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 22 }}>
+            {[[projetos.length, 'Projetos'], [tot, 'Composições'], [projetos.length ? Math.round(tot / projetos.length) : 0, 'Média']].map(([v, l], i) => <div key={i} style={st}><div style={{ fontSize: 24, fontWeight: 700, color: A, fontFamily: FN }}>{v}</div><div style={{ fontSize: 9, color: TM, textTransform: 'uppercase', letterSpacing: '1px', marginTop: 4 }}>{l}</div></div>)}
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 12 }}>
+            {projetos.map(p => <div key={p.id} style={cd} onClick={() => { setPid(p.id); setVw('proj'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><span style={{ color: A }}>{ic.folder}</span><span style={{ fontSize: 14, fontWeight: 600 }}>{p.nome}</span></div>
+                <button onClick={e => { e.stopPropagation(); delP(p.id); }} style={{ ...bt('g'), padding: 3, border: 'none', opacity: 0.2 }}>{ic.trash}</button>
+              </div>
+              {p.descricao && <p style={{ fontSize: 11, color: TD, margin: '8px 0 0', lineHeight: 1.4 }}>{p.descricao.slice(0, 80)}{p.descricao.length > 80 ? '...' : ''}</p>}
+              <div style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between' }}><span style={bg()}>{pCnt(p.id)} comp</span><span style={{ fontSize: 9, color: TM }}>{new Date(p.created_at).toLocaleDateString('pt-BR')}</span></div>
+            </div>)}
+            {!projetos.length && <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: 60, color: TM }}><div style={{ fontSize: 32, marginBottom: 10, opacity: 0.3 }}>📁</div><p style={{ fontSize: 14 }}>Nenhum projeto ainda</p></div>}
+          </div>
+        </>}
+
+        {/* PROJECT */}
+        {vw === 'proj' && pid && <>
+          <div style={{ padding: '24px 0 16px', borderBottom: `1px solid ${BD}`, marginBottom: 22, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <button style={{ ...bt('g'), padding: 6 }} onClick={() => { setVw('home'); setPid(null); }}>{ic.back}</button>
+              <div><h1 style={{ fontSize: 18, fontWeight: 700, margin: 0, fontFamily: FN }}>{proj?.nome}</h1>{proj?.descricao && <p style={{ fontSize: 11, color: TM, margin: '3px 0 0' }}>{proj.descricao}</p>}</div>
+            </div>
+            <button style={bt()} onClick={() => { setMl('nc'); setFC(''); }}>{ic.plus} Composição</button>
+          </div>
+          {pComps.map((c, i) => <div key={c.id} style={{ ...cd, padding: '14px 18px', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} onClick={() => { setCid(c.id); setVw('comp'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 }}>
+              <div style={{ color: TM, fontSize: 10, fontFamily: FN, minWidth: 22, textAlign: 'right' }}>{String(i + 1).padStart(2, '0')}</div>
+              <span style={{ color: A }}>{ic.file}</span>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>{c.codigo && <span style={{ ...bg(), fontSize: 8 }}>{c.codigo}</span>}<span style={{ fontSize: 12, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.titulo}</span></div>
+                <div style={{ fontSize: 9, color: TM, marginTop: 3 }}>{c.unidade && `Un: ${c.unidade}`}{c.grupo && ` • ${c.grupo}`}</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+              {c.hh_unitario && <span style={{ fontSize: 10, color: '#60A5FA', fontWeight: 600, fontFamily: FN }}>{c.hh_unitario} HH</span>}
+              {c.custo_unitario && <span style={{ fontSize: 12, color: A, fontWeight: 700, fontFamily: FN }}>R$ {Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>}
+              <button onClick={e => { e.stopPropagation(); delC(c.id); }} style={{ ...bt('g'), padding: 3, border: 'none', opacity: 0.2 }}>{ic.trash}</button>
+            </div>
+          </div>)}
+          {!pComps.length && <div style={{ textAlign: 'center', padding: 60, color: TM }}><div style={{ fontSize: 32, marginBottom: 10, opacity: 0.3 }}>📋</div><p>Nenhuma composição</p></div>}
+        </>}
+
+        {/* COMP DETAIL */}
+        {vw === 'comp' && comp && <>
+          <div style={{ padding: '24px 0 16px', borderBottom: `1px solid ${BD}`, marginBottom: 22, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <button style={{ ...bt('g'), padding: 6 }} onClick={() => { setVw(pid ? 'proj' : 'busca'); setCid(null); }}>{ic.back}</button>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>{comp.codigo && <span style={bg()}>{comp.codigo}</span>}<h1 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>{comp.titulo}</h1></div>
+              <p style={{ fontSize: 10, color: TM, margin: '4px 0 0' }}>Projeto: {pName(comp.projeto_id)}{comp.grupo && ` • ${comp.grupo}`}{comp.unidade && ` • Un: ${comp.unidade}`}</p>
+            </div>
+          </div>
+          {comp.tags?.length > 0 && <div style={{ marginBottom: 14 }}>{comp.tags.map((t, i) => <span key={i} style={{ display: 'inline-block', padding: '3px 8px', borderRadius: 4, fontSize: 9, background: 'rgba(255,255,255,0.04)', color: TM, marginRight: 5 }}>#{t}</span>)}</div>}
+          <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
+            {comp.custo_unitario && <div style={{ ...st, flex: 1 }}><div style={{ fontSize: 18, fontWeight: 700, color: A, fontFamily: FN }}>R$ {Number(comp.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div><div style={{ fontSize: 9, color: TM, marginTop: 3 }}>CUSTO/{comp.unidade || 'un'}</div></div>}
+            {comp.hh_unitario && <div style={{ ...st, flex: 1 }}><div style={{ fontSize: 18, fontWeight: 700, color: '#60A5FA', fontFamily: FN }}>{comp.hh_unitario} HH</div><div style={{ fontSize: 9, color: TM, marginTop: 3 }}>M.O./{comp.unidade || 'un'}</div></div>}
+          </div>
+          <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 10, padding: 26 }}><Md text={comp.conteudo_completo} /></div>
+        </>}
+
+        {/* SEARCH */}
+        {vw === 'busca' && <>
+          <div style={{ padding: '24px 0 16px', borderBottom: `1px solid ${BD}`, marginBottom: 22 }}>
+            <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, fontFamily: FN }}>Busca Global</h1>
+          </div>
+          <div style={{ position: 'relative', marginBottom: 22 }}>
+            <div style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: TM }}>{ic.search}</div>
+            <input type="text" placeholder="contrapiso, sóculo, CIV-SOCULO..." value={q} onChange={e => setQ(e.target.value)} style={{ ...inp, paddingLeft: 40, padding: '13px 14px 13px 40px' }} autoFocus />
+          </div>
+          {q && <p style={{ fontSize: 11, color: TM, marginBottom: 14 }}>{sR.length} resultado{sR.length !== 1 ? 's' : ''}</p>}
+          {sR.map(c => <div key={c.id} style={{ ...cd, padding: '14px 18px', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }} onClick={() => { setCid(c.id); setPid(c.projeto_id); setVw('comp'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1 }}><span style={{ color: A }}>{ic.file}</span><div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>{c.codigo && <span style={{ ...bg(), fontSize: 8 }}>{c.codigo}</span>}<span style={{ fontSize: 12, fontWeight: 500 }}>{c.titulo}</span></div>
+              <div style={{ fontSize: 10, color: TM, marginTop: 3 }}>Projeto: {pName(c.projeto_id)}</div>
+            </div></div>
+            {c.custo_unitario && <span style={{ fontSize: 11, color: A, fontWeight: 600, fontFamily: FN }}>R$ {Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>}
+          </div>)}
+          {q && !sR.length && <div style={{ textAlign: 'center', padding: 50, color: TM }}>Nenhum resultado</div>}
+          {!q && <div style={{ textAlign: 'center', padding: 60, color: TM, opacity: 0.3 }}><div style={{ fontSize: 28, marginBottom: 8 }}>🔍</div><p>Digite para buscar...</p></div>}
+        </>}
+      </div>
+
+      {/* MODALS */}
+      {ml && <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 900, backdropFilter: 'blur(4px)' }} onClick={() => !importing && setMl(null)}>
+        <div style={{ background: S2, border: `1px solid ${BD}`, borderRadius: 12, padding: 28, width: '92%', maxWidth: ml === 'nc' ? 760 : 500, maxHeight: '88vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+          {ml === 'np' && <>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}><h2 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>Novo Projeto</h2><button style={{ ...bt('g'), padding: 4, border: 'none' }} onClick={() => setMl(null)}>{ic.x}</button></div>
+            <label style={{ fontSize: 11, color: TM, display: 'block', marginBottom: 4, fontWeight: 600 }}>NOME *</label>
+            <input type="text" placeholder="Ex: 4740/25 - Orçamento Civil" value={fN} onChange={e => setFN(e.target.value)} style={{ ...inp, marginBottom: 16 }} autoFocus />
+            <label style={{ fontSize: 11, color: TM, display: 'block', marginBottom: 4, fontWeight: 600 }}>DESCRIÇÃO</label>
+            <input type="text" placeholder="Breve descrição" value={fD} onChange={e => setFD(e.target.value)} style={{ ...inp, marginBottom: 20 }} />
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}><button style={bt('g')} onClick={() => setMl(null)}>Cancelar</button><button style={{ ...bt(), opacity: fN.trim() ? 1 : 0.4 }} onClick={addP}>Criar Projeto</button></div>
+          </>}
+          {ml === 'nc' && <>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14 }}>
+              <div><h2 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>Adicionar Composições</h2><p style={{ fontSize: 10, color: TM, margin: '3px 0 0' }}>Projeto: {proj?.nome}</p></div>
+              <button style={{ ...bt('g'), padding: 4, border: 'none' }} onClick={() => !importing && setMl(null)}>{ic.x}</button>
+            </div>
+            <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '10px 14px', marginBottom: 14 }}>
+              <p style={{ fontSize: 11, color: TD, lineHeight: 1.5, margin: 0 }}><strong style={{ color: A }}>Individual ou Lote:</strong> Cole composições no padrão Markdown. Separador <code style={{ color: A, background: AD, padding: '1px 4px', borderRadius: 3, fontSize: 10 }}># 🛠️ COMPOSIÇÃO:</code> detecta múltiplas.</p>
+            </div>
+            <textarea placeholder="Cole aqui uma ou mais composições..." value={fC} onChange={e => setFC(e.target.value)} style={{ width: '100%', padding: '14px 16px', background: BG, border: `1px solid ${BD}`, borderRadius: 8, color: TX, fontSize: 11, fontFamily: FN, outline: 'none', resize: 'vertical', minHeight: 300, lineHeight: 1.7 }} />
+            {fC.trim() && <div style={{ marginTop: 12, padding: 12, background: BG, borderRadius: 8, border: `1px solid ${BD}` }}>
+              <div style={{ fontSize: 9, color: TM, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 8, fontWeight: 700 }}>PREVIEW ({batchCount})</div>
+              {splitComps(fC).map((txt, i) => {
+                const p = parseComp(txt); return <div key={i} style={{ padding: '6px 0', borderBottom: i < batchCount - 1 ? `1px solid ${BD}` : 'none', fontSize: 11 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ color: TM, fontFamily: FN, fontSize: 10 }}>{String(i + 1).padStart(2, '0')}</span>{p.codigo && <span style={{ ...bg(), fontSize: 8 }}>{p.codigo}</span>}<span style={{ color: TX, fontWeight: 500 }}>{p.titulo || '—'}</span></div>
+                  <div style={{ color: TD, fontSize: 10, marginLeft: 22 }}>Un: {p.unidade || '—'}{p.custo ? ` • R$ ${p.custo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : ''}{p.hh ? ` • ${p.hh} HH` : ''}</div>
+                </div>;
+              })}
+            </div>}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 16 }}><button style={bt('g')} onClick={() => !importing && setMl(null)}>Cancelar</button><button style={{ ...bt(), opacity: fC.trim() && !importing ? 1 : 0.4 }} onClick={addComp} disabled={importing}>{importing ? 'Importando...' : `Salvar ${batchCount > 1 ? batchCount + ' Composições' : 'Composição'}`}</button></div>
+          </>}
+        </div>
+      </div>}
+
+      <style>{`*{box-sizing:border-box;margin:0;padding:0}body{background:${BG};overflow-x:hidden}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:3px}::selection{background:${A};color:${BG}}input:focus,textarea:focus{border-color:${A}!important;box-shadow:0 0 0 2px ${AD}}code{font-family:${FN}}`}</style>
+    </div>
+  );
+}
