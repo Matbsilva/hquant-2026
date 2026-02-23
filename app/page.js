@@ -52,7 +52,10 @@ function parseCompDetail(text) {
   // Rendimento diário
   const rendM = text.match(/rendimento[^:]*:\s*(?:\*\*)?([\d.,]+\s*[A-Za-zÀ-ú²³/]+(?:\/dia)?)/i) || text.match(/produtividade.*?equipe[^:]*:\s*(?:\*\*)?([\d.,]+\s*[A-Za-zÀ-ú²³/]+)/i);
   const rendimento = rendM ? cleanMd(rendM[1]) : null;
-  return { custo_material, custo_mo, peso_total, hhProfs, equipe, rendimento };
+  // Produtividade: tentar calcular m²/dia ou un/dia a partir de HH total e jornada 8h
+  const hhTotalEquipe = hhProfs.reduce((s, p) => s + p.hh, 0);
+  const produtividade = hhTotalEquipe > 0 ? (8 / hhTotalEquipe).toFixed(1) : null;
+  return { custo_material, custo_mo, peso_total, hhProfs, equipe, rendimento, produtividade };
 }
 
 function splitComps(text) {
@@ -134,6 +137,7 @@ const ic = {
   back: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 19-7-7 7-7M19 12H5" /></svg>,
   file: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" /></svg>,
   trash: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" /></svg>,
+  copy: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>,
   x: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>,
 };
 
@@ -301,9 +305,10 @@ export default function Home() {
                 <div style={{ fontSize: 11, color: TL, marginTop: 4 }}>{c.unidade && `Un: ${c.unidade}`}{c.grupo && ` • ${c.grupo}`}</div>
               </div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 0, marginTop: 2 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, marginTop: 2 }}>
               {c.hh_unitario && <span style={{ fontSize: 11, color: BL, fontWeight: 600, fontFamily: FN }}>{c.hh_unitario} HH</span>}
               {c.custo_unitario && <span style={{ fontSize: 13, color: A, fontWeight: 700, fontFamily: FN }}>R$ {Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>}
+              <button title="Copiar composição" onClick={e => { e.stopPropagation(); navigator.clipboard.writeText(c.conteudo_completo || ''); setNt({ ok: true, m: 'Composição copiada!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: 3, border: 'none', opacity: 0.3 }}>{ic.copy}</button>
               <button onClick={e => { e.stopPropagation(); delC(c.id); }} style={{ ...bt('g'), padding: 3, border: 'none', opacity: 0.2 }}>{ic.trash}</button>
             </div>
           </div>)}
@@ -328,6 +333,7 @@ export default function Home() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>{comp.codigo && <span style={bg()}>{comp.codigo}</span>}<h1 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>{cleanMd(comp.titulo)}</h1></div>
                 <p style={{ fontSize: 12, color: TL, margin: '4px 0 0' }}>Projeto: {pName(comp.projeto_id)}{comp.grupo && ` • ${comp.grupo}`}{comp.unidade && ` • Un: ${comp.unidade}`}</p>
               </div>
+              <button title="Copiar composição" onClick={() => { navigator.clipboard.writeText(comp.conteudo_completo || ''); setNt({ ok: true, m: 'Composição copiada!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: TL }}>{ic.copy} Copiar</button>
             </div>
             {comp.tags?.length > 0 && <div style={{ marginBottom: 14 }}>{comp.tags.map((t, i) => <span key={i} style={{ display: 'inline-block', padding: '3px 8px', borderRadius: 4, fontSize: 10, background: 'rgba(255,255,255,0.06)', color: TL, marginRight: 5 }}>#{t}</span>)}</div>}
             {/* --- INDICATOR CARDS --- */}
@@ -337,10 +343,15 @@ export default function Home() {
               {indicatorCard(`MÃO DE OBRA/${un}`, det.custo_mo, BL, '👷')}
               {indicatorCard(`PESO/${un}`, det.peso_total != null ? `${det.peso_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} kg` : null, TL, '⚖️')}
             </div>
-            {/* --- HH PER PROFESSION + TEAM --- */}
-            {(det.hhProfs.length > 0 || det.equipe || det.rendimento) && <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 10, padding: 20, marginBottom: 20 }}>
-              <div style={{ fontSize: 11, color: A, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 14 }}>👥 Equipe & Produtividade</div>
-              {det.hhProfs.length > 0 && <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: det.equipe || det.rendimento ? 14 : 0 }}>
+            {/* --- INDICADORES --- */}
+            {(det.hhProfs.length > 0 || det.equipe || det.rendimento || det.produtividade) && <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 10, padding: 20, marginBottom: 20 }}>
+              <div style={{ fontSize: 11, color: A, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 14 }}>📊 Indicadores</div>
+              {/* Productivity card */}
+              {det.produtividade && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '14px 18px', marginBottom: 14, display: 'inline-block' }}>
+                <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Produtividade da Equipe</div>
+                <div style={{ fontSize: 22, fontWeight: 700, color: GR, fontFamily: FN }}>{det.produtividade} <span style={{ fontSize: 14, color: TL, fontWeight: 500 }}>{un}/dia</span></div>
+              </div>}
+              {det.hhProfs.length > 0 && <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 14 }}>
                 {det.hhProfs.map((p, i) => <div key={i} style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 16px', flex: '1 1 180px', minWidth: 160 }}>
                   <div style={{ fontSize: 12, color: TL, fontWeight: 500, marginBottom: 4 }}>{p.nome}</div>
                   <div style={{ fontSize: 18, fontWeight: 700, color: BL, fontFamily: FN }}>{p.hh.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} <span style={{ fontSize: 12, color: TL, fontWeight: 500 }}>HH/{un}</span></div>
@@ -357,7 +368,7 @@ export default function Home() {
                 </div>}
                 {comp.hh_unitario && <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 4, fontWeight: 600 }}>HH Total Equipe/{un}</div>
-                  <div style={{ fontSize: 14, color: BL, fontWeight: 600, fontFamily: FN }}>{comp.hh_unitario}</div>
+                  <div style={{ fontSize: 14, color: TX, fontWeight: 500 }}>{comp.hh_unitario}</div>
                 </div>}
               </div>
             </div>}
