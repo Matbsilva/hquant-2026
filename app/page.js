@@ -10,7 +10,7 @@ const parseNum = (s) => { if (!s) return null; const n = parseFloat(s.replace(/\
 function parseComp(text) {
   const ex = (p) => { const m = text.match(p); return m ? m[1].trim() : ''; };
   const codigo = ex(/COMPOSIÇÃO:\s*(.+)/i) || ex(/\*\*CÓDIGO:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/CÓDIGO:\s*(.+?)(?:\s*\||\s*$)/im);
-  const titulo = ex(/🛠️\s*ITEM\s*[\d.]+:\s*(.+)/i) || ex(/\*\*TÍTULO:\*\*\s*(.+)/i) || ex(/TÍTULO:\s*(.+)/i);
+  const titulo = ex(/🛠️\s*COMPOSIÇÃO\s*[\d./]+[A-Za-z]?:\s*(.+)/i) || ex(/🛠️\s*ITEM\s*[\d.]+:\s*(.+)/i) || ex(/\*\*TÍTULO:\*\*\s*(.+)/i) || ex(/TÍTULO:\s*(.+)/i);
   const unidade = ex(/\*\*UNIDADE:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/UNIDADE:\s*(.+?)(?:\s*\||\s*$)/im);
   const grupo = ex(/\*\*GRUPO:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/GRUPO:\s*(.+?)(?:\s*\||\s*$)/im);
   const qref = ex(/\*\*QUANTIDADE REF:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/QUANTIDADE REF:\s*(.+?)(?:\s*\||\s*$)/im) || ex(/\*\*REFERÊNCIA:\*\*\s*(.+?)(?:\s*\||\s*$)/im);
@@ -59,7 +59,7 @@ function parseCompDetail(text) {
 }
 
 function splitComps(text) {
-  const parts = text.split(/(?=^#\s*🛠️\s*(?:COMPOSIÇÃO:|ITEM\s))/m).filter(t => t.trim().length > 50);
+  const parts = text.split(/(?=^#\s*🛠️\s*(?:COMPOSIÇÃO|ITEM\s))/m).filter(t => t.trim().length > 50);
   if (parts.length > 1) return parts;
   const parts2 = text.split(/\n---\n(?=\s*#)/m).filter(t => t.trim().length > 50);
   if (parts2.length > 1) return parts2;
@@ -203,21 +203,49 @@ export default function Home() {
   const addComp = async () => {
     if (!fC.trim() || !pid) return;
     setImporting(true);
-    const parts = splitComps(fC);
-    const rows = parts.map(txt => {
-      const p = parseComp(txt);
-      return {
-        projeto_id: pid,
-        codigo: p.codigo || 'SEM-CÓD',
-        titulo: p.titulo || txt.split('\n').find(l => l.trim().length > 5)?.replace(/[#*🛠️]/g, '').trim().slice(0, 100) || 'Composição',
-        unidade: p.unidade || '',
-        grupo: p.grupo || '',
-        tags: p.tags,
-        conteudo_completo: txt.trim(),
-        custo_unitario: p.custo,
-        hh_unitario: p.hh,
-      };
-    });
+    let rows;
+    try {
+      // Try Gemini AI parsing first
+      const res = await fetch('/api/parse', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: fC }) });
+      if (res.ok) {
+        const { composicoes: aiComps } = await res.json();
+        if (aiComps && aiComps.length > 0) {
+          // Split the text for conteudo_completo mapping
+          const textParts = splitComps(fC);
+          rows = aiComps.map((c, i) => ({
+            projeto_id: pid,
+            codigo: c.codigo || 'SEM-CÓD',
+            titulo: c.titulo || 'Composição',
+            unidade: c.unidade || '',
+            grupo: c.grupo || '',
+            tags: c.tags || [],
+            conteudo_completo: (textParts[i] || fC).trim(),
+            custo_unitario: c.custo_unitario || null,
+            hh_unitario: c.hh_unitario || null,
+          }));
+        }
+      }
+    } catch (e) {
+      console.warn('Gemini parse failed, using regex fallback:', e);
+    }
+    // Fallback to regex parsing
+    if (!rows) {
+      const parts = splitComps(fC);
+      rows = parts.map(txt => {
+        const p = parseComp(txt);
+        return {
+          projeto_id: pid,
+          codigo: p.codigo || 'SEM-CÓD',
+          titulo: p.titulo || txt.split('\n').find(l => l.trim().length > 5)?.replace(/[#*🛠️]/g, '').trim().slice(0, 100) || 'Composição',
+          unidade: p.unidade || '',
+          grupo: p.grupo || '',
+          tags: p.tags,
+          conteudo_completo: txt.trim(),
+          custo_unitario: p.custo,
+          hh_unitario: p.hh,
+        };
+      });
+    }
     const { data, error } = await supabase.from('composicoes').insert(rows).select();
     if (error) { nf('Erro ao salvar: ' + error.message, false); setImporting(false); return; }
     setComposicoes(prev => [...prev, ...(data || [])]);
@@ -415,7 +443,7 @@ export default function Home() {
               <button style={{ ...bt('g'), padding: 4, border: 'none' }} onClick={() => !importing && setMl(null)}>{ic.x}</button>
             </div>
             <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '10px 14px', marginBottom: 14 }}>
-              <p style={{ fontSize: 11, color: TD, lineHeight: 1.5, margin: 0 }}><strong style={{ color: A }}>Individual ou Lote:</strong> Cole composições no padrão Markdown. Separador <code style={{ color: A, background: AD, padding: '1px 4px', borderRadius: 3, fontSize: 10 }}># 🛠️ COMPOSIÇÃO:</code> detecta múltiplas.</p>
+              <p style={{ fontSize: 11, color: TD, lineHeight: 1.5, margin: 0 }}><strong style={{ color: A }}>Individual ou Lote:</strong> Cole composições no padrão Markdown. IA Gemini detecta e extrai automaticamente. Fallback: separador <code style={{ color: A, background: AD, padding: '1px 4px', borderRadius: 3, fontSize: 10 }}># 🛠️ COMPOSIÇÃO</code></p>
             </div>
             <textarea placeholder="Cole aqui uma ou mais composições..." value={fC} onChange={e => setFC(e.target.value)} style={{ width: '100%', padding: '14px 16px', background: BG, border: `1px solid ${BD}`, borderRadius: 8, color: TX, fontSize: 11, fontFamily: FN, outline: 'none', resize: 'vertical', minHeight: 300, lineHeight: 1.7 }} />
             {fC.trim() && <div style={{ marginTop: 12, padding: 12, background: BG, borderRadius: 8, border: `1px solid ${BD}` }}>
