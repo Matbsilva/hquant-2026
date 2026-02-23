@@ -84,21 +84,6 @@ function Md({ text }) {
   let tR = [], tK = 0, lastH = '';
   const C = { a: '#F59E0B', ay: '#FBBF24', d: '#A8A29E', t: '#F5F5F4', m: '#78716C', bd: 'rgba(245,158,11,0.08)', lt: '#D6D3D1', err: '#EF4444', ok: '#22C55E' };
 
-  let inCode = false;
-  let codeLines = [];
-
-  const flushCode = () => {
-    if (codeLines.length) {
-      els.push(
-        <div key={`code_${els.length}`} style={{ background: 'rgba(255,255,255,0.02)', borderLeft: `2px solid ${C.m}`, padding: '12px 14px', margin: '8px 0 16px', borderRadius: '0 6px 6px 0', fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: C.lt, whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
-          {codeLines.join('\n')}
-        </div>
-      );
-      codeLines = [];
-    }
-    inCode = false;
-  };
-
   const flushT = () => {
     if (!tR.length) return;
     const hdr = tR[0].split('|').filter(Boolean).map(c => c.trim().replace(/\*\*/g, ''));
@@ -124,33 +109,20 @@ function Md({ text }) {
   };
 
   lines.forEach((l, i) => {
+    let t = l.trim();
     const isIndented = l.startsWith('    ') || l.startsWith('\t');
-    const t = l.trim();
-
-    if (isIndented || (inCode && !t)) {
-      if (!t && !inCode) return;
-      if (t) {
-        if (tR.length) flushT();
-        inCode = true;
-      }
-      if (inCode) {
-        codeLines.push(l.replace(/^(    |\t)/, ''));
-        return;
-      }
-    } else {
-      flushCode();
-    }
 
     if (t.startsWith('|') && t.endsWith('|')) { tR.push(t); return; }
     if (tR.length) flushT();
 
     if (!t || t === '---' || t === '***' || t === '* * *') { if (t) els.push(<hr key={i} style={{ border: 'none', borderTop: `1px solid ${C.bd}`, margin: '20px 0' }} />); return; }
+
     if (t.startsWith('### ')) { const txt = t.slice(4).replace(/\*\*/g, ''); lastH = txt; els.push(<h3 key={i} style={{ color: C.ay, fontSize: 15, fontWeight: 700, margin: '28px 0 12px', padding: '6px 0', borderBottom: `1px solid ${C.bd}` }}>{txt}</h3>); return; }
 
     if (t.startsWith('#### ') || t.startsWith('##### ')) {
       const txt = t.replace(/^#+\s+/, '').replace(/\*\*/g, '');
       lastH = txt;
-      els.push(<h4 key={i} style={{ color: C.a, fontSize: 12, fontWeight: 700, margin: '24px 0 10px', letterSpacing: '0.5px' }}>{txt}</h4>);
+      els.push(<h4 key={i} style={{ color: C.a, fontSize: 12, fontWeight: 700, margin: '24px 0 10px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>{txt}</h4>);
       return;
     }
 
@@ -158,7 +130,7 @@ function Md({ text }) {
 
     const emojiMatch = t.match(/^(✅|❌|⚠️|🔴|📋|☑|☐)\s+(.*)/);
     if (emojiMatch) {
-      els.push(<div key={i} style={{ margin: '6px 0 6px 4px', fontSize: 12, lineHeight: 1.6, color: C.lt, display: 'flex', gap: 8 }}><span style={{ fontSize: 12 }}>{emojiMatch[1]}</span><span style={{ flex: 1 }}>{emojiMatch[2].replace(/\*\*/g, '')}</span></div>);
+      els.push(<div key={i} style={{ margin: '8px 0 8px 12px', fontSize: 12, lineHeight: 1.6, color: C.lt, display: 'flex', gap: 8 }}><span style={{ fontSize: 12 }}>{emojiMatch[1]}</span><span style={{ flex: 1 }}>{emojiMatch[2].replace(/\*\*/g, '')}</span></div>);
       return;
     }
 
@@ -175,18 +147,41 @@ function Md({ text }) {
       if (idx > 0) { els.push(<p key={i} style={{ margin: '6px 0', fontSize: 12, lineHeight: 1.6 }}><span style={{ color: C.a, fontWeight: 600 }}>{clean.slice(0, idx)}:</span> <span style={{ color: C.lt }}>{clean.slice(idx + 1).trim()}</span></p>); return; }
     }
 
-    if (t.startsWith('- **')) {
-      const clean = t.slice(2).replace(/\*\*/g, ''); const idx = clean.indexOf(':');
-      if (idx > 0) { els.push(<div key={i} style={{ margin: '6px 0 6px 12px', fontSize: 12, lineHeight: 1.6, color: C.lt }}><span style={{ color: C.a, marginRight: 6 }}>▸</span><span style={{ color: '#E7E5E4', fontWeight: 600 }}>{clean.slice(0, idx)}:</span> {clean.slice(idx + 1).trim()}</div>); return; }
+    // Parse indented bullet points explicitly as they are common in V4
+    if (t.startsWith('- ') || t.startsWith('* ') || t.startsWith('• ')) {
+      let clean = t.replace(/^[-*•]\s*/, '');
+      const strongMatch = clean.match(/^\*\*([^*]+)\*\*:/);
+      if (strongMatch) {
+        clean = clean.replace(strongMatch[0], '');
+        els.push(<div key={i} style={{ margin: '8px 0 8px 12px', fontSize: 12, lineHeight: 1.6, color: C.lt }}><span style={{ color: C.a, marginRight: 6 }}>▸</span><span style={{ color: '#E7E5E4', fontWeight: 600 }}>{strongMatch[1]}:</span> {clean.trim()}</div>);
+      } else {
+        els.push(<div key={i} style={{ margin: '8px 0 8px 12px', fontSize: 12, lineHeight: 1.6, color: C.lt }}><span style={{ color: C.a, marginRight: 6 }}>▸</span>{clean.replace(/\*\*/g, '')}</div>);
+      }
+      return;
     }
 
-    if (t.startsWith('- ') || t.startsWith('* ') || t.startsWith('• ')) { els.push(<div key={i} style={{ margin: '6px 0 6px 12px', fontSize: 12, lineHeight: 1.6, color: C.lt }}><span style={{ color: C.a, marginRight: 6 }}>▸</span>{t.replace(/^[-*•]\s*/, '').replace(/\*\*/g, '')}</div>); return; }
+    // Parse pseudo headings inside indented blocks (like "MÉTODO EXECUTIVO PASSO-A-PASSO:")
+    if (t.endsWith(':') && t === t.toUpperCase() && t.length > 5 && !t.includes('**')) {
+      els.push(<h5 key={i} style={{ margin: '16px 0 6px', fontSize: 11, color: C.a, fontWeight: 600, letterSpacing: '0.3px' }}>{t}</h5>);
+      return;
+    }
 
-    if (t.includes('**')) { const parts = t.split(/(\*\*[^*]+\*\*)/g); els.push(<p key={i} style={{ margin: '6px 0', fontSize: 12, color: C.lt, lineHeight: 1.6 }}>{parts.map((p, pi) => p.startsWith('**') ? <strong key={pi} style={{ color: C.t, fontWeight: 600 }}>{p.replace(/\*\*/g, '')}</strong> : p)}</p>); return; }
+    // Fallback for numbered steps (like "1. MARCAÇÃO (Duração...)")
+    const stepMatch = t.match(/^(\d+\.)\s+(.*)/);
+    if (stepMatch) {
+      els.push(<div key={i} style={{ margin: '12px 0 4px', fontSize: 12, lineHeight: 1.6, color: C.t, fontWeight: 600 }}>{stepMatch[1]} <span style={{ color: C.lt, fontWeight: 400 }}>{stepMatch[2].replace(/\*\*/g, '')}</span></div>);
+      return;
+    }
 
-    if (t.length > 0) els.push(<p key={i} style={{ margin: '6px 0', fontSize: 12, color: C.lt, lineHeight: 1.6 }}>{t}</p>);
+    if (t.includes('**')) {
+      const parts = t.split(/(\*\*[^*]+\*\*)/g);
+      els.push(<p key={i} style={{ margin: isIndented ? '4px 0 4px 12px' : '8px 0', fontSize: 12, color: C.lt, lineHeight: 1.6 }}>{parts.map((p, pi) => p.startsWith('**') ? <strong key={pi} style={{ color: C.t, fontWeight: 600 }}>{p.replace(/\*\*/g, '')}</strong> : p)}</p>);
+      return;
+    }
+
+    if (t.length > 0) els.push(<p key={i} style={{ margin: isIndented ? '4px 0 4px 12px' : '8px 0', fontSize: 12, color: C.lt, lineHeight: 1.6 }}>{t}</p>);
   });
-  flushCode();
+
   flushT();
   return <div>{els}</div>;
 }
