@@ -10,7 +10,7 @@ const parseNum = (s) => { if (!s) return null; const n = parseFloat(s.replace(/\
 function parseComp(text) {
   const ex = (p) => { const m = text.match(p); return m ? m[1].trim() : ''; };
   const codigo = ex(/COMPOSIÇÃO:\s*(.+)/i) || ex(/\*\*CÓDIGO:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/CÓDIGO:\s*(.+?)(?:\s*\||\s*$)/im);
-  const titulo = ex(/\*\*TÍTULO:\*\*\s*(.+)/i) || ex(/TÍTULO:\s*(.+)/i);
+  const titulo = ex(/🛠️\s*ITEM\s*[\d.]+:\s*(.+)/i) || ex(/\*\*TÍTULO:\*\*\s*(.+)/i) || ex(/TÍTULO:\s*(.+)/i);
   const unidade = ex(/\*\*UNIDADE:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/UNIDADE:\s*(.+?)(?:\s*\||\s*$)/im);
   const grupo = ex(/\*\*GRUPO:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/GRUPO:\s*(.+?)(?:\s*\||\s*$)/im);
   const qref = ex(/\*\*QUANTIDADE REF:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/QUANTIDADE REF:\s*(.+?)(?:\s*\||\s*$)/im) || ex(/\*\*REFERÊNCIA:\*\*\s*(.+?)(?:\s*\||\s*$)/im);
@@ -18,7 +18,7 @@ function parseComp(text) {
   const tags = tagsR ? tagsR.split(',').map(t => t.trim().replace('#', '')).filter(Boolean) : [];
   const cM = text.match(/\*\*CUSTO DIRETO TOTAL\*\*[^R]*R\$\s*([\d.,]+)/i) || text.match(/CUSTO DIRETO TOTAL[^R]*R\$\s*([\d.,]+)/i);
   const custo = cM ? parseFloat(cM[1].replace(/\./g, '').replace(',', '.')) : null;
-  const hM = text.match(/\*\*TOTAL M\.O\.\*\*[^|]*\|\s*\*\*([\d.,]+)\*\*/);
+  const hM = text.match(/\*\*TOTAL M\.O\.\*\*[^|]*\|\s*\*\*([\d.,]+)\*\*/) || text.match(/\*\*TOTAL M\.O\.\*\*\s*\|\s*\*\*([\d.,]+)\*\*/);
   const hh = hM ? parseFloat(hM[1].replace(/\./g, '').replace(',', '.')) : null;
   return { codigo, titulo, unidade, grupo, qref, tags, custo, hh };
 }
@@ -56,7 +56,7 @@ function parseCompDetail(text) {
 }
 
 function splitComps(text) {
-  const parts = text.split(/(?=^#\s*🛠️\s*COMPOSIÇÃO:|^#\s*\*\*COMPOSIÇÃO:)/m).filter(t => t.trim().length > 50);
+  const parts = text.split(/(?=^#\s*🛠️\s*(?:COMPOSIÇÃO:|ITEM\s))/m).filter(t => t.trim().length > 50);
   if (parts.length > 1) return parts;
   const parts2 = text.split(/\n---\n(?=\s*#)/m).filter(t => t.trim().length > 50);
   if (parts2.length > 1) return parts2;
