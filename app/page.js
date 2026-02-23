@@ -82,7 +82,22 @@ function Md({ text }) {
   if (!text) return null;
   const lines = text.split('\n'), els = [];
   let tR = [], tK = 0, lastH = '';
-  const C = { a: '#F59E0B', ay: '#FBBF24', d: '#A8A29E', t: '#F5F5F4', m: '#78716C', bd: 'rgba(245,158,11,0.08)', lt: '#D6D3D1' };
+  const C = { a: '#F59E0B', ay: '#FBBF24', d: '#A8A29E', t: '#F5F5F4', m: '#78716C', bd: 'rgba(245,158,11,0.08)', lt: '#D6D3D1', err: '#EF4444', ok: '#22C55E' };
+
+  let inCode = false;
+  let codeLines = [];
+
+  const flushCode = () => {
+    if (codeLines.length) {
+      els.push(
+        <div key={`code_${els.length}`} style={{ background: 'rgba(255,255,255,0.02)', borderLeft: `2px solid ${C.m}`, padding: '12px 14px', margin: '8px 0 16px', borderRadius: '0 6px 6px 0', fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: C.lt, whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
+          {codeLines.join('\n')}
+        </div>
+      );
+      codeLines = [];
+    }
+    inCode = false;
+  };
 
   const flushT = () => {
     if (!tR.length) return;
@@ -90,7 +105,7 @@ function Md({ text }) {
     const rows = tR.slice(2);
     const is73 = lastH.includes('7.3') || lastH.includes('PRODUTIVIDADE') || hdr.some(h => h.toLowerCase().includes('produtividade') || h.toLowerCase().includes('variação'));
     els.push(
-      <div key={`t${tK++}`} style={{ overflowX: 'auto', margin: '12px 0', borderRadius: 8, border: `1px solid ${is73 ? 'rgba(245,158,11,0.25)' : C.bd}`, background: is73 ? 'rgba(245,158,11,0.03)' : 'transparent' }}>
+      <div key={`t${tK++}`} style={{ overflowX: 'auto', margin: '14px 0 20px', borderRadius: 8, border: `1px solid ${is73 ? 'rgba(245,158,11,0.25)' : C.bd}`, background: is73 ? 'rgba(245,158,11,0.03)' : 'transparent' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
           <thead><tr>{hdr.map((h, i) => <th key={i} style={{ padding: '8px 10px', borderBottom: `2px solid ${C.a}`, textAlign: 'left', fontWeight: 700, color: C.a, fontSize: 10, letterSpacing: '0.4px', textTransform: 'uppercase', background: 'rgba(245,158,11,0.06)', whiteSpace: 'nowrap' }}>{h}</th>)}</tr></thead>
           <tbody>{rows.map((row, ri) => {
@@ -109,31 +124,69 @@ function Md({ text }) {
   };
 
   lines.forEach((l, i) => {
+    const isIndented = l.startsWith('    ') || l.startsWith('\t');
     const t = l.trim();
+
+    if (isIndented || (inCode && !t)) {
+      if (!t && !inCode) return;
+      if (t) {
+        if (tR.length) flushT();
+        inCode = true;
+      }
+      if (inCode) {
+        codeLines.push(l.replace(/^(    |\t)/, ''));
+        return;
+      }
+    } else {
+      flushCode();
+    }
+
     if (t.startsWith('|') && t.endsWith('|')) { tR.push(t); return; }
     if (tR.length) flushT();
-    if (!t || t === '---' || t === '***' || t === '* * *') { if (t) els.push(<hr key={i} style={{ border: 'none', borderTop: `1px solid ${C.bd}`, margin: '16px 0' }} />); return; }
-    if (t.startsWith('### ')) { const txt = t.slice(4).replace(/\*\*/g, ''); lastH = txt; els.push(<h3 key={i} style={{ color: C.ay, fontSize: 14, fontWeight: 700, margin: '24px 0 10px', padding: '6px 0', borderBottom: `1px solid ${C.bd}` }}>{txt}</h3>); return; }
-    if (t.startsWith('# ') && t.includes('🛠️')) { els.push(<h2 key={i} style={{ color: C.a, fontSize: 16, fontWeight: 800, margin: '10px 0 8px' }}>{t.slice(2).replace(/\*\*/g, '')}</h2>); return; }
+
+    if (!t || t === '---' || t === '***' || t === '* * *') { if (t) els.push(<hr key={i} style={{ border: 'none', borderTop: `1px solid ${C.bd}`, margin: '20px 0' }} />); return; }
+    if (t.startsWith('### ')) { const txt = t.slice(4).replace(/\*\*/g, ''); lastH = txt; els.push(<h3 key={i} style={{ color: C.ay, fontSize: 15, fontWeight: 700, margin: '28px 0 12px', padding: '6px 0', borderBottom: `1px solid ${C.bd}` }}>{txt}</h3>); return; }
+
+    if (t.startsWith('#### ') || t.startsWith('##### ')) {
+      const txt = t.replace(/^#+\s+/, '').replace(/\*\*/g, '');
+      lastH = txt;
+      els.push(<h4 key={i} style={{ color: C.a, fontSize: 12, fontWeight: 700, margin: '24px 0 10px', letterSpacing: '0.5px' }}>{txt}</h4>);
+      return;
+    }
+
+    if (t.startsWith('# ') && t.includes('🛠️')) { els.push(<h2 key={i} style={{ color: C.a, fontSize: 16, fontWeight: 800, margin: '14px 0 12px' }}>{t.slice(2).replace(/\*\*/g, '')}</h2>); return; }
+
+    const emojiMatch = t.match(/^(✅|❌|⚠️|🔴|📋|☑|☐)\s+(.*)/);
+    if (emojiMatch) {
+      els.push(<div key={i} style={{ margin: '6px 0 6px 4px', fontSize: 12, lineHeight: 1.6, color: C.lt, display: 'flex', gap: 8 }}><span style={{ fontSize: 12 }}>{emojiMatch[1]}</span><span style={{ flex: 1 }}>{emojiMatch[2].replace(/\*\*/g, '')}</span></div>);
+      return;
+    }
+
     const subMatch = t.match(/^\*\*(\d+\.\d+\s+[^:*]+)(?::\*\*\s*|\*\*\s*)(.*)/);
     if (subMatch) {
       const label = subMatch[1].trim(); const rest = subMatch[2]?.trim() || ''; lastH = label;
-      if (rest) { els.push(<div key={i} style={{ margin: '16px 0 6px' }}><span style={{ color: C.a, fontSize: 12, fontWeight: 700 }}>{label}:</span><span style={{ color: C.lt, fontSize: 12, fontWeight: 400, marginLeft: 4, lineHeight: 1.6 }}>{rest.replace(/\*\*/g, '')}</span></div>); }
-      else { els.push(<h4 key={i} style={{ color: C.a, fontSize: 12, fontWeight: 700, margin: '16px 0 6px' }}>{label}</h4>); }
+      if (rest) { els.push(<div key={i} style={{ margin: '18px 0 8px' }}><span style={{ color: C.a, fontSize: 12, fontWeight: 700 }}>{label}:</span><span style={{ color: C.lt, fontSize: 12, fontWeight: 400, marginLeft: 6, lineHeight: 1.6 }}>{rest.replace(/\*\*/g, '')}</span></div>); }
+      else { els.push(<h4 key={i} style={{ color: C.a, fontSize: 12, fontWeight: 700, margin: '18px 0 8px' }}>{label}</h4>); }
       return;
     }
+
     if (t.startsWith('**') && t.includes(':**')) {
       const clean = t.replace(/\*\*/g, ''); const idx = clean.indexOf(':');
-      if (idx > 0) { els.push(<p key={i} style={{ margin: '4px 0', fontSize: 12, lineHeight: 1.6 }}><span style={{ color: C.a, fontWeight: 600 }}>{clean.slice(0, idx)}:</span> <span style={{ color: C.lt }}>{clean.slice(idx + 1).trim()}</span></p>); return; }
+      if (idx > 0) { els.push(<p key={i} style={{ margin: '6px 0', fontSize: 12, lineHeight: 1.6 }}><span style={{ color: C.a, fontWeight: 600 }}>{clean.slice(0, idx)}:</span> <span style={{ color: C.lt }}>{clean.slice(idx + 1).trim()}</span></p>); return; }
     }
+
     if (t.startsWith('- **')) {
       const clean = t.slice(2).replace(/\*\*/g, ''); const idx = clean.indexOf(':');
-      if (idx > 0) { els.push(<div key={i} style={{ margin: '6px 0 6px 10px', fontSize: 12, lineHeight: 1.6, color: C.d }}><span style={{ color: C.a, marginRight: 5 }}>▸</span><span style={{ color: '#E7E5E4', fontWeight: 600 }}>{clean.slice(0, idx)}:</span> {clean.slice(idx + 1).trim()}</div>); return; }
+      if (idx > 0) { els.push(<div key={i} style={{ margin: '6px 0 6px 12px', fontSize: 12, lineHeight: 1.6, color: C.lt }}><span style={{ color: C.a, marginRight: 6 }}>▸</span><span style={{ color: '#E7E5E4', fontWeight: 600 }}>{clean.slice(0, idx)}:</span> {clean.slice(idx + 1).trim()}</div>); return; }
     }
-    if (t.startsWith('- ') || t.startsWith('* ')) { els.push(<div key={i} style={{ margin: '4px 0 4px 10px', fontSize: 12, lineHeight: 1.6, color: C.lt }}><span style={{ color: C.a, marginRight: 5 }}>▸</span>{t.replace(/^[-*]\s*/, '').replace(/\*\*/g, '')}</div>); return; }
-    if (t.includes('**')) { const parts = t.split(/(\*\*[^*]+\*\*)/g); els.push(<p key={i} style={{ margin: '4px 0', fontSize: 12, color: C.d, lineHeight: 1.6 }}>{parts.map((p, pi) => p.startsWith('**') ? <strong key={pi} style={{ color: C.t, fontWeight: 600 }}>{p.replace(/\*\*/g, '')}</strong> : p)}</p>); return; }
-    if (t.length > 0) els.push(<p key={i} style={{ margin: '4px 0', fontSize: 12, color: C.lt, lineHeight: 1.6 }}>{t}</p>);
+
+    if (t.startsWith('- ') || t.startsWith('* ') || t.startsWith('• ')) { els.push(<div key={i} style={{ margin: '6px 0 6px 12px', fontSize: 12, lineHeight: 1.6, color: C.lt }}><span style={{ color: C.a, marginRight: 6 }}>▸</span>{t.replace(/^[-*•]\s*/, '').replace(/\*\*/g, '')}</div>); return; }
+
+    if (t.includes('**')) { const parts = t.split(/(\*\*[^*]+\*\*)/g); els.push(<p key={i} style={{ margin: '6px 0', fontSize: 12, color: C.lt, lineHeight: 1.6 }}>{parts.map((p, pi) => p.startsWith('**') ? <strong key={pi} style={{ color: C.t, fontWeight: 600 }}>{p.replace(/\*\*/g, '')}</strong> : p)}</p>); return; }
+
+    if (t.length > 0) els.push(<p key={i} style={{ margin: '6px 0', fontSize: 12, color: C.lt, lineHeight: 1.6 }}>{t}</p>);
   });
+  flushCode();
   flushT();
   return <div>{els}</div>;
 }
