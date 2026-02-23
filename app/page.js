@@ -30,32 +30,42 @@ function parseCompDetail(text) {
   const matM = text.match(/SUBTOTAL[^|]*\|[^R]*R\$\s*([\d.,]+)/i) || text.match(/\*\*SUBTOTAL\*\*[^R]*R\$\s*([\d.,]+)/i);
   const custo_material = matM ? parseNum(matM[1]) : null;
   // Custo M.O. total em R$
-  const moM = text.match(/TOTAL M\.O\.[^|]*\|[^|]*\|\s*(?:\*\*)?R\$\s*([\d.,]+)/i) || text.match(/CUSTO TOTAL.*?M[.ÃA]O.*?R\$\s*([\d.,]+)/i);
+  const moM = text.match(/TOTAL M\.O\.[^|]*\|[^|]*\|\s*(?:\*\*)?R\$\s*([\d.,]+)/i) || text.match(/CUSTO TOTAL.*?M[.\u00c3A]O.*?R\$\s*([\d.,]+)/i);
   const custo_mo = moM ? parseNum(moM[1]) : null;
+  // Custo equipamento (linhas com Equip na tabela de insumos)
+  let custo_equip = null;
+  const equipRows = text.match(/\|\s*Equip[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|\s*R\$\s*([\d.,]+)/gi);
+  if (equipRows) {
+    custo_equip = equipRows.reduce((sum, row) => {
+      const m = row.match(/R\$\s*([\d.,]+)\s*$/);
+      return sum + (m ? parseNum(m[1]) : 0);
+    }, 0);
+    if (custo_equip === 0) custo_equip = null;
+  }
   // Peso total
   const pesoM = text.match(/SUBTOTAL[^|]*\|[^|]*R\$[^|]*\|\s*([\d.,]+)/i);
   const peso_total = pesoM ? parseNum(pesoM[1]) : null;
-  // HH por profissão (da tabela M.O.)
+  // HH por profiss\u00e3o (da tabela M.O.)
   const hhProfs = [];
-  const hhRegex = /\|\s*(?:\*\*)?([A-Za-zÀ-ú ]+?)(?:\*\*)?\s*\|\s*(?:\*\*)?([\d.,]+)(?:\*\*)?\s*\|\s*(?:\*\*)?R\$\s*[\d.,]+/gm;
+  const hhRegex = /\|\s*(?:\*\*)?([A-Za-z\u00c0-\u00fa ]+?)(?:\*\*)?\s*\|\s*(?:\*\*)?([\d.,]+)(?:\*\*)?\s*\|\s*(?:\*\*)?R\$\s*[\d.,]+/gm;
   let hhMatch;
   while ((hhMatch = hhRegex.exec(text)) !== null) {
     const nome = cleanMd(hhMatch[1]).trim();
     const val = parseNum(hhMatch[2]);
-    if (nome && val && !nome.match(/TOTAL|SUBTOTAL|CATEGORIA|FUNÇÃO/i) && val < 100) {
+    if (nome && val && !nome.match(/TOTAL|SUBTOTAL|CATEGORIA|FUN\u00c7\u00c3O/i) && val < 100) {
       hhProfs.push({ nome, hh: val });
     }
   }
-  // Equipe (do texto, ex: "1 Pedreiro + 1 Ajudante" ou de INCLUSO com M.O.)
-  const equipeM = text.match(/(?:equipe|mão de obra)[^)]*\(([^)]+)\)/i) || text.match(/m[ãa]o de obra[^(]*\(([^)]+)\)/i);
+  // Equipe - sempre com quantidades
+  const equipeM = text.match(/(?:equipe|m\u00e3o de obra)[^)]*\(([^)]+)\)/i) || text.match(/m[\u00e3a]o de obra[^(]*\(([^)]+)\)/i);
   let equipe = equipeM ? cleanMd(equipeM[1]) : (hhProfs.length > 0 ? hhProfs.map(p => `1 ${p.nome}`).join(' + ') : null);
-  // Rendimento diário
-  const rendM = text.match(/rendimento[^:]*:\s*(?:\*\*)?([\d.,]+\s*[A-Za-zÀ-ú²³/]+(?:\/dia)?)/i) || text.match(/produtividade.*?equipe[^:]*:\s*(?:\*\*)?([\d.,]+\s*[A-Za-zÀ-ú²³/]+)/i);
+  // Rendimento di\u00e1rio
+  const rendM = text.match(/rendimento[^:]*:\s*(?:\*\*)?([\d.,]+\s*[A-Za-z\u00c0-\u00fa\u00b2\u00b3/]+(?:\/dia)?)/i) || text.match(/produtividade.*?equipe[^:]*:\s*(?:\*\*)?([\d.,]+\s*[A-Za-z\u00c0-\u00fa\u00b2\u00b3/]+)/i);
   const rendimento = rendM ? cleanMd(rendM[1]) : null;
-  // Produtividade: tentar calcular m²/dia ou un/dia a partir de HH total e jornada 8h
+  // Produtividade: calcular un/dia a partir de HH total e jornada 8h
   const hhTotalEquipe = hhProfs.reduce((s, p) => s + p.hh, 0);
   const produtividade = hhTotalEquipe > 0 ? (8 / hhTotalEquipe).toFixed(1) : null;
-  return { custo_material, custo_mo, peso_total, hhProfs, equipe, rendimento, produtividade };
+  return { custo_material, custo_mo, custo_equip, peso_total, hhProfs, equipe, rendimento, produtividade };
 }
 
 function splitComps(text) {
@@ -326,7 +336,7 @@ export default function Home() {
           </div>
           {pComps.map((c, i) => <div key={c.id} style={{ ...cd, padding: '14px 18px', marginBottom: 8, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }} onClick={() => { setCid(c.id); setVw('comp'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, flex: 1, minWidth: 0 }}>
-              <div style={{ color: TM, fontSize: 11, fontFamily: FN, minWidth: 22, textAlign: 'right', marginTop: 2 }}>{String(i + 1).padStart(2, '0')}</div>
+              <div style={{ color: A, fontSize: 10, fontFamily: FN, background: AD, borderRadius: 4, padding: '2px 6px', fontWeight: 700, minWidth: 28, textAlign: 'center', marginTop: 2 }}>#{String(i + 1).padStart(2, '0')}</div>
               <span style={{ color: A, marginTop: 2 }}>{ic.file}</span>
               <div style={{ minWidth: 0, flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6, flexWrap: 'wrap' }}>{c.codigo && <span style={{ ...bg(), fontSize: 9 }}>{c.codigo}</span>}<span style={{ fontSize: 13, fontWeight: 500, whiteSpace: 'normal', lineHeight: 1.5 }}>{cleanMd(c.titulo)}</span></div>
@@ -347,59 +357,62 @@ export default function Home() {
         {vw === 'comp' && comp && (() => {
           const det = parseCompDetail(comp.conteudo_completo);
           const un = comp.unidade || 'un';
-          const indicatorCard = (label, value, color, icon) => value != null ? (
-            <div style={{ ...st, flex: 1, minWidth: 140, padding: '16px 14px' }}>
-              <div style={{ fontSize: 10, marginBottom: 6, opacity: 0.5 }}>{icon}</div>
-              <div style={{ fontSize: 18, fontWeight: 700, color, fontFamily: FN }}>{typeof value === 'number' ? `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : value}</div>
-              <div style={{ fontSize: 12, color: TL, marginTop: 4, fontWeight: 500 }}>{label}</div>
+          const compIdx = pComps.findIndex(c => c.id === comp.id);
+          const seqNum = compIdx >= 0 ? `#${String(compIdx + 1).padStart(2, '0')}` : '';
+          const indCard = (label, value, color, suffix) => value != null ? (
+            <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+              <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>{label}</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color, fontFamily: FN }}>{typeof value === 'number' ? value.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : value}{suffix && <span style={{ fontSize: 11, color: TL, fontWeight: 500 }}> {suffix}</span>}</div>
             </div>
           ) : null;
           return <>
             <div style={{ padding: '24px 0 16px', borderBottom: `1px solid ${BD}`, marginBottom: 22, display: 'flex', alignItems: 'center', gap: 12 }}>
               <button style={{ ...bt('g'), padding: 6 }} onClick={() => { setVw(pid ? 'proj' : 'busca'); setCid(null); }}>{ic.back}</button>
               <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>{comp.codigo && <span style={bg()}>{comp.codigo}</span>}<h1 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>{cleanMd(comp.titulo)}</h1></div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>{seqNum && <span style={{ color: A, fontSize: 11, fontFamily: FN, background: AD, borderRadius: 4, padding: '2px 8px', fontWeight: 700 }}>{seqNum}</span>}{comp.codigo && <span style={bg()}>{comp.codigo}</span>}<h1 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>{cleanMd(comp.titulo)}</h1></div>
                 <p style={{ fontSize: 12, color: TL, margin: '4px 0 0' }}>Projeto: {pName(comp.projeto_id)}{comp.grupo && ` • ${comp.grupo}`}{comp.unidade && ` • Un: ${comp.unidade}`}</p>
               </div>
               <button title="Copiar composição" onClick={() => { navigator.clipboard.writeText(comp.conteudo_completo || ''); setNt({ ok: true, m: 'Composição copiada!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: TL }}>{ic.copy} Copiar</button>
             </div>
             {comp.tags?.length > 0 && <div style={{ marginBottom: 14 }}>{comp.tags.map((t, i) => <span key={i} style={{ display: 'inline-block', padding: '3px 8px', borderRadius: 4, fontSize: 10, background: 'rgba(255,255,255,0.06)', color: TL, marginRight: 5 }}>#{t}</span>)}</div>}
-            {/* --- INDICATOR CARDS --- */}
-            <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
-              {indicatorCard(`CUSTO DIRETO/${un}`, comp.custo_unitario ? Number(comp.custo_unitario) : null, A, '💰')}
-              {indicatorCard(`MATERIAL/${un}`, det.custo_material, '#FBBF24', '🧱')}
-              {indicatorCard(`MÃO DE OBRA/${un}`, det.custo_mo, BL, '👷')}
-              {indicatorCard(`PESO/${un}`, det.peso_total != null ? `${det.peso_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} kg` : null, TL, '⚖️')}
-            </div>
-            {/* --- INDICADORES --- */}
-            {(det.hhProfs.length > 0 || det.equipe || det.rendimento || det.produtividade) && <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 10, padding: 20, marginBottom: 20 }}>
+            {/* --- INDICADORES CONSOLIDADOS --- */}
+            <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 10, padding: 20, marginBottom: 20 }}>
               <div style={{ fontSize: 11, color: A, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 14 }}>📊 Indicadores</div>
-              {/* Productivity card */}
-              {det.produtividade && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '14px 18px', marginBottom: 14, display: 'inline-block' }}>
-                <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Produtividade da Equipe</div>
-                <div style={{ fontSize: 22, fontWeight: 700, color: GR, fontFamily: FN }}>{det.produtividade} <span style={{ fontSize: 14, color: TL, fontWeight: 500 }}>{un}/dia</span></div>
-              </div>}
-              {det.hhProfs.length > 0 && <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 14 }}>
-                {det.hhProfs.map((p, i) => <div key={i} style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 16px', flex: '1 1 180px', minWidth: 160 }}>
-                  <div style={{ fontSize: 12, color: TL, fontWeight: 500, marginBottom: 4 }}>{p.nome}</div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: BL, fontFamily: FN }}>{p.hh.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} <span style={{ fontSize: 12, color: TL, fontWeight: 500 }}>HH/{un}</span></div>
+              {/* Custos */}
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+                {indCard(`Custo Direto Total/${un}`, comp.custo_unitario ? Number(comp.custo_unitario) : null, A, `R$/${un}`)}
+                {indCard(`Material/${un}`, det.custo_material, '#FBBF24', `R$/${un}`)}
+                {indCard(`Mão de Obra/${un}`, det.custo_mo, BL, `R$/${un}`)}
+                {indCard(`Equipamento/${un}`, det.custo_equip, '#A78BFA', `R$/${un}`)}
+                {indCard(`Peso/${un}`, det.peso_total, TL, 'kg')}
+              </div>
+              {/* HH por função */}
+              {det.hhProfs.length > 0 && <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+                {det.hhProfs.map((p, i) => <div key={i} style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>HH {p.nome}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: BL, fontFamily: FN }}>{p.hh.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} <span style={{ fontSize: 11, color: TL, fontWeight: 500 }}>HH/{un}</span></div>
                 </div>)}
               </div>}
-              <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-                {det.equipe && <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 4, fontWeight: 600 }}>Composição da Equipe</div>
+              {/* Produtividade + Equipe + HH Total + Rendimento */}
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {det.produtividade && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Produtividade/Dia</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: GR, fontFamily: FN }}>{det.produtividade} <span style={{ fontSize: 11, color: TL, fontWeight: 500 }}>{un}/dia</span></div>
+                </div>}
+                {comp.hh_unitario && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>HH Total Equipe/{un}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{comp.hh_unitario}</div>
+                </div>}
+                {det.equipe && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 200px', minWidth: 180 }}>
+                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Composição da Equipe</div>
                   <div style={{ fontSize: 14, color: TX, fontWeight: 500 }}>{det.equipe}</div>
                 </div>}
-                {det.rendimento && <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 4, fontWeight: 600 }}>Rendimento Diário</div>
+                {det.rendimento && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Rendimento Diário</div>
                   <div style={{ fontSize: 14, color: GR, fontWeight: 600, fontFamily: FN }}>{det.rendimento}</div>
                 </div>}
-                {comp.hh_unitario && <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 4, fontWeight: 600 }}>HH Total Equipe/{un}</div>
-                  <div style={{ fontSize: 14, color: TX, fontWeight: 500 }}>{comp.hh_unitario}</div>
-                </div>}
               </div>
-            </div>}
+            </div>
             <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 10, padding: 26 }}><Md text={comp.conteudo_completo} /></div>
           </>;
         })()}
