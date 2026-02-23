@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../lib/supabase';
+import { normalizeComposition } from '../lib/normalize';
 
 // --- HELPERS ---
 const cleanMd = (s) => (s || '').replace(/\*\*/g, '').trim();
@@ -129,9 +130,9 @@ function Md({ text }) {
       const clean = t.slice(2).replace(/\*\*/g, ''); const idx = clean.indexOf(':');
       if (idx > 0) { els.push(<div key={i} style={{ margin: '6px 0 6px 10px', fontSize: 12, lineHeight: 1.6, color: C.d }}><span style={{ color: C.a, marginRight: 5 }}>▸</span><span style={{ color: '#E7E5E4', fontWeight: 600 }}>{clean.slice(0, idx)}:</span> {clean.slice(idx + 1).trim()}</div>); return; }
     }
-    if (t.startsWith('- ') || t.startsWith('* ')) { els.push(<div key={i} style={{ margin: '4px 0 4px 10px', fontSize: 12, lineHeight: 1.6, color: C.d }}><span style={{ color: C.a, marginRight: 5 }}>▸</span>{t.replace(/^[-*]\s*/, '').replace(/\*\*/g, '')}</div>); return; }
+    if (t.startsWith('- ') || t.startsWith('* ')) { els.push(<div key={i} style={{ margin: '4px 0 4px 10px', fontSize: 12, lineHeight: 1.6, color: C.lt }}><span style={{ color: C.a, marginRight: 5 }}>▸</span>{t.replace(/^[-*]\s*/, '').replace(/\*\*/g, '')}</div>); return; }
     if (t.includes('**')) { const parts = t.split(/(\*\*[^*]+\*\*)/g); els.push(<p key={i} style={{ margin: '4px 0', fontSize: 12, color: C.d, lineHeight: 1.6 }}>{parts.map((p, pi) => p.startsWith('**') ? <strong key={pi} style={{ color: C.t, fontWeight: 600 }}>{p.replace(/\*\*/g, '')}</strong> : p)}</p>); return; }
-    if (t.length > 0) els.push(<p key={i} style={{ margin: '4px 0', fontSize: 12, color: C.d, lineHeight: 1.6 }}>{t}</p>);
+    if (t.length > 0) els.push(<p key={i} style={{ margin: '4px 0', fontSize: 12, color: C.lt, lineHeight: 1.6 }}>{t}</p>);
   });
   flushT();
   return <div>{els}</div>;
@@ -166,6 +167,7 @@ export default function Home() {
   const [aiComps, setAiComps] = useState(null);
   const [aiParsing, setAiParsing] = useState(false);
   const [aiError, setAiError] = useState(null);
+  const [confirmDel, setConfirmDel] = useState(null);
 
   const nf = (m, ok = true) => { setNt({ m, ok }); setTimeout(() => setNt(null), 3000); };
 
@@ -243,7 +245,7 @@ export default function Home() {
         unidade: c.unidade || '',
         grupo: c.grupo || '',
         tags: c.tags || [],
-        conteudo_completo: (textParts[i] || fC).trim(),
+        conteudo_completo: normalizeComposition((textParts[i] || fC).trim()),
         custo_unitario: c.custo_unitario || null,
         hh_unitario: c.hh_unitario || null,
       }));
@@ -259,7 +261,7 @@ export default function Home() {
           unidade: p.unidade || '',
           grupo: p.grupo || '',
           tags: p.tags,
-          conteudo_completo: txt.trim(),
+          conteudo_completo: normalizeComposition(txt.trim()),
           custo_unitario: p.custo,
           hh_unitario: p.hh,
         };
@@ -382,6 +384,7 @@ export default function Home() {
                 <p style={{ fontSize: 12, color: TL, margin: '4px 0 0' }}>Projeto: {pName(comp.projeto_id)}{comp.grupo && ` • ${comp.grupo}`}{comp.unidade && ` • Un: ${comp.unidade}`}</p>
               </div>
               <button title="Copiar composição" onClick={() => { navigator.clipboard.writeText(comp.conteudo_completo || ''); setNt({ ok: true, m: 'Composição copiada!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: TL }}>{ic.copy} Copiar</button>
+              <button title="Apagar composição" onClick={() => setConfirmDel(comp)} style={{ ...bt('g'), padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: RD, borderColor: 'rgba(239,68,68,0.2)' }}>{ic.trash} Apagar</button>
             </div>
             {comp.tags?.length > 0 && <div style={{ marginBottom: 14 }}>{comp.tags.map((t, i) => <span key={i} style={{ display: 'inline-block', padding: '3px 8px', borderRadius: 4, fontSize: 10, background: 'rgba(255,255,255,0.06)', color: TL, marginRight: 5 }}>#{t}</span>)}</div>}
             {/* --- INDICADORES CONSOLIDADOS --- */}
@@ -447,6 +450,21 @@ export default function Home() {
           {!q && <div style={{ textAlign: 'center', padding: 60, color: TM, opacity: 0.3 }}><div style={{ fontSize: 28, marginBottom: 8 }}>🔍</div><p>Digite para buscar...</p></div>}
         </>}
       </div>
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {confirmDel && <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setConfirmDel(null)}>
+        <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 12, padding: 28, maxWidth: 400, width: '90%' }} onClick={e => e.stopPropagation()}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: RD, marginBottom: 12 }}>⚠️ Apagar composição?</div>
+          {confirmDel.codigo && <div style={{ ...bg(RD), marginBottom: 8 }}>{confirmDel.codigo}</div>}
+          <div style={{ fontSize: 13, color: TL, marginBottom: 6 }}>{cleanMd(confirmDel.titulo)}</div>
+          <div style={{ fontSize: 11, color: TM, marginBottom: 20 }}>Esta ação não pode ser desfeita.</div>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+            <button onClick={() => setConfirmDel(null)} style={{ ...bt('g'), padding: '8px 16px' }}>Cancelar</button>
+            <button onClick={async () => { const id = confirmDel.id; setConfirmDel(null); await supabase.from('composicoes').delete().eq('id', id); setComposicoes(prev => prev.filter(c => c.id !== id)); if (cid === id) { setVw('proj'); setCid(null); } nf('Composição excluída'); }} style={{ ...bt('d'), padding: '8px 16px' }}>Apagar</button>
+          </div>
+        </div>
+      </div>}
+
 
       {/* MODALS */}
       {ml && <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 900, backdropFilter: 'blur(4px)' }} onClick={() => !importing && setMl(null)}>

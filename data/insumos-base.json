@@ -1,0 +1,333 @@
+[
+    {
+        "nome": "Profissional (Pedreiro/Oficial/Carpinteiro)",
+        "categoria": "MO",
+        "unidade": "HH",
+        "preco": 40.00,
+        "fonte": "Padronizado",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Ajudante (Servente)",
+        "categoria": "MO",
+        "unidade": "HH",
+        "preco": 22.50,
+        "fonte": "Padronizado",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Impermeabilizador (Oficial)",
+        "categoria": "MO",
+        "unidade": "HH",
+        "preco": 40.00,
+        "fonte": "Padronizado",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Técnico / Engenheiro para Teste",
+        "categoria": "MO",
+        "unidade": "HH",
+        "preco": 90.00,
+        "fonte": "Padronizado",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Cimento Portland CP-II (50kg)",
+        "categoria": "Mat",
+        "subcategoria": "Aglomerantes",
+        "unidade": "saco",
+        "preco": 34.00,
+        "fonte": "Cliente",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Areia Média Lavada (20kg)",
+        "categoria": "Mat",
+        "subcategoria": "Agregados",
+        "unidade": "saco",
+        "preco": 5.50,
+        "fonte": "Cliente",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Areia Fina (20kg)",
+        "categoria": "Mat",
+        "subcategoria": "Agregados",
+        "unidade": "saco",
+        "preco": 6.00,
+        "fonte": "Modelo / Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Pedrisco / Pedra 0 (Saco 20kg)",
+        "categoria": "Mat",
+        "subcategoria": "Agregados",
+        "unidade": "saco",
+        "preco": 6.00,
+        "fonte": "Cliente",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Argamassa Autonivelante (20kg)",
+        "categoria": "Mat",
+        "subcategoria": "Argamassas",
+        "unidade": "saco",
+        "preco": 95.00,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Argamassa Colante AC-III",
+        "categoria": "Mat",
+        "subcategoria": "Argamassas",
+        "unidade": "kg",
+        "preco": 1.90,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Argamassa Pronta Matrix 4201 (40kg)",
+        "categoria": "Mat",
+        "subcategoria": "Argamassas",
+        "unidade": "saco",
+        "preco": 28.00,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Impermeabilizante Viaplus 7000 (18kg)",
+        "categoria": "Mat",
+        "subcategoria": "Impermeabilização",
+        "unidade": "cx",
+        "preco": 250.00,
+        "fonte": "Modelo Referência",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Manta Asfáltica 4mm Tipo II",
+        "categoria": "Mat",
+        "subcategoria": "Impermeabilização",
+        "unidade": "m²",
+        "preco": 35.67,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Tela de Poliéster (Rolo 50m)",
+        "categoria": "Mat",
+        "subcategoria": "Impermeabilização",
+        "unidade": "rolo",
+        "preco": 190.00,
+        "fonte": "Modelo Referência",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Primer Asfáltico",
+        "categoria": "Mat",
+        "subcategoria": "Impermeabilização",
+        "unidade": "L",
+        "preco": 20.67,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "EPS Isolamento Térmico T1F",
+        "categoria": "Mat",
+        "subcategoria": "Pisos/Enchimento",
+        "unidade": "m²",
+        "preco": 39.00,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "EPS T2 Alta Densidade (15cm)",
+        "categoria": "Mat",
+        "subcategoria": "Pisos/Enchimento",
+        "unidade": "m²",
+        "preco": 67.50,
+        "fonte": "Cliente",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "EPS Reciclado (100mm)",
+        "categoria": "Mat",
+        "subcategoria": "Pisos/Enchimento",
+        "unidade": "m²",
+        "preco": 24.00,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Tela Soldada Q92",
+        "categoria": "Mat",
+        "subcategoria": "Pisos/Enchimento",
+        "unidade": "m²",
+        "preco": 25.00,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Tela Soldada Q61",
+        "categoria": "Mat",
+        "subcategoria": "Pisos/Enchimento",
+        "unidade": "painel",
+        "preco": 88.33,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Placa Drywall RU (Umidade)",
+        "categoria": "Mat",
+        "subcategoria": "Vedações",
+        "unidade": "un",
+        "preco": 42.67,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Lã de Rocha (144 kg/m³)",
+        "categoria": "Mat",
+        "subcategoria": "Vedações",
+        "unidade": "m²",
+        "preco": 130.00,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Bloco de Concreto Vazado (14x19x39cm)",
+        "categoria": "Mat",
+        "subcategoria": "Vedações",
+        "unidade": "un",
+        "preco": 4.50,
+        "fonte": "Cliente",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Bloco Canaleta de Concreto (14x19x39cm)",
+        "categoria": "Mat",
+        "subcategoria": "Vedações",
+        "unidade": "un",
+        "preco": 5.50,
+        "fonte": "Cliente",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Tijolo Maciço Comum",
+        "categoria": "Mat",
+        "subcategoria": "Vedações",
+        "unidade": "un",
+        "preco": 2.20,
+        "fonte": "Padronizado",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Vergalhão CA-50 8.0mm (Barra 12m)",
+        "categoria": "Mat",
+        "subcategoria": "Aço/Fixação",
+        "unidade": "barra",
+        "preco": 38.00,
+        "fonte": "Cliente",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Adesivo Epóxi (Sikadur 31 - lata 1kg)",
+        "categoria": "Mat",
+        "subcategoria": "Aço/Fixação",
+        "unidade": "lata",
+        "preco": 100.00,
+        "fonte": "Cliente",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Adesivo Estrutural Epóxi (Kit)",
+        "categoria": "Mat",
+        "subcategoria": "Aço/Fixação",
+        "unidade": "kit",
+        "preco": 103.50,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Rodapé Poliestireno Santa Luzia",
+        "categoria": "Mat",
+        "subcategoria": "Acabamentos",
+        "unidade": "ml",
+        "preco": 37.00,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Super Adesivo Santa Luzia",
+        "categoria": "Mat",
+        "subcategoria": "Acabamentos",
+        "unidade": "tubo",
+        "preco": 48.00,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Saco de Ráfia para Entulho (60x90cm)",
+        "categoria": "Mat",
+        "subcategoria": "Descarte/Logística",
+        "unidade": "un",
+        "preco": 2.50,
+        "fonte": "Cliente",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Serra Mármore + Disco Diamantado",
+        "categoria": "Equip",
+        "unidade": "diária",
+        "preco": 60.00,
+        "fonte": "Cliente",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Martelete Rompedor 10/15kg",
+        "categoria": "Equip",
+        "unidade": "diária",
+        "preco": 120.00,
+        "fonte": "Cliente",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Betoneira 400L",
+        "categoria": "Equip",
+        "unidade": "diária",
+        "preco": 120.00,
+        "fonte": "Cliente",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Maçarico de alta potência",
+        "categoria": "Equip",
+        "unidade": "diária",
+        "preco": 80.00,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Cortador Porcelanato Grande",
+        "categoria": "Equip",
+        "unidade": "diária",
+        "preco": 90.00,
+        "fonte": "Manual",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Andaime Tubular (Locação + Montagem)",
+        "categoria": "Equip",
+        "unidade": "diária",
+        "preco": 60.00,
+        "fonte": "Cliente",
+        "data_referencia": "2026-02-23"
+    },
+    {
+        "nome": "Carrinho Plataforma 600kg",
+        "categoria": "Equip",
+        "unidade": "diária",
+        "preco": 30.00,
+        "fonte": "Cliente",
+        "data_referencia": "2026-02-23"
+    }
+]
