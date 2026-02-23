@@ -163,6 +163,9 @@ export default function Home() {
   const [nt, setNt] = useState(null);
   const [fN, setFN] = useState(''); const [fD, setFD] = useState(''); const [fC, setFC] = useState('');
   const [importing, setImporting] = useState(false);
+  const [aiComps, setAiComps] = useState(null);
+  const [aiParsing, setAiParsing] = useState(false);
+  const [aiError, setAiError] = useState(null);
 
   const nf = (m, ok = true) => { setNt({ m, ok }); setTimeout(() => setNt(null), 3000); };
 
@@ -210,36 +213,42 @@ export default function Home() {
     nf('Projeto excluído');
   };
 
+  // AI parse function (called by button)
+  const analyzeWithAI = async () => {
+    if (!fC.trim()) return;
+    setAiParsing(true); setAiError(null); setAiComps(null);
+    try {
+      const res = await fetch('/api/parse', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: fC }) });
+      if (!res.ok) { const err = await res.json(); throw new Error(err.error || 'Erro na API'); }
+      const { composicoes } = await res.json();
+      if (composicoes && composicoes.length > 0) { setAiComps(composicoes); }
+      else { setAiError('IA não identificou composições no texto.'); }
+    } catch (e) {
+      setAiError(e.message || 'Falha ao conectar com Gemini');
+    }
+    setAiParsing(false);
+  };
+
   const addComp = async () => {
     if (!fC.trim() || !pid) return;
     setImporting(true);
     let rows;
-    try {
-      // Try Gemini AI parsing first
-      const res = await fetch('/api/parse', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: fC }) });
-      if (res.ok) {
-        const { composicoes: aiComps } = await res.json();
-        if (aiComps && aiComps.length > 0) {
-          // Split the text for conteudo_completo mapping
-          const textParts = splitComps(fC);
-          rows = aiComps.map((c, i) => ({
-            projeto_id: pid,
-            codigo: c.codigo || 'SEM-CÓD',
-            titulo: c.titulo || 'Composição',
-            unidade: c.unidade || '',
-            grupo: c.grupo || '',
-            tags: c.tags || [],
-            conteudo_completo: (textParts[i] || fC).trim(),
-            custo_unitario: c.custo_unitario || null,
-            hh_unitario: c.hh_unitario || null,
-          }));
-        }
-      }
-    } catch (e) {
-      console.warn('Gemini parse failed, using regex fallback:', e);
-    }
-    // Fallback to regex parsing
-    if (!rows) {
+    // Use AI-parsed data if available
+    if (aiComps && aiComps.length > 0) {
+      const textParts = splitComps(fC);
+      rows = aiComps.map((c, i) => ({
+        projeto_id: pid,
+        codigo: c.codigo || 'SEM-CÓD',
+        titulo: c.titulo || 'Composição',
+        unidade: c.unidade || '',
+        grupo: c.grupo || '',
+        tags: c.tags || [],
+        conteudo_completo: (textParts[i] || fC).trim(),
+        custo_unitario: c.custo_unitario || null,
+        hh_unitario: c.hh_unitario || null,
+      }));
+    } else {
+      // Regex fallback
       const parts = splitComps(fC);
       rows = parts.map(txt => {
         const p = parseComp(txt);
@@ -260,7 +269,7 @@ export default function Home() {
     if (error) { nf('Erro ao salvar: ' + error.message, false); setImporting(false); return; }
     setComposicoes(prev => [...prev, ...(data || [])]);
     nf(`${rows.length} composiç${rows.length > 1 ? 'ões importadas' : 'ão salva'}!`);
-    setFC(''); setMl(null); setImporting(false);
+    setFC(''); setMl(null); setImporting(false); setAiComps(null); setAiError(null);
   };
 
   const delC = async (id) => {
@@ -458,9 +467,18 @@ export default function Home() {
             <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '10px 14px', marginBottom: 14 }}>
               <p style={{ fontSize: 11, color: TD, lineHeight: 1.5, margin: 0 }}><strong style={{ color: A }}>Individual ou Lote:</strong> Cole composições no padrão Markdown. IA Gemini detecta e extrai automaticamente. Fallback: separador <code style={{ color: A, background: AD, padding: '1px 4px', borderRadius: 3, fontSize: 10 }}># 🛠️ COMPOSIÇÃO</code></p>
             </div>
-            <textarea placeholder="Cole aqui uma ou mais composições..." value={fC} onChange={e => setFC(e.target.value)} style={{ width: '100%', padding: '14px 16px', background: BG, border: `1px solid ${BD}`, borderRadius: 8, color: TX, fontSize: 11, fontFamily: FN, outline: 'none', resize: 'vertical', minHeight: 300, lineHeight: 1.7 }} />
-            {fC.trim() && <div style={{ marginTop: 12, padding: 12, background: BG, borderRadius: 8, border: `1px solid ${BD}` }}>
-              <div style={{ fontSize: 9, color: TM, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 8, fontWeight: 700 }}>PREVIEW ({batchCount})</div>
+            <textarea placeholder="Cole aqui uma ou mais composições..." value={fC} onChange={e => { setFC(e.target.value); setAiComps(null); setAiError(null); }} style={{ width: '100%', padding: '14px 16px', background: BG, border: `1px solid ${BD}`, borderRadius: 8, color: TX, fontSize: 11, fontFamily: FN, outline: 'none', resize: 'vertical', minHeight: 300, lineHeight: 1.7 }} />
+            {/* AI Parse Button */}
+            {fC.trim() && <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
+              <button onClick={analyzeWithAI} disabled={aiParsing} style={{ ...bt(), background: aiComps ? GR : 'linear-gradient(135deg, #8B5CF6, #6366F1)', border: 'none', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, padding: '8px 16px', opacity: aiParsing ? 0.6 : 1 }}>
+                {aiParsing ? <><span style={{ display: 'inline-block', width: 12, height: 12, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Analisando...</> : aiComps ? '✅ IA Concluída' : '🤖 Analisar com IA'}
+              </button>
+              {aiError && <span style={{ fontSize: 10, color: '#EF4444' }}>⚠️ {aiError}</span>}
+              {!aiComps && !aiParsing && <span style={{ fontSize: 10, color: TM }}>Regex detectou {batchCount} composiç{batchCount > 1 ? 'ões' : 'ão'}</span>}
+            </div>}
+            {/* Regex Preview */}
+            {fC.trim() && !aiComps && <div style={{ marginTop: 12, padding: 12, background: BG, borderRadius: 8, border: `1px solid ${BD}` }}>
+              <div style={{ fontSize: 9, color: TM, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 8, fontWeight: 700 }}>PREVIEW REGEX ({batchCount})</div>
               {splitComps(fC).map((txt, i) => {
                 const p = parseComp(txt); return <div key={i} style={{ padding: '6px 0', borderBottom: i < batchCount - 1 ? `1px solid ${BD}` : 'none', fontSize: 11 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ color: TM, fontFamily: FN, fontSize: 10 }}>{String(i + 1).padStart(2, '0')}</span>{p.codigo && <span style={{ ...bg(), fontSize: 8 }}>{p.codigo}</span>}<span style={{ color: TX, fontWeight: 500 }}>{p.titulo || '—'}</span></div>
@@ -468,12 +486,31 @@ export default function Home() {
                 </div>;
               })}
             </div>}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 16 }}><button style={bt('g')} onClick={() => !importing && setMl(null)}>Cancelar</button><button style={{ ...bt(), opacity: fC.trim() && !importing ? 1 : 0.4 }} onClick={addComp} disabled={importing}>{importing ? 'Importando...' : `Salvar ${batchCount > 1 ? batchCount + ' Composições' : 'Composição'}`}</button></div>
+            {/* AI Preview */}
+            {aiComps && <div style={{ marginTop: 12, padding: 12, background: 'rgba(139,92,246,0.06)', borderRadius: 8, border: '1px solid rgba(139,92,246,0.3)' }}>
+              <div style={{ fontSize: 9, color: '#A78BFA', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 8, fontWeight: 700 }}>🤖 COMPOSIÇÕES IDENTIFICADAS PELA IA ({aiComps.length})</div>
+              {aiComps.map((c, i) => <div key={i} style={{ padding: '8px 0', borderBottom: i < aiComps.length - 1 ? '1px solid rgba(139,92,246,0.15)' : 'none', fontSize: 11 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span style={{ color: '#A78BFA', fontFamily: FN, fontSize: 10, fontWeight: 700 }}>{String(i + 1).padStart(2, '0')}</span>
+                  {c.codigo && <span style={{ background: 'rgba(139,92,246,0.15)', color: '#C4B5FD', padding: '1px 6px', borderRadius: 4, fontSize: 8, fontWeight: 600 }}>{c.codigo}</span>}
+                  <span style={{ color: TX, fontWeight: 500 }}>{c.titulo || '—'}</span>
+                </div>
+                <div style={{ color: TD, fontSize: 10, marginLeft: 22, marginTop: 2 }}>
+                  {c.unidade && `Un: ${c.unidade}`}{c.custo_unitario ? ` • R$ ${Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : ''}{c.hh_unitario ? ` • ${c.hh_unitario} HH` : ''}{c.equipe ? ` • ${c.equipe}` : ''}
+                </div>
+              </div>)}
+            </div>}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 16 }}>
+              <button style={bt('g')} onClick={() => { if (!importing) { setMl(null); setAiComps(null); setAiError(null); } }}>Cancelar</button>
+              <button style={{ ...bt(), opacity: fC.trim() && !importing ? 1 : 0.4, background: aiComps ? GR : A }} onClick={addComp} disabled={importing}>
+                {importing ? 'Importando...' : aiComps ? `Salvar ${aiComps.length} da IA` : `Salvar ${batchCount > 1 ? batchCount + ' Composições' : 'Composição'}`}
+              </button>
+            </div>
           </>}
         </div>
       </div>}
 
-      <style>{`*{box-sizing:border-box;margin:0;padding:0}body{background:${BG};overflow-x:hidden}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:3px}::selection{background:${A};color:${BG}}input:focus,textarea:focus{border-color:${A}!important;box-shadow:0 0 0 2px ${AD}}code{font-family:${FN}}`}</style>
+      <style>{`*{box-sizing:border-box;margin:0;padding:0}body{background:${BG};overflow-x:hidden}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:3px}::selection{background:${A};color:${BG}}input:focus,textarea:focus{border-color:${A}!important;box-shadow:0 0 0 2px ${AD}}code{font-family:${FN}}@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
 }
