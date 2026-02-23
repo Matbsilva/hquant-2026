@@ -1,4 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import { NextResponse } from 'next/server';
 
 const SYSTEM_PROMPT = `Você é um parser técnico de composições de custos de engenharia civil. 
@@ -32,7 +32,7 @@ export async function POST(req) {
     try {
         const { text } = await req.json();
         if (!text || text.trim().length < 50) {
-            return NextResponse.json({ error: 'Texto muito curto' }, { status: 400 });
+            return NextResponse.json({ error: 'Texto muito longo ou curto' }, { status: 400 });
         }
 
         const apiKey = process.env.GEMINI_API_KEY;
@@ -40,20 +40,18 @@ export async function POST(req) {
             return NextResponse.json({ error: 'GEMINI_API_KEY não configurada' }, { status: 500 });
         }
 
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-preview-05-20' });
+        const ai = new GoogleGenAI({ apiKey });
 
-        const result = await model.generateContent({
-            contents: [{ role: 'user', parts: [{ text: SYSTEM_PROMPT + '\n\n---\n\nTEXTO PARA PARSEAR:\n\n' + text }] }],
-            generationConfig: {
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: SYSTEM_PROMPT + '\n\n---\n\nTEXTO PARA PARSEAR:\n\n' + text,
+            config: {
                 temperature: 0.1,
-                maxOutputTokens: 8192,
                 responseMimeType: 'application/json',
-            },
+            }
         });
 
-        const response = result.response;
-        const jsonText = response.text();
+        const jsonText = response.text;
 
         let parsed;
         try {
