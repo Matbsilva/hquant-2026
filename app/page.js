@@ -229,28 +229,24 @@ function Md({ text }) {
       return;
     }
 
-    // Fallback for numbered steps (like "1. MARCAÇÃO (Duração...)")
+    // Numbered steps (like "1. MARCAÇÃO")
     const stepMatch = t.match(/^(\d+\.)\s+(.*)/);
     if (stepMatch) {
-      els.push(<div key={i} style={{ margin: '12px 0 4px', fontSize: 12, lineHeight: 1.6, color: C.t, fontWeight: 600 }}>{stepMatch[1]} <span style={{ color: C.lt, fontWeight: 400 }}>{stepMatch[2].replace(/\*\*/g, '')}</span></div>);
-      return;
-    }
-
-    // Custom Highlight for "5.1 ANÁLISE DE CUSTO" and "DRIVER PRINCIPAL"
-    if (t.includes('5.1 ANÁLISE DE CUSTO:')) {
+      const parts = stepMatch[2].split(/(\*\*[^*]+\*\*)/g);
       els.push(
-        <div key={i} style={{ margin: '24px 0 16px', padding: '16px 20px', background: 'rgba(59, 130, 246, 0.08)', borderLeft: `3px solid ${BL}`, borderRadius: '0 8px 8px 0' }}>
-          <div style={{ color: BL, fontSize: 14, fontWeight: 800, textTransform: 'uppercase', marginBottom: 12, letterSpacing: '0.5px' }}>📈 5.1 ANÁLISE DE CUSTO</div>
+        <div key={i} style={{ margin: '12px 0 4px', fontSize: 12, lineHeight: 1.6, color: C.lt }}>
+          <span style={{ color: C.t, fontWeight: 700, marginRight: 6 }}>{stepMatch[1]}</span>
+          {parts.map((p, pi) => p.startsWith('**') ? <strong key={pi} style={{ color: C.t, fontWeight: 600 }}>{p.replace(/\*\*/g, '')}</strong> : p)}
         </div>
       );
       return;
     }
 
-    if (t.startsWith('DRIVER PRINCIPAL:')) {
+    // Custom Highlight for "5.1 ANÁLISE DE CUSTO"
+    if (t.includes('5.1 ANÁLISE DE CUSTO:')) {
       els.push(
-        <div key={i} style={{ margin: '14px 0', padding: '16px 20px', background: 'rgba(239, 68, 68, 0.08)', borderLeft: `3px solid ${RD}`, borderRadius: '0 8px 8px 0' }}>
-          <span style={{ color: RD, fontWeight: 800, fontSize: 13, marginRight: 8 }}>🔥 DRIVER PRINCIPAL:</span>
-          <span style={{ color: C.lt, fontSize: 13, fontWeight: 500, lineHeight: 1.6 }}>{t.replace('DRIVER PRINCIPAL:', '').replace(/\*\*/g, '').trim()}</span>
+        <div key={i} style={{ margin: '24px 0 16px', padding: '16px 20px', background: 'rgba(59, 130, 246, 0.08)', borderLeft: `3px solid ${BL}`, borderRadius: '0 8px 8px 0' }}>
+          <div style={{ color: BL, fontSize: 14, fontWeight: 800, textTransform: 'uppercase', marginBottom: 12, letterSpacing: '0.5px' }}>📈 5.1 ANÁLISE DE CUSTO</div>
         </div>
       );
       return;
@@ -494,42 +490,41 @@ export default function Home() {
             const un = c.unidade || 'un';
 
             return (
-              <div key={c.id} style={{ ...cd, padding: '18px 22px', marginBottom: 12, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }} onClick={() => { setCid(c.id); setVw('comp'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, flex: 1, minWidth: 0 }}>
-                  <div style={{ color: A, fontSize: 11, fontFamily: FN, background: AD, borderRadius: 6, padding: '4px 10px', fontWeight: 800, textAlign: 'center', marginTop: 2 }}>#{String(i + 1).padStart(2, '0')}</div>
+              <div key={c.id} style={{ ...cd, padding: '16px 20px', marginBottom: 12, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }} onClick={() => { setCid(c.id); setVw('comp'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
+                    <div style={{ color: A, fontSize: 11, fontFamily: FN, background: AD, borderRadius: 6, padding: '4px 10px', fontWeight: 800, textAlign: 'center', marginTop: 2 }}>#{String(i + 1).padStart(2, '0')}</div>
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      <button title="Copiar" onClick={e => { e.stopPropagation(); navigator.clipboard.writeText(normalizeComposition(c.conteudo_completo) || ''); setNt({ ok: true, m: 'Copiado!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: 4, border: 'none', opacity: 0.4 }}>{ic.copy}</button>
+                      <button title="Excluir" onClick={e => { e.stopPropagation(); delC(c.id); }} style={{ ...bt('g'), padding: 4, border: 'none', opacity: 0.3 }}>{ic.trash}</button>
+                    </div>
+                  </div>
 
                   <div style={{ minWidth: 0, flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
                       {c.codigo && <span style={{ ...bg(A), fontSize: 10, padding: '3px 8px', letterSpacing: '0.5px' }}>{c.codigo}</span>}
-                      {c.grupo && <span style={{ fontSize: 10, color: TL, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.8px' }}>{c.grupo}</span>}
-                      {c.classificacao && <span style={{ fontSize: 10, color: TM, textTransform: 'uppercase' }}>{c.classificacao}</span>}
                     </div>
 
-                    <div style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.4, color: '#FFFFFF', marginBottom: 10 }}>{cleanMd(c.titulo)}</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.4, color: '#FFFFFF', marginBottom: 6 }}>{cleanMd(c.titulo)}</div>
 
-                    <div style={{ fontSize: 11, color: TM, display: 'flex', gap: 14, flexWrap: 'wrap', lineHeight: 1.5 }}>
+                    <div style={{ fontSize: 11, color: TM, display: 'flex', gap: 14, flexWrap: 'wrap', lineHeight: 1.4 }}>
                       {dataV && <span><strong style={{ color: TL, fontWeight: 600 }}>DATA:</strong> {dataV}</span>}
                       {det.equipe && <span><strong style={{ color: TL, fontWeight: 600 }}>EQUIPE:</strong> {det.equipe.slice(0, 90)}{det.equipe.length > 90 ? '...' : ''}</span>}
                     </div>
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 12, flexShrink: 0 }}>
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    <button title="Copiar" onClick={e => { e.stopPropagation(); navigator.clipboard.writeText(c.conteudo_completo || ''); setNt({ ok: true, m: 'Copiado!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: '4px 8px', border: 'none', opacity: 0.4 }}>{ic.copy}</button>
-                    <button title="Excluir" onClick={e => { e.stopPropagation(); delC(c.id); }} style={{ ...bt('g'), padding: '4px 8px', border: 'none', opacity: 0.3 }}>{ic.trash}</button>
-                  </div>
-
-                  <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
+                  <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: 2 }}>
                     {c.custo_unitario != null && (
                       <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, justifyContent: 'flex-end' }}>
-                        <span style={{ fontSize: 20, color: A, fontWeight: 800, fontFamily: FN }}>{Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                        <span style={{ fontSize: 12, fontWeight: 600, color: A }}>R$/{un}</span>
+                        <span style={{ fontSize: 18, color: A, fontWeight: 800, fontFamily: FN }}>{Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                        <span style={{ fontSize: 11, fontWeight: 600, color: A }}>R$/{un}</span>
                       </div>
                     )}
 
                     {c.hh_unitario != null && (
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, justifyContent: 'flex-end', marginTop: 2 }}>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, justifyContent: 'flex-end' }}>
                         <span style={{ fontSize: 13, color: BL, fontWeight: 700, fontFamily: FN }}>{c.hh_unitario}</span>
                         <span style={{ fontSize: 11, fontWeight: 600, color: TL }}>HH Total/{un}</span>
                       </div>
@@ -537,9 +532,9 @@ export default function Home() {
                   </div>
 
                   {det.hhProfs && det.hhProfs.length > 0 && (
-                    <div style={{ textAlign: 'right', marginTop: 4, background: 'rgba(59, 130, 246, 0.05)', padding: '6px 10px', borderRadius: 6, border: `1px solid rgba(59, 130, 246, 0.1)` }}>
+                    <div style={{ textAlign: 'right', marginTop: 2, background: 'rgba(59, 130, 246, 0.05)', padding: '6px 10px', borderRadius: 6, border: `1px solid rgba(59, 130, 246, 0.1)` }}>
                       {det.hhProfs.map((pr, pi) => (
-                        <div key={pi} style={{ fontSize: 10, color: TL, marginBottom: 3, display: 'flex', justifyContent: 'flex-end', gap: 6 }}>
+                        <div key={pi} style={{ fontSize: 10, color: TL, marginBottom: 2, display: 'flex', justifyContent: 'flex-end', gap: 6 }}>
                           <span style={{ color: BL, fontWeight: 700, fontFamily: FN }}>{pr.hh.toLocaleString('pt-BR', { minimumFractionDigits: 4 })}</span>
                           <span style={{ fontWeight: 500 }}>HH {pr.nome.split(' ')[0]}</span>
                         </div>
@@ -572,7 +567,7 @@ export default function Home() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>{seqNum && <span style={{ color: A, fontSize: 11, fontFamily: FN, background: AD, borderRadius: 4, padding: '2px 8px', fontWeight: 700 }}>{seqNum}</span>}{comp.codigo && <span style={bg()}>{comp.codigo}</span>}<h1 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>{cleanMd(comp.titulo)}</h1></div>
                 <p style={{ fontSize: 12, color: TL, margin: '4px 0 0' }}>Projeto: {pName(comp.projeto_id)}{comp.grupo && ` • ${comp.grupo}`}{comp.unidade && ` • Un: ${comp.unidade}`}</p>
               </div>
-              <button title="Copiar composição" onClick={() => { navigator.clipboard.writeText(comp.conteudo_completo || ''); setNt({ ok: true, m: 'Composição copiada!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: TL }}>{ic.copy} Copiar</button>
+              <button title="Copiar composição" onClick={() => { navigator.clipboard.writeText(normalizeComposition(comp.conteudo_completo) || ''); setNt({ ok: true, m: 'Composição copiada!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: TL }}>{ic.copy} Copiar</button>
               <button title="Apagar composição" onClick={() => setConfirmDel(comp)} style={{ ...bt('g'), padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: RD, borderColor: 'rgba(239,68,68,0.2)' }}>{ic.trash} Apagar</button>
             </div>
             {comp.tags?.length > 0 && <div style={{ marginBottom: 14 }}>{comp.tags.map((t, i) => <span key={i} style={{ display: 'inline-block', padding: '3px 8px', borderRadius: 4, fontSize: 10, background: 'rgba(255,255,255,0.06)', color: TL, marginRight: 5 }}>#{t}</span>)}</div>}
@@ -614,7 +609,7 @@ export default function Home() {
                 </div>}
               </div>
             </div>
-            <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 10, padding: 26 }}><Md text={comp.conteudo_completo} /></div>
+            <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 10, padding: 26 }}><Md text={normalizeComposition(comp.conteudo_completo)} /></div>
           </>;
         })()}
 
