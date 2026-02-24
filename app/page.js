@@ -213,13 +213,13 @@ function Md({ text }) {
     // Parse indented bullet points explicitly as they are common in V4
     if (t.startsWith('- ') || t.startsWith('* ') || t.startsWith('• ')) {
       let clean = t.replace(/^[-*•]\s*/, '');
-      const strongMatch = clean.match(/^\*\*([^*]+)\*\*:/);
-      if (strongMatch) {
-        clean = clean.replace(strongMatch[0], '');
-        els.push(<div key={i} style={{ margin: '8px 0 8px 12px', fontSize: 12, lineHeight: 1.6, color: C.lt }}><span style={{ color: C.a, marginRight: 6 }}>▸</span><span style={{ color: '#E7E5E4', fontWeight: 600 }}>{strongMatch[1]}:</span> {clean.trim()}</div>);
-      } else {
-        els.push(<div key={i} style={{ margin: '8px 0 8px 12px', fontSize: 12, lineHeight: 1.6, color: C.lt }}><span style={{ color: C.a, marginRight: 6 }}>▸</span>{clean.replace(/\*\*/g, '')}</div>);
-      }
+      const parts = clean.split(/(\*\*[^*]+\*\*)/g);
+      els.push(
+        <div key={i} style={{ margin: '8px 0 8px 12px', fontSize: 12, lineHeight: 1.6, color: C.lt }}>
+          <span style={{ color: C.a, marginRight: 6 }}>▸</span>
+          {parts.map((p, pi) => p.startsWith('**') ? <strong key={pi} style={{ color: '#E7E5E4', fontWeight: 600 }}>{p.replace(/\*\*/g, '')}</strong> : p)}
+        </div>
+      );
       return;
     }
 
