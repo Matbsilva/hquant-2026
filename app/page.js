@@ -506,11 +506,11 @@ export default function Home() {
             return (
               <div key={c.id} style={{ ...cd, padding: '16px 20px', marginBottom: 12, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }} onClick={() => { setCid(c.id); setVw('comp'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
                     <div style={{ color: A, fontSize: 11, fontFamily: FN, background: AD, borderRadius: 6, padding: '4px 10px', fontWeight: 800, textAlign: 'center', marginTop: 2 }}>#{String(i + 1).padStart(2, '0')}</div>
-                    <div style={{ display: 'flex', gap: 4 }}>
-                      <button title="Copiar" onClick={e => { e.stopPropagation(); navigator.clipboard.writeText(normalizeComposition(c.conteudo_completo) || ''); setNt({ ok: true, m: 'Copiado!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: 4, border: 'none', opacity: 0.4 }}>{ic.copy}</button>
-                      <button title="Excluir" onClick={e => { e.stopPropagation(); delC(c.id); }} style={{ ...bt('g'), padding: 4, border: 'none', opacity: 0.3 }}>{ic.trash}</button>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4, width: '100%' }}>
+                      <button title="Copiar" onClick={e => { e.stopPropagation(); navigator.clipboard.writeText(normalizeComposition(c.conteudo_completo) || ''); setNt({ ok: true, m: 'Copiado!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: 4, border: 'none', background: 'rgba(56, 189, 248, 0.1)', color: '#38BDF8', width: '100%', justifyContent: 'center' }}>{ic.copy}</button>
+                      <button title="Excluir" onClick={e => { e.stopPropagation(); delC(c.id); }} style={{ ...bt('g'), padding: 4, border: 'none', background: 'rgba(239, 68, 68, 0.1)', color: '#EF4444', width: '100%', justifyContent: 'center' }}>{ic.trash}</button>
                     </div>
                   </div>
 
@@ -522,8 +522,8 @@ export default function Home() {
                     <div style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.4, color: '#FFFFFF', marginBottom: 6 }}>{cleanMd(c.titulo)}</div>
 
                     <div style={{ fontSize: 11, color: TM, display: 'flex', gap: 14, flexWrap: 'wrap', lineHeight: 1.4 }}>
-                      {dataV && <span><strong style={{ color: TL, fontWeight: 600 }}>DATA:</strong> {dataV}</span>}
-                      {det.equipe && <span><strong style={{ color: TL, fontWeight: 600 }}>EQUIPE:</strong> {det.equipe.slice(0, 90)}{det.equipe.length > 90 ? '...' : ''}</span>}
+                      {dataV && <span><strong style={{ color: TL, fontWeight: 600 }}>DATA:</strong> {dataV} &nbsp; </span>}
+                      {det.equipe && <span style={{ whiteSpace: 'normal', display: 'block' }}><strong style={{ color: TL, fontWeight: 600 }}>EQUIPE:</strong> {det.equipe.slice(0, 200)}{det.equipe.length > 200 ? '...' : ''}</span>}
                     </div>
                   </div>
                 </div>
