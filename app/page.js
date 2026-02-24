@@ -9,7 +9,9 @@ const parseNum = (s) => { if (!s) return null; const n = parseFloat(s.replace(/\
 
 // --- PARSER ---
 function parseComp(text) {
-  const ex = (p) => { const m = text.match(p); return m ? m[1].trim() : ''; };
+  const ex = (patt) => { const m = text.match(patt); return m ? m[1].trim() : ''; };
+  const rp = (v) => v ? parseNum(v.replace(/R\$\s*/, '')) : null;
+
   const codigo = ex(/COMPOSIÇÃO:\s*(.+)/i) || ex(/\*\*CÓDIGO:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/CÓDIGO:\s*(.+?)(?:\s*\||\s*$)/im);
   const titulo = ex(/🛠️\s*COMPOSIÇÃO\s*[\d./]+[A-Za-z]?:\s*(.+)/i) || ex(/🛠️\s*ITEM\s*[\d.]+:\s*(.+)/i) || ex(/\*\*TÍTULO:\*\*\s*(.+)/i) || ex(/TÍTULO:\s*(.+)/i);
   const unidade = ex(/\*\*UNIDADE:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/UNIDADE:\s*(.+?)(?:\s*\||\s*$)/im);
@@ -17,55 +19,109 @@ function parseComp(text) {
   const qref = ex(/\*\*QUANTIDADE REF:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/QUANTIDADE REF:\s*(.+?)(?:\s*\||\s*$)/im) || ex(/\*\*REFERÊNCIA:\*\*\s*(.+?)(?:\s*\||\s*$)/im);
   const tagsR = ex(/\*\*TAGS:\*\*\s*(.+)/i) || ex(/TAGS:\s*(.+)/i);
   const tags = tagsR ? tagsR.split(',').map(t => t.trim().replace('#', '')).filter(Boolean) : [];
-  const cM = text.match(/\*\*CUSTO DIRETO TOTAL\*\*[^R]*R\$\s*([\d.,]+)/i) || text.match(/CUSTO DIRETO TOTAL[^R]*R\$\s*([\d.,]+)/i);
-  const custo = cM ? parseFloat(cM[1].replace(/\./g, '').replace(',', '.')) : null;
-  const hM = text.match(/\*\*TOTAL M\.O\.\*\*[^|]*\|\s*\*\*([\d.,]+)\*\*/) || text.match(/\*\*TOTAL M\.O\.\*\*\s*\|\s*\*\*([\d.,]+)\*\*/);
-  const hh = hM ? parseFloat(hM[1].replace(/\./g, '').replace(',', '.')) : null;
+
+  let custo = null, hh = null;
+
+  // CUSTO
+  let custoRow = text.split('\n').find(l => /^\|\s*\*\*CUSTO DIRETO TOTAL/i.test(l));
+  if (custoRow) {
+    const rMatch = custoRow.match(/R\$\s*([\d.,]+)/g);
+    custo = rMatch && rMatch.length >= 1 ? parseNum(rMatch[0].replace(/R\$\s*/, '')) : null;
+  }
+  if (!custo) {
+    const cM = text.match(/\*\*CUSTO DIRETO TOTAL\*\*[^R]*R\$\s*([\d.,]+)/i) || text.match(/CUSTO DIRETO TOTAL[^R]*R\$\s*([\d.,]+)/i);
+    custo = cM ? parseNum(cM[1]) : null;
+  }
+
+  // HH
+  let moRow = text.split('\n').find(l => /^\|\s*\*\*TOTAL M\.O/i.test(l));
+  if (moRow) {
+    const cols = moRow.split('|').map(x => x.replace(/\*\*/g, '').trim()).filter(Boolean);
+    const numVals = cols.filter(c => /^[\d.,]+$/.test(c));
+    hh = numVals.length > 0 ? parseNum(numVals[numVals.length - 1]) : null;
+  }
+  if (!hh) {
+    const hM = text.match(/\*\*TOTAL M\.O\.\*\*[^|]*\|\s*\*\*([\d.,]+)\*\*/) || text.match(/TOTAL M\.O\.\/m.*?([\d.,]+)/i);
+    hh = hM ? parseNum(hM[1]) : null;
+  }
+
   return { codigo, titulo, unidade, grupo, qref, tags, custo, hh };
 }
 
 // --- EXTENDED PARSER (for detail view) ---
 function parseCompDetail(text) {
   if (!text) return {};
-  // Custo material (SUBTOTAL da tabela de insumos)
-  const matM = text.match(/SUBTOTAL[^|]*\|[^R]*R\$\s*([\d.,]+)/i) || text.match(/\*\*SUBTOTAL\*\*[^R]*R\$\s*([\d.,]+)/i);
-  const custo_material = matM ? parseNum(matM[1]) : null;
-  // Custo M.O. total em R$
-  const moM = text.match(/TOTAL M\.O\.[^|]*\|[^|]*\|\s*(?:\*\*)?R\$\s*([\d.,]+)/i) || text.match(/CUSTO TOTAL.*?M[.\u00c3A]O.*?R\$\s*([\d.,]+)/i);
-  const custo_mo = moM ? parseNum(moM[1]) : null;
-  // Custo equipamento (linhas com Equip na tabela de insumos)
-  let custo_equip = null;
-  const equipRows = text.match(/\|\s*Equip[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|[^|]*\|\s*R\$\s*([\d.,]+)/gi);
-  if (equipRows) {
-    custo_equip = equipRows.reduce((sum, row) => {
-      const m = row.match(/R\$\s*([\d.,]+)\s*$/);
-      return sum + (m ? parseNum(m[1]) : 0);
-    }, 0);
-    if (custo_equip === 0) custo_equip = null;
-  }
-  // Peso total
-  const pesoM = text.match(/SUBTOTAL[^|]*\|[^|]*R\$[^|]*\|\s*([\d.,]+)/i);
-  const peso_total = pesoM ? parseNum(pesoM[1]) : null;
-  // HH por profiss\u00e3o (da tabela M.O.)
-  const hhProfs = [];
-  const hhRegex = /\|\s*(?:\*\*)?([A-Za-z\u00c0-\u00fa ]+?)(?:\*\*)?\s*\|\s*(?:\*\*)?([\d.,]+)(?:\*\*)?\s*\|\s*(?:\*\*)?R\$\s*[\d.,]+/gm;
-  let hhMatch;
-  while ((hhMatch = hhRegex.exec(text)) !== null) {
-    const nome = cleanMd(hhMatch[1]).trim();
-    const val = parseNum(hhMatch[2]);
-    if (nome && val && !nome.match(/TOTAL|SUBTOTAL|CATEGORIA|FUN\u00c7\u00c3O/i) && val < 100) {
-      hhProfs.push({ nome, hh: val });
+  const rp = (v) => v ? parseNum(v.replace(/R\$\s*/, '')) : null;
+
+  // 1. Custo material (SUBTOTAL da tabela de insumos)
+  let custo_material = null, peso_total = null;
+  const matRow = text.split('\n').find(l => /^\|\s*\*\*SUBTOTAL/i.test(l));
+  if (matRow) {
+    const vals = matRow.match(/R\$\s*([\d.,]+)/g);
+    custo_material = vals && vals.length >= 1 ? rp(vals[0]) : null;
+    if (matRow.includes('|')) {
+      const cols = matRow.split('|');
+      const lastItem = cols[cols.length - 2].replace(/\*\*/g, '').trim();
+      if (/^[\d.,]+$/.test(lastItem)) peso_total = parseNum(lastItem);
     }
   }
-  // Equipe - sempre com quantidades
-  const equipeM = text.match(/(?:equipe|m\u00e3o de obra)[^)]*\(([^)]+)\)/i) || text.match(/m[\u00e3a]o de obra[^(]*\(([^)]+)\)/i);
-  let equipe = equipeM ? cleanMd(equipeM[1]) : (hhProfs.length > 0 ? hhProfs.map(p => `1 ${p.nome}`).join(' + ') : null);
-  // Rendimento di\u00e1rio
-  const rendM = text.match(/rendimento[^:]*:\s*(?:\*\*)?([\d.,]+\s*[A-Za-z\u00c0-\u00fa\u00b2\u00b3/]+(?:\/dia)?)/i) || text.match(/produtividade.*?equipe[^:]*:\s*(?:\*\*)?([\d.,]+\s*[A-Za-z\u00c0-\u00fa\u00b2\u00b3/]+)/i);
+
+  // 2. Custo M.O. total
+  let custo_mo = null;
+  const moRow = text.split('\n').find(l => /^\|\s*\*\*TOTAL M\.O/i.test(l));
+  if (moRow) {
+    const vals = moRow.match(/R\$\s*([\d.,]+)/g);
+    custo_mo = vals && vals.length >= 1 ? rp(vals[0]) : null;
+  }
+
+  // 3. Custo Equipamento
+  let custo_equip = null;
+  const lines = text.split('\n');
+  const sec2StartIndex = lines.findIndex(l => l.includes('SEÇÃO 2') || l.includes('TABELA UNIFICADA DE INSUMOS'));
+  const sec3StartIndex = lines.findIndex(l => l.includes('SEÇÃO 3') || l.includes('ESTIMATIVA DE MÃO DE OBRA'));
+  const sec4StartIndex = lines.findIndex(l => l.includes('SEÇÃO 4') || l.includes('QUANTITATIVOS'));
+
+  if (sec2StartIndex > -1) {
+    const end = sec3StartIndex > -1 ? sec3StartIndex : lines.length;
+    let eqSum = 0;
+    for (let i = sec2StartIndex; i < end; i++) {
+      if (lines[i].match(/\|\s*(Equip\b|Ferramentas\b|Andaime\b)/i)) {
+        const match = lines[i].match(/R\$\s*([\d.,]+)/g);
+        // Value at index 1 is "Total" (Value 0 is "Unit")
+        if (match && match.length >= 2) eqSum += rp(match[1]);
+      }
+    }
+    if (eqSum > 0) custo_equip = eqSum;
+  }
+
+  // 4. M.O. por Profissao
+  const hhProfs = [];
+  if (sec3StartIndex > -1) {
+    const end = sec4StartIndex > -1 ? sec4StartIndex : lines.length;
+    for (let i = sec3StartIndex; i < end; i++) {
+      const l = lines[i];
+      if (l.startsWith('|') && !l.match(/Função|TOTAL M\.O\.|---/i)) {
+        const cols = l.split('|').map(x => x.replace(/\*\*/g, '').trim()).filter(Boolean);
+        if (cols.length >= 4) {
+          const nome = cols[0];
+          const numVals = cols.filter(c => /^[\d.,]+$/.test(c));
+          if (nome && numVals.length > 0) {
+            hhProfs.push({ nome, hh: parseNum(numVals[numVals.length - 1]) });
+          }
+        }
+      }
+    }
+  }
+
+  const equipeM = text.match(/(?:equipe|COMPOSIÇÃO DA EQUIPE)[^:]*:\s*\*\*?([^\n\*\|]+)/i);
+  let equipe = equipeM ? cleanMd(equipeM[1]) : (hhProfs.length > 0 ? hhProfs.map(pr => `1 ${pr.nome}`).join(' + ') : null);
+
+  const rendM = text.match(/(?:Rendimento|Produtividade.*?Diária.*?):?\s*\*\*?([\d.,]+\s*[A-Za-z\u00c0-\u00fa\u00b2\u00b3/]+(?:\/dia)?)/i);
   const rendimento = rendM ? cleanMd(rendM[1]) : null;
-  // Produtividade: calcular un/dia a partir de HH total e jornada 8h
-  const hhTotalEquipe = hhProfs.reduce((s, p) => s + p.hh, 0);
+
+  const hhTotalEquipe = hhProfs.reduce((s, pr) => s + pr.hh, 0);
   const produtividade = hhTotalEquipe > 0 ? (8 / hhTotalEquipe).toFixed(1) : null;
+
   return { custo_material, custo_mo, custo_equip, peso_total, hhProfs, equipe, rendimento, produtividade };
 }
 
