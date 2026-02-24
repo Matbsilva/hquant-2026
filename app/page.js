@@ -150,7 +150,8 @@ function Md({ text }) {
   const flushT = () => {
     if (!tR.length) return;
     const hdr = tR[0].split('|').filter(Boolean).map(c => c.trim().replace(/\*\*/g, ''));
-    const rows = tR.slice(2);
+    // Ignore the markdown divider `|---|---|` by checking if row contains more than just formatting chars
+    const rows = tR.slice(1).filter(row => row.replace(/[\s|:\-]/g, '').length > 0);
     const is73 = lastH.includes('7.3') || lastH.includes('PRODUTIVIDADE') || hdr.some(h => h.toLowerCase().includes('produtividade') || h.toLowerCase().includes('variação'));
     els.push(
       <div key={`t${tK++}`} style={{ overflowX: 'auto', margin: '14px 0 20px', borderRadius: 8, border: `1px solid ${is73 ? 'rgba(245,158,11,0.25)' : C.bd}`, background: is73 ? 'rgba(245,158,11,0.03)' : 'transparent' }}>
@@ -302,6 +303,7 @@ const ic = {
   trash: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" /></svg>,
   copy: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>,
   x: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>,
+  menu: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M4 12h16M4 18h16" /></svg>,
 };
 
 export default function Home() {
@@ -320,6 +322,8 @@ export default function Home() {
   const [aiParsing, setAiParsing] = useState(false);
   const [aiError, setAiError] = useState(null);
   const [confirmDel, setConfirmDel] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [sbOpen, setSbOpen] = useState(false);
 
   const nf = (m, ok = true) => { setNt({ m, ok }); setTimeout(() => setNt(null), 3000); };
 
@@ -335,6 +339,11 @@ export default function Home() {
   }, []);
 
   useEffect(() => { loadData(); }, [loadData]);
+  useEffect(() => {
+    const handleResize = () => { setIsMobile(window.innerWidth <= 768); if (window.innerWidth > 768) setSbOpen(false); };
+    handleResize(); window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const proj = pid ? projetos.find(p => p.id === pid) : null;
   const comp = cid ? composicoes.find(c => c.id === cid) : null;
@@ -446,24 +455,26 @@ export default function Home() {
   if (loading) return <div style={{ background: BG, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: TM, fontFamily: FS }}>Carregando...</div>;
 
   return (
-    <div style={{ minHeight: '100vh', background: BG, color: TX, fontFamily: FS, display: 'flex' }}>
+    <div style={{ minHeight: '100vh', background: BG, color: TX, fontFamily: FS, display: 'flex', overflowX: 'hidden' }}>
+      {isMobile && <button onClick={() => setSbOpen(!sbOpen)} style={{ position: 'fixed', top: 16, left: 16, zIndex: 60, background: SF, border: `1px solid ${BD}`, color: TX, padding: '6px 8px', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{ic.menu}</button>}
+      {isMobile && sbOpen && <div onClick={() => setSbOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 40 }} />}
       {/* SIDEBAR */}
-      <div style={{ width: 210, background: SF, borderRight: `1px solid ${BD}`, display: 'flex', flexDirection: 'column', position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 50 }}>
-        <div onClick={() => { setVw('home'); setPid(null); setCid(null); }} style={{ padding: '18px 14px', borderBottom: `1px solid ${BD}`, display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
+      <div style={{ width: 210, background: SF, borderRight: `1px solid ${BD}`, display: 'flex', flexDirection: 'column', position: 'fixed', top: 0, left: isMobile ? (sbOpen ? 0 : -210) : 0, bottom: 0, zIndex: 50, transition: 'left 0.3s' }}>
+        <div onClick={() => { setVw('home'); setPid(null); setCid(null); if (isMobile) setSbOpen(false); }} style={{ padding: '18px 14px', borderBottom: `1px solid ${BD}`, display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
           <img src="/logo.png" alt="H-QUANT" style={{ height: 32, objectFit: 'contain' }} />
           <div><div style={{ fontSize: 13, fontWeight: 700, fontFamily: FN, letterSpacing: '0.5px' }}>H-QUANT</div><div style={{ fontSize: 9, color: TL, letterSpacing: '1px' }}>COMPOSIÇÕES</div></div>
         </div>
         <div style={{ padding: '10px 0', flex: 1 }}>
           {[['home', ic.folder, 'Projetos'], ['busca', ic.search, 'Buscar Composição']].map(([id, icon, label]) => {
             const act = vw === id || (id === 'home' && ['proj', 'comp'].includes(vw));
-            return <div key={id} onClick={() => { setVw(id); setPid(null); setCid(null); if (id === 'busca') setQ(''); }} style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '10px 16px', cursor: 'pointer', color: act ? A : TL, background: act ? AD : 'transparent', borderLeft: act ? `2px solid ${A}` : '2px solid transparent', fontSize: 13, fontWeight: act ? 600 : 400 }}>{icon}<span>{label}</span></div>;
+            return <div key={id} onClick={() => { setVw(id); setPid(null); setCid(null); if (id === 'busca') setQ(''); if (isMobile) setSbOpen(false); }} style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '10px 16px', cursor: 'pointer', color: act ? A : TL, background: act ? AD : 'transparent', borderLeft: act ? `2px solid ${A}` : '2px solid transparent', fontSize: 13, fontWeight: act ? 600 : 400 }}>{icon}<span>{label}</span></div>;
           })}
         </div>
         <div style={{ padding: '12px 16px', borderTop: `1px solid ${BD}`, fontSize: 12, color: TL }}>{projetos.length} projetos • {tot} composições</div>
       </div>
 
       {/* MAIN */}
-      <div style={{ marginLeft: 210, flex: 1, padding: '0 32px 32px', minHeight: '100vh', maxWidth: 1600 }}>
+      <div style={{ marginLeft: isMobile ? 0 : 210, flex: 1, padding: isMobile ? '70px 20px 20px' : '0 32px 32px', minHeight: '100vh', maxWidth: 1600, transition: 'all 0.3s', width: '100%' }}>
         {nt && <div style={{ position: 'fixed', top: 14, right: 14, zIndex: 999, padding: '10px 18px', borderRadius: 8, background: nt.ok ? GR : RD, color: '#fff', fontSize: 12, fontWeight: 600, boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>{nt.ok ? '✓' : '✕'} {nt.m}</div>}
 
         {/* HOME */}
@@ -570,10 +581,10 @@ export default function Home() {
           const seqNum = compIdx >= 0 ? `#${String(compIdx + 1).padStart(2, '0')}` : '';
           const cleanGrupo = comp.grupo ? comp.grupo.split(/\*\*/)[0].trim() : '';
 
-          const indCard = (label, value, color, suffix) => value != null ? (
-            <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
-              <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>{label}</div>
-              <div style={{ fontSize: 16, fontWeight: 700, color, fontFamily: FN }}>{typeof value === 'number' ? value.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : value}{suffix && <span style={{ fontSize: 11, color: TL, fontWeight: 500 }}> {suffix}</span>}</div>
+          const indCard = (label, value, color, suffix, highlight = false) => value != null ? (
+            <div style={{ background: highlight ? `${color}10` : BG, border: `1px solid ${highlight ? `${color}30` : BD}`, borderTop: highlight ? `3px solid ${color}` : `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+              <div style={{ fontSize: 10, color: highlight ? color : TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>{label}</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: highlight ? TX : color, fontFamily: FN }}>{typeof value === 'number' ? value.toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : value}{suffix && <span style={{ fontSize: 11, color: highlight ? color : TL, fontWeight: 500 }}> {suffix}</span>}</div>
             </div>
           ) : null;
           return <>
@@ -594,22 +605,22 @@ export default function Home() {
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
                 {indCard(`Custo Direto Total/${un}`, comp.custo_unitario ? Number(comp.custo_unitario) : null, A, `R$/${un}`)}
                 {indCard(`Material/${un}`, det.custo_material, '#FBBF24', `R$/${un}`)}
-                {indCard(`Mão de Obra/${un}`, det.custo_mo, BL, `R$/${un}`)}
-                {indCard(`Equipamento/${un}`, det.custo_equip, '#A78BFA', `R$/${un}`)}
+                {indCard(`Mão de Obra/${un}`, det.custo_mo, BL, `R$/${un}`, true)}
+                {indCard(`Equipamento/${un}`, det.custo_equip, '#A78BFA', `R$/${un}`, true)}
                 {indCard(`Peso/${un}`, det.peso_total, TL, 'kg')}
               </div>
               {/* HH por função */}
               {det.hhProfs.length > 0 && <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
-                {det.hhProfs.map((p, i) => <div key={i} style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
-                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>HH {p.nome}</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: BL, fontFamily: FN }}>{p.hh.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} <span style={{ fontSize: 11, color: TL, fontWeight: 500 }}>HH/{un}</span></div>
+                {det.hhProfs.map((p, i) => <div key={i} style={{ background: `${BL}10`, border: `1px solid ${BL}30`, borderTop: `3px solid ${BL}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: BL, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>HH {p.nome}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{p.hh.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} <span style={{ fontSize: 11, color: BL, fontWeight: 500 }}>HH/{un}</span></div>
                 </div>)}
               </div>}
               {/* Produtividade + Equipe + HH Total + Rendimento */}
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {det.produtividade && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
-                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Produtividade/Dia</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: GR, fontFamily: FN }}>{det.produtividade} <span style={{ fontSize: 11, color: TL, fontWeight: 500 }}>{un}/dia</span></div>
+                {det.produtividade && <div style={{ background: `${A}10`, border: `1px solid ${A}30`, borderTop: `3px solid ${A}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: A, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Produtividade/Dia</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{det.produtividade} <span style={{ fontSize: 11, color: A, fontWeight: 500 }}>{un}/dia</span></div>
                 </div>}
                 {comp.hh_unitario && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
                   <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>HH Total Equipe/{un}</div>

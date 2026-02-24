@@ -73,3 +73,13 @@ Toda nova feature, deploy ou bugfix crítico desenvolvido colaborativamente entr
     - O quadrado "H" na Sidebar Esquerda foi removido, cedendo espaço para a chamada oficial `<img src="/logo.png" />` contendo a Logo Institucional importada pelo dono do projeto, injetada através do diretório estático público `public/`.
     - **Estratégia de Risco Zero:** Toda essa manobra visual grandiosa foi operada debaixo do capô utilizando branch management via Git. Uma nova Branch chamada `theme-gold-slate` foi gerada e enviada como push remoto para construir um link Beta de aprovação vivo na nuvem da Vercel antes de consolidar por cima do motor principal (Main).
 - **Status:** Entregue (Branch `theme-gold-slate` no ar aguardando Feedback/Merge do admin).
+
+---
+
+### [24 de Fevereiro de 2026] - Ajustes Finos UI/UX (Contraste, Parser e Responsividade)
+- **Objetivo/Motivo:** Corrigir bugs visuais mapeados após a aplicação do novo tema Gold & Slate e resolver problemas de renderização e acessibilidade relatados pelo dono do produto.
+- **Alterações Arquiteturais ou UI:**
+    - **Fix no Parser de Tabelas Markdown:** Alteração crítica no `flushT()` do componente renderizador `<Md />`. Substituição de um corte de array estático (`.slice(2)`) que estava engolindo a primeira linha de conteúdo das tabelas por uma filtragem inteligente lógica (`.filter(...)`) que varre e ignora corretamente a linha divisória do markdown (`|---|---|`), garantindo renderização completa de todas as linhas de Material, Equipamento, etc.
+    - **Destaque Visual nos Indicadores (Contraste):** Os "Cards" de Indicadores na visualização da composição perderam impacto com o novo Fundo Azul. O código JSX foi atualizado injetando uma propriedade flexível `highlight` que aplica um "tint" de transparência (8-10%) da cor nativa do indicador acompanhado de uma borda destacada superior. Os blocos de `Mão de Obra`, `Equipamento`, `HH` e `Produtividade` agora saltam visualmente com identidades únicas (Azul, Dourado, Verde) como dashboards modernos corporativos.
+    - **Menu Lateral Responsivo (Mobile-first ready):** Injeção de React States (`isMobile` e `sbOpen`) atrelados a um listener do tamanho da tela (`window.innerWidth`). Em celulares ou telas pequenas, o menu esquerdo recolhe por completo escondendo seus 210px fora da tela (Off-canvas) e um discreto botão Menu "Hambúrguer" passa a controlá-lo, liberando o precioso espaço para os cálculos orçamentários vitais.
+- **Status:** Entregue na branch ativa (`theme-gold-slate`).
