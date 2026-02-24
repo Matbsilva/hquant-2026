@@ -683,9 +683,19 @@ export default function Home() {
               <button style={{ ...bt('g'), padding: 4, border: 'none' }} onClick={() => !importing && setMl(null)}>{ic.x}</button>
             </div>
             <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '10px 14px', marginBottom: 14 }}>
-              <p style={{ fontSize: 11, color: TD, lineHeight: 1.5, margin: 0 }}><strong style={{ color: A }}>Individual ou Lote:</strong> Cole composições no padrão Markdown. IA Gemini detecta e extrai automaticamente. Fallback: separador <code style={{ color: A, background: AD, padding: '1px 4px', borderRadius: 3, fontSize: 10 }}># 🛠️ COMPOSIÇÃO</code></p>
+              <p style={{ fontSize: 11, color: TD, lineHeight: 1.5, margin: 0, marginBottom: 8 }}><strong style={{ color: A }}>Individual ou Lote:</strong> Cole composições no padrão Markdown ou faça upload dos arquivos .md abaixo.</p>
+              <input type="file" multiple accept=".md" onChange={async e => {
+                const files = Array.from(e.target.files);
+                if (!files.length) return;
+                const texts = await Promise.all(files.map(f => new Promise(res => {
+                  const reader = new FileReader();
+                  reader.onload = e => res(e.target.result);
+                  reader.readAsText(f);
+                })));
+                setFC(prev => (prev ? prev + '\n\n\n' : '') + texts.join('\n\n\n'));
+              }} style={{ fontSize: 11, color: TL }} />
             </div>
-            <textarea placeholder="Cole aqui uma ou mais composições..." value={fC} onChange={e => { setFC(e.target.value); setAiComps(null); setAiError(null); }} style={{ width: '100%', padding: '14px 16px', background: BG, border: `1px solid ${BD}`, borderRadius: 8, color: TX, fontSize: 11, fontFamily: FN, outline: 'none', resize: 'vertical', minHeight: 300, lineHeight: 1.7 }} />
+            <textarea placeholder="Cole aqui uma ou mais composições ou faça o upload acima..." value={fC} onChange={e => { setFC(e.target.value); setAiComps(null); setAiError(null); }} style={{ width: '100%', padding: '14px 16px', background: BG, border: `1px solid ${BD}`, borderRadius: 8, color: TX, fontSize: 11, fontFamily: FN, outline: 'none', resize: 'vertical', minHeight: 300, lineHeight: 1.7 }} />
             {/* AI Parse Button */}
             {fC.trim() && <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
               <button onClick={analyzeWithAI} disabled={aiParsing} style={{ ...bt(), background: aiComps ? GR : 'linear-gradient(135deg, #8B5CF6, #6366F1)', border: 'none', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, padding: '8px 16px', opacity: aiParsing ? 0.6 : 1 }}>
