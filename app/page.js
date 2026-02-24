@@ -454,7 +454,7 @@ export default function Home() {
           <div><div style={{ fontSize: 14, fontWeight: 700, fontFamily: FN, letterSpacing: '0.5px' }}>H-QUANT</div><div style={{ fontSize: 10, color: TL, letterSpacing: '2px' }}>COMPOSIÇÕES 2026</div></div>
         </div>
         <div style={{ padding: '10px 0', flex: 1 }}>
-          {[['home', ic.folder, 'Projetos'], ['busca', ic.search, 'Busca Global']].map(([id, icon, label]) => {
+          {[['home', ic.folder, 'Projetos'], ['busca', ic.search, 'Buscar Composição']].map(([id, icon, label]) => {
             const act = vw === id || (id === 'home' && ['proj', 'comp'].includes(vw));
             return <div key={id} onClick={() => { setVw(id); setPid(null); setCid(null); if (id === 'busca') setQ(''); }} style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '10px 16px', cursor: 'pointer', color: act ? A : TL, background: act ? AD : 'transparent', borderLeft: act ? `2px solid ${A}` : '2px solid transparent', fontSize: 13, fontWeight: act ? 600 : 400 }}>{icon}<span>{label}</span></div>;
           })}
@@ -477,11 +477,11 @@ export default function Home() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: 12 }}>
             {projetos.map(p => <div key={p.id} style={cd} onClick={() => { setPid(p.id); setVw('proj'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}><span style={{ color: A }}>{ic.folder}</span><span style={{ fontSize: 14, fontWeight: 600 }}>{p.nome}</span></div>
-                <button onClick={e => { e.stopPropagation(); delP(p.id); }} style={{ ...bt('g'), padding: 3, border: 'none', opacity: 0.2 }}>{ic.trash}</button>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, paddingRight: 10 }}><span style={{ color: A }}>{ic.folder}</span><span style={{ fontSize: 13, fontWeight: 700, textTransform: 'uppercase', color: '#FFFFFF' }}>{p.nome}</span></div>
+                <button title="Excluir Projeto" onClick={e => { e.stopPropagation(); delP(p.id); }} style={{ ...bt('g'), padding: 6, border: 'none', background: 'transparent', color: '#EF4444', transition: 'all 0.2s', opacity: 0.4 }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.15)'; e.currentTarget.style.opacity = '1'; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.opacity = '0.4'; }}>{ic.trash}</button>
               </div>
-              {p.descricao && <p style={{ fontSize: 13, color: TL, margin: '8px 0 0', lineHeight: 1.5 }}>{p.descricao.slice(0, 120)}{p.descricao.length > 120 ? '...' : ''}</p>}
+              {p.descricao && <p style={{ fontSize: 12, color: TL, margin: '8px 0 0', lineHeight: 1.5 }}>{p.descricao.slice(0, 120)}{p.descricao.length > 120 ? '...' : ''}</p>}
               <div style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between' }}><span style={bg()}>{pCnt(p.id)} comp</span><span style={{ fontSize: 9, color: TM }}>{new Date(p.created_at).toLocaleDateString('pt-BR')}</span></div>
             </div>)}
             {!projetos.length && <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: 60, color: TM }}><div style={{ fontSize: 32, marginBottom: 10, opacity: 0.3 }}>📁</div><p style={{ fontSize: 14 }}>Nenhum projeto ainda</p></div>}
@@ -632,7 +632,7 @@ export default function Home() {
         {/* SEARCH */}
         {vw === 'busca' && <>
           <div style={{ padding: '24px 0 16px', borderBottom: `1px solid ${BD}`, marginBottom: 22 }}>
-            <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, fontFamily: FN }}>Busca Global</h1>
+            <h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, fontFamily: FN }}>Buscar Composição</h1>
           </div>
           <div style={{ position: 'relative', marginBottom: 22 }}>
             <div style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: TM }}>{ic.search}</div>
