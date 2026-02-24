@@ -4,7 +4,14 @@ import { supabase } from '../lib/supabase';
 import { normalizeComposition } from '../lib/normalize';
 
 // --- HELPERS ---
-const cleanMd = (s) => (s || '').replace(/\*\*/g, '').trim();
+const cleanMd = (s) => {
+  if (!s) return '';
+  let str = s.replace(/[*#]/g, '').trim();
+  // Strip trailing metadata incorrectly squashed into early DB generation files
+  const cutIdx = str.search(/(?:DATA:|TURNO:|GRUPO:|TAGS:|CLASSIFICAÇÃO:)/i);
+  if (cutIdx > 15) return str.substring(0, cutIdx).trim();
+  return str;
+};
 const parseNum = (s) => { if (!s) return null; const n = parseFloat(s.replace(/\./g, '').replace(',', '.')); return isNaN(n) ? null : n; };
 
 // --- PARSER ---
@@ -229,13 +236,44 @@ function Md({ text }) {
       return;
     }
 
-    if (t.includes('**')) {
-      const parts = t.split(/(\*\*[^*]+\*\*)/g);
-      els.push(<p key={i} style={{ margin: isIndented ? '4px 0 4px 12px' : '8px 0', fontSize: 12, color: C.lt, lineHeight: 1.6 }}>{parts.map((p, pi) => p.startsWith('**') ? <strong key={pi} style={{ color: C.t, fontWeight: 600 }}>{p.replace(/\*\*/g, '')}</strong> : p)}</p>);
+    // Custom Highlight for "5.1 ANÁLISE DE CUSTO" and "DRIVER PRINCIPAL"
+    if (t.includes('5.1 ANÁLISE DE CUSTO:')) {
+      els.push(
+        <div key={i} style={{ margin: '24px 0 16px', padding: '16px 20px', background: 'rgba(59, 130, 246, 0.08)', borderLeft: `3px solid ${BL}`, borderRadius: '0 8px 8px 0' }}>
+          <div style={{ color: BL, fontSize: 14, fontWeight: 800, textTransform: 'uppercase', marginBottom: 12, letterSpacing: '0.5px' }}>📈 5.1 ANÁLISE DE CUSTO</div>
+        </div>
+      );
       return;
     }
 
-    if (t.length > 0) els.push(<p key={i} style={{ margin: isIndented ? '4px 0 4px 12px' : '8px 0', fontSize: 12, color: C.lt, lineHeight: 1.6 }}>{t}</p>);
+    if (t.startsWith('DRIVER PRINCIPAL:')) {
+      els.push(
+        <div key={i} style={{ margin: '14px 0', padding: '16px 20px', background: 'rgba(239, 68, 68, 0.08)', borderLeft: `3px solid ${RD}`, borderRadius: '0 8px 8px 0' }}>
+          <span style={{ color: RD, fontWeight: 800, fontSize: 13, marginRight: 8 }}>🔥 DRIVER PRINCIPAL:</span>
+          <span style={{ color: C.lt, fontSize: 13, fontWeight: 500, lineHeight: 1.6 }}>{t.replace('DRIVER PRINCIPAL:', '').replace(/\*\*/g, '').trim()}</span>
+        </div>
+      );
+      return;
+    }
+
+    if (t.includes('**')) {
+      // Don't format the first line if it's the 5.1 block continuation, but here we just render it.
+      // If it's part of the composition unit cost analysis:
+      if (t.includes('Material: R$') || t.includes('Equipamentos: R$') || t.includes('Mão de Obra: R$')) {
+        els.push(
+          <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 16px', margin: '4px 0', background: 'rgba(255,255,255,0.02)', borderRadius: 6, fontSize: 12, color: C.lt }}>
+            <span>{t.replace(/\*\*/g, '')}</span>
+          </div>
+        );
+        return;
+      }
+
+      const parts = t.split(/(\*\*[^*]+\*\*)/g);
+      els.push(<div key={i} style={{ margin: isIndented ? '4px 0 4px 12px' : '6px 0', fontSize: 13, color: C.lt, lineHeight: 1.6 }}>{parts.map((p, pi) => p.startsWith('**') ? <strong key={pi} style={{ color: C.t, fontWeight: 600 }}>{p.replace(/\*\*/g, '')}</strong> : p)}</div>);
+      return;
+    }
+
+    if (t.length > 0) els.push(<div key={i} style={{ margin: isIndented ? '4px 0 4px 12px' : '6px 0', fontSize: 13, color: C.lt, lineHeight: 1.6 }}>{t}</div>);
   });
 
   flushT();
@@ -449,22 +487,69 @@ export default function Home() {
             </div>
             <button style={bt()} onClick={() => { setMl('nc'); setFC(''); }}>{ic.plus} Composição</button>
           </div>
-          {pComps.map((c, i) => <div key={c.id} style={{ ...cd, padding: '14px 18px', marginBottom: 8, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }} onClick={() => { setCid(c.id); setVw('comp'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, flex: 1, minWidth: 0 }}>
-              <div style={{ color: A, fontSize: 10, fontFamily: FN, background: AD, borderRadius: 4, padding: '2px 6px', fontWeight: 700, minWidth: 28, textAlign: 'center', marginTop: 2 }}>#{String(i + 1).padStart(2, '0')}</div>
-              <span style={{ color: A, marginTop: 2 }}>{ic.file}</span>
-              <div style={{ minWidth: 0, flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6, flexWrap: 'wrap' }}>{c.codigo && <span style={{ ...bg(), fontSize: 9 }}>{c.codigo}</span>}<span style={{ fontSize: 13, fontWeight: 500, whiteSpace: 'normal', lineHeight: 1.5 }}>{cleanMd(c.titulo)}</span></div>
-                <div style={{ fontSize: 11, color: TL, marginTop: 4 }}>{c.unidade && `Un: ${c.unidade}`}{c.grupo && ` • ${c.grupo}`}</div>
+          {pComps.map((c, i) => {
+            const det = parseCompDetail(c.conteudo_completo);
+            const mData = c.conteudo_completo.match(/\*\*DATA:\*\*\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/DATA:\s*(.*?)(?:\n|$|\|)/i);
+            const dataV = mData ? mData[1].trim() : '';
+            const un = c.unidade || 'un';
+
+            return (
+              <div key={c.id} style={{ ...cd, padding: '18px 22px', marginBottom: 12, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }} onClick={() => { setCid(c.id); setVw('comp'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, flex: 1, minWidth: 0 }}>
+                  <div style={{ color: A, fontSize: 11, fontFamily: FN, background: AD, borderRadius: 6, padding: '4px 10px', fontWeight: 800, textAlign: 'center', marginTop: 2 }}>#{String(i + 1).padStart(2, '0')}</div>
+
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8, flexWrap: 'wrap' }}>
+                      {c.codigo && <span style={{ ...bg(A), fontSize: 10, padding: '3px 8px', letterSpacing: '0.5px' }}>{c.codigo}</span>}
+                      {c.grupo && <span style={{ fontSize: 10, color: TL, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.8px' }}>{c.grupo}</span>}
+                      {c.classificacao && <span style={{ fontSize: 10, color: TM, textTransform: 'uppercase' }}>{c.classificacao}</span>}
+                    </div>
+
+                    <div style={{ fontSize: 15, fontWeight: 700, lineHeight: 1.4, color: '#FFFFFF', marginBottom: 10 }}>{cleanMd(c.titulo)}</div>
+
+                    <div style={{ fontSize: 11, color: TM, display: 'flex', gap: 14, flexWrap: 'wrap', lineHeight: 1.5 }}>
+                      {dataV && <span><strong style={{ color: TL, fontWeight: 600 }}>DATA:</strong> {dataV}</span>}
+                      {det.equipe && <span><strong style={{ color: TL, fontWeight: 600 }}>EQUIPE:</strong> {det.equipe.slice(0, 90)}{det.equipe.length > 90 ? '...' : ''}</span>}
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 12, flexShrink: 0 }}>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button title="Copiar" onClick={e => { e.stopPropagation(); navigator.clipboard.writeText(c.conteudo_completo || ''); setNt({ ok: true, m: 'Copiado!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: '4px 8px', border: 'none', opacity: 0.4 }}>{ic.copy}</button>
+                    <button title="Excluir" onClick={e => { e.stopPropagation(); delC(c.id); }} style={{ ...bt('g'), padding: '4px 8px', border: 'none', opacity: 0.3 }}>{ic.trash}</button>
+                  </div>
+
+                  <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    {c.custo_unitario != null && (
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, justifyContent: 'flex-end' }}>
+                        <span style={{ fontSize: 20, color: A, fontWeight: 800, fontFamily: FN }}>{Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: A }}>R$/{un}</span>
+                      </div>
+                    )}
+
+                    {c.hh_unitario != null && (
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, justifyContent: 'flex-end', marginTop: 2 }}>
+                        <span style={{ fontSize: 13, color: BL, fontWeight: 700, fontFamily: FN }}>{c.hh_unitario}</span>
+                        <span style={{ fontSize: 11, fontWeight: 600, color: TL }}>HH Total/{un}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {det.hhProfs && det.hhProfs.length > 0 && (
+                    <div style={{ textAlign: 'right', marginTop: 4, background: 'rgba(59, 130, 246, 0.05)', padding: '6px 10px', borderRadius: 6, border: `1px solid rgba(59, 130, 246, 0.1)` }}>
+                      {det.hhProfs.map((pr, pi) => (
+                        <div key={pi} style={{ fontSize: 10, color: TL, marginBottom: 3, display: 'flex', justifyContent: 'flex-end', gap: 6 }}>
+                          <span style={{ color: BL, fontWeight: 700, fontFamily: FN }}>{pr.hh.toLocaleString('pt-BR', { minimumFractionDigits: 4 })}</span>
+                          <span style={{ fontWeight: 500 }}>HH {pr.nome.split(' ')[0]}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0, marginTop: 2 }}>
-              {c.hh_unitario && <span style={{ fontSize: 11, color: BL, fontWeight: 600, fontFamily: FN }}>{c.hh_unitario} HH</span>}
-              {c.custo_unitario && <span style={{ fontSize: 13, color: A, fontWeight: 700, fontFamily: FN }}>R$ {Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>}
-              <button title="Copiar composição" onClick={e => { e.stopPropagation(); navigator.clipboard.writeText(c.conteudo_completo || ''); setNt({ ok: true, m: 'Composição copiada!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: 3, border: 'none', opacity: 0.3 }}>{ic.copy}</button>
-              <button onClick={e => { e.stopPropagation(); delC(c.id); }} style={{ ...bt('g'), padding: 3, border: 'none', opacity: 0.2 }}>{ic.trash}</button>
-            </div>
-          </div>)}
+            );
+          })}
           {!pComps.length && <div style={{ textAlign: 'center', padding: 60, color: TM }}><div style={{ fontSize: 32, marginBottom: 10, opacity: 0.3 }}>📋</div><p>Nenhuma composição</p></div>}
         </>}
 
