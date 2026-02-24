@@ -500,17 +500,17 @@ export default function Home() {
           {pComps.map((c, i) => {
             const det = parseCompDetail(c.conteudo_completo);
             const mData = c.conteudo_completo.match(/\*\*DATA:\*\*\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/DATA:\s*(.*?)(?:\n|$|\|)/i);
-            const dataV = mData ? mData[1].trim() : '';
+            const dataV = mData ? mData[1].split(/\*\*/)[0].trim() : '';
             const un = c.unidade || 'un';
 
             return (
               <div key={c.id} style={{ ...cd, padding: '16px 20px', marginBottom: 12, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }} onClick={() => { setCid(c.id); setVw('comp'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center', transition: 'all 0.2s' }}>
                     <div style={{ color: A, fontSize: 11, fontFamily: FN, background: AD, borderRadius: 6, padding: '4px 10px', fontWeight: 800, textAlign: 'center', marginTop: 2 }}>#{String(i + 1).padStart(2, '0')}</div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4, width: '100%' }}>
-                      <button title="Copiar" onClick={e => { e.stopPropagation(); navigator.clipboard.writeText(normalizeComposition(c.conteudo_completo) || ''); setNt({ ok: true, m: 'Copiado!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: 4, border: 'none', background: 'rgba(56, 189, 248, 0.1)', color: '#38BDF8', width: '100%', justifyContent: 'center' }}>{ic.copy}</button>
-                      <button title="Excluir" onClick={e => { e.stopPropagation(); delC(c.id); }} style={{ ...bt('g'), padding: 4, border: 'none', background: 'rgba(239, 68, 68, 0.1)', color: '#EF4444', width: '100%', justifyContent: 'center' }}>{ic.trash}</button>
+                      <button className="list-btn" title="Copiar" onClick={e => { e.stopPropagation(); navigator.clipboard.writeText(normalizeComposition(c.conteudo_completo) || ''); setNt({ ok: true, m: 'Copiado!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: '5px 4px', border: 'none', background: 'rgba(56, 189, 248, 0.1)', color: '#38BDF8', width: '100%', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = '#38BDF8'; e.currentTarget.style.color = '#fff'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(56, 189, 248, 0.1)'; e.currentTarget.style.color = '#38BDF8'; }}>{ic.copy}</button>
+                      <button className="list-btn" title="Excluir" onClick={e => { e.stopPropagation(); delC(c.id); }} style={{ ...bt('g'), padding: '5px 4px', border: 'none', background: 'rgba(239, 68, 68, 0.1)', color: '#EF4444', width: '100%', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = '#EF4444'; e.currentTarget.style.color = '#fff'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; e.currentTarget.style.color = '#EF4444'; }}>{ic.trash}</button>
                     </div>
                   </div>
 
@@ -568,6 +568,8 @@ export default function Home() {
           const un = comp.unidade || 'un';
           const compIdx = pComps.findIndex(c => c.id === comp.id);
           const seqNum = compIdx >= 0 ? `#${String(compIdx + 1).padStart(2, '0')}` : '';
+          const cleanGrupo = comp.grupo ? comp.grupo.split(/\*\*/)[0].trim() : '';
+
           const indCard = (label, value, color, suffix) => value != null ? (
             <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
               <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>{label}</div>
@@ -579,12 +581,12 @@ export default function Home() {
               <button style={{ ...bt('g'), padding: 6 }} onClick={() => { setVw(pid ? 'proj' : 'busca'); setCid(null); }}>{ic.back}</button>
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>{seqNum && <span style={{ color: A, fontSize: 11, fontFamily: FN, background: AD, borderRadius: 4, padding: '2px 8px', fontWeight: 700 }}>{seqNum}</span>}{comp.codigo && <span style={bg()}>{comp.codigo}</span>}<h1 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>{cleanMd(comp.titulo)}</h1></div>
-                <p style={{ fontSize: 12, color: TL, margin: '4px 0 0' }}>Projeto: {pName(comp.projeto_id)}{comp.grupo && ` • ${comp.grupo}`}{comp.unidade && ` • Un: ${comp.unidade}`}</p>
+                <p style={{ fontSize: 12, color: TL, margin: '4px 0 0' }}>Projeto: {pName(comp.projeto_id)}{cleanGrupo && ` • ${cleanGrupo}`}{comp.unidade && ` • Un: ${comp.unidade}`}</p>
               </div>
-              <button title="Copiar composição" onClick={() => { navigator.clipboard.writeText(normalizeComposition(comp.conteudo_completo) || ''); setNt({ ok: true, m: 'Composição copiada!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: TL }}>{ic.copy} Copiar</button>
-              <button title="Apagar composição" onClick={() => setConfirmDel(comp)} style={{ ...bt('g'), padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: RD, borderColor: 'rgba(239,68,68,0.2)' }}>{ic.trash} Apagar</button>
+              <button title="Copiar composição" onClick={() => { navigator.clipboard.writeText(normalizeComposition(comp.conteudo_completo) || ''); setNt({ ok: true, m: 'Composição copiada!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#38BDF8', borderColor: 'rgba(56,189,248,0.2)', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(56, 189, 248, 0.1)'; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}>{ic.copy} Copiar</button>
+              <button title="Apagar composição" onClick={() => setConfirmDel(comp)} style={{ ...bt('g'), padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#EF4444', borderColor: 'rgba(239,68,68,0.2)', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}>{ic.trash} Apagar</button>
             </div>
-            {comp.tags?.length > 0 && <div style={{ marginBottom: 14 }}>{comp.tags.map((t, i) => <span key={i} style={{ display: 'inline-block', padding: '3px 8px', borderRadius: 4, fontSize: 10, background: 'rgba(255,255,255,0.06)', color: TL, marginRight: 5 }}>#{t}</span>)}</div>}
+            {comp.tags?.length > 0 && <div style={{ marginBottom: 14 }}>{comp.tags.map((t, i) => { const pureTag = t.split(/\*\*/)[0].trim(); return pureTag ? <span key={i} style={{ display: 'inline-block', padding: '3px 8px', borderRadius: 4, fontSize: 10, background: 'rgba(255,255,255,0.06)', color: TL, marginRight: 5 }}>#{pureTag.replace(/^#/, '')}</span> : null })}</div>}
             {/* --- INDICADORES CONSOLIDADOS --- */}
             <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 10, padding: 20, marginBottom: 20 }}>
               <div style={{ fontSize: 11, color: A, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 14 }}>📊 Indicadores</div>
