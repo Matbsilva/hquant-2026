@@ -150,7 +150,8 @@ function Md({ text }) {
   const flushT = () => {
     if (!tR.length) return;
     const hdr = tR[0].split('|').filter(Boolean).map(c => c.trim().replace(/\*\*/g, ''));
-    const rows = tR.slice(2);
+    // Ignore the markdown divider `|---|---|` by checking if row contains more than just formatting chars
+    const rows = tR.slice(1).filter(row => row.replace(/[\s|:\-]/g, '').length > 0);
     const is73 = lastH.includes('7.3') || lastH.includes('PRODUTIVIDADE') || hdr.some(h => h.toLowerCase().includes('produtividade') || h.toLowerCase().includes('variação'));
     els.push(
       <div key={`t${tK++}`} style={{ overflowX: 'auto', margin: '14px 0 20px', borderRadius: 8, border: `1px solid ${is73 ? 'rgba(245,158,11,0.25)' : C.bd}`, background: is73 ? 'rgba(245,158,11,0.03)' : 'transparent' }}>
