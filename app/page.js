@@ -176,7 +176,11 @@ function Md({ text }) {
     let t = l.trim();
     const isIndented = l.startsWith('    ') || l.startsWith('\t');
 
-    if (t.startsWith('|') && t.endsWith('|')) { tR.push(t); return; }
+    const nextLine = lines[i + 1] ? lines[i + 1].trim() : '';
+    const hasDividerNext = nextLine.includes('|') && (nextLine.includes('---') || nextLine.includes(':-'));
+    const isPipeRow = t.includes('|') && t.split('|').length > 2;
+
+    if ((t.startsWith('|') && t.endsWith('|')) || (isPipeRow && (tR.length > 0 || hasDividerNext))) { tR.push(t); return; }
     if (tR.length) flushT();
 
     if (!t || t === '---' || t === '***' || t === '* * *') { if (t) els.push(<hr key={i} style={{ border: 'none', borderTop: `1px solid ${C.bd}`, margin: '20px 0' }} />); return; }
