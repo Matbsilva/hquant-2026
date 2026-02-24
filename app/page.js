@@ -205,7 +205,21 @@ function Md({ text }) {
       return;
     }
 
-    if (t.startsWith('**') && t.includes(':**')) {
+    // Inline metadata items that might be glued on the same line (like tags + classificacao)
+    if (t.includes('**') && t.includes(':**')) {
+      // Split by **KEY:** 
+      const parts = t.split(/(\*\*[A-ZÀ-Ú0-9\s/]+:\*\*)/g).filter(Boolean);
+      if (parts.length > 1 && parts[0].startsWith('**')) {
+        let metaEls = [];
+        for (let j = 0; j < parts.length; j += 2) {
+          const key = parts[j].replace(/\*\*/g, '').replace(':', '');
+          const val = (parts[j + 1] || '').trim();
+          metaEls.push(<p key={i + '-' + j} style={{ margin: '6px 0', fontSize: 12, lineHeight: 1.6 }}><span style={{ color: C.a, fontWeight: 600 }}>{key}:</span> <span style={{ color: C.lt }}>{val.replace(/\*\*/g, '')}</span></p>);
+        }
+        els.push(<div key={i}>{metaEls}</div>);
+        return;
+      }
+
       const clean = t.replace(/\*\*/g, ''); const idx = clean.indexOf(':');
       if (idx > 0) { els.push(<p key={i} style={{ margin: '6px 0', fontSize: 12, lineHeight: 1.6 }}><span style={{ color: C.a, fontWeight: 600 }}>{clean.slice(0, idx)}:</span> <span style={{ color: C.lt }}>{clean.slice(idx + 1).trim()}</span></p>); return; }
     }
