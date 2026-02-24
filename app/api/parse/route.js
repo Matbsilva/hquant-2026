@@ -1,32 +1,31 @@
 import { GoogleGenAI } from '@google/genai';
 import { NextResponse } from 'next/server';
 
-const SYSTEM_PROMPT = `Você é um parser técnico de composições de custos de engenharia civil. 
-Recebe um texto em Markdown contendo uma ou mais composições e deve retornar um JSON puro.
+const SYSTEM_PROMPT = `Você é um parser técnico de composições de custos de engenharia civil SUPER inteligente. 
+Recebe um texto em Markdown contendo uma ou mais composições e deve extrair os dados retornando um JSON puro.
+As composições podem ter pequenas variações visuais no Markdown (V3, V4, tabelas grandes, pequenas), mas o coração dos dados é o mesmo.
 
-REGRAS:
-1. Identifique TODAS as composições no texto. Elas geralmente começam com "# 🛠️ COMPOSIÇÃO" ou "# 🛠️ ITEM" seguido de código/título.
+REGRAS RÍGIDAS DE EXTRAÇÃO:
+1. Identifique TODAS as composições no texto. Geralmente iniciam com "# 🛠️ COMPOSIÇÃO" ou algo parecido.
 2. Para cada composição, extraia:
-   - codigo: o código da composição (ex: CIV-ENCH-CEL-20, IMP-VIA-7000)
-   - titulo: o título/nome descritivo da composição (ex: "ENCHIMENTO COM BLOCO CELULAR (H=20cm TOTAL)")
-   - unidade: a unidade de medida (m², m, un, etc)
-   - grupo: o grupo/categoria se houver
-   - quantidade_ref: quantidade de referência se mencionada
-   - tags: array de tags relevantes (palavras-chave do serviço)
-   - custo_unitario: o CUSTO DIRETO TOTAL por unidade em reais (número)
-   - hh_unitario: o TOTAL M.O. em HH por unidade (número da linha TOTAL M.O., coluna HH Ajustado)
-   - equipe: composição da equipe (ex: "1 Pedreiro + 1 Ajudante")
-   - produtividade: rendimento diário da equipe se disponível
-   - peso_unitario: peso total por unidade em kg se disponível
+   - codigo: Código principal (ex: CIV-ENCH-01)
+   - titulo: Título descritivo (sem o código, sem metragens. ex: Mureta Simples de Bloco Vazado)
+   - unidade: Unidade (ex: m², un, m³, pt)
+   - grupo: Grupo/categoria da obra.
+   - quantidade_ref: (ex: 100 m² ou 1 un)
+   - tags: array de palavras-chave.
+   - custo_unitario: Encontre a linha "CUSTO DIRETO TOTAL". Extraia o valor MONETÁRIO UNITÁRIO (em R$), ignorando as formatações textuais ao lado.
+   - hh_unitario: Encontre a linha "TOTAL M.O.". Extraia o número DECIMAL da coluna "HH Ajustado" ou "HH Total". NÃO PEGUE VALOR EM REAIS NESTA CHAVE, pegue o quantitativo decimal de horas (ex: 1.45).
+   - equipe: Leia qual é a "Composição da Equipe" (ex: "1 Pedreiro + 2 Ajudantes").
+   - produtividade: A produtividade diária se houver expressa (ex: 15.5 m²/dia).
+   - peso_unitario: O peso total dos MATERIAIS, se existir na tabela.
 
-3. IMPORTANTE: O titulo NÃO deve incluir o código ou informações como UNIDADE/QUANTIDADE. Extraia apenas o nome descritivo.
-4. Se o texto começar com um nome de projeto (como "# QUINTOANDAR" ou "# 6047/25 - HÍGIA"), ignore essa linha.
-5. Tags devem ser geradas a partir do contexto (tipo de serviço, materiais principais, etc).
+3. RESILIÊNCIA A FORMATOS: Seja tolerante a diferentes cabeçalhos, marcadores de lista ou números de espaços. Extraia as informações pelo SIGNIFICADO ("custo direto", "total M.O.", "produtividade").
+4. O JSON deve ser puro, sem markdown backticks \`\`\`.
 
-Retorne SOMENTE um JSON válido no formato:
-{"composicoes": [{ "codigo": "...", "titulo": "...", "unidade": "...", "grupo": "...", "tags": [...], "custo_unitario": 123.45, "hh_unitario": 2.5, "equipe": "...", "produtividade": "...", "peso_unitario": 123.0 }]}
-
-NUNCA inclua texto fora do JSON. Sem markdown, sem explicações.`;
+Retorne EXATAMENTE este formato:
+{"composicoes": [{ "codigo": "...", "titulo": "...", "unidade": "...", "grupo": "...", "tags": [...], "custo_unitario": 123.45, "hh_unitario": 2.50, "equipe": "...", "produtividade": "...", "peso_unitario": 123.0 }]}
+`;
 
 export async function POST(req) {
     try {

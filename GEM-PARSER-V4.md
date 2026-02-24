@@ -104,12 +104,12 @@ Sub-seções: 7.1 Nota (4 Blocos), 7.2 Fontes, 7.3 Quadro Produtividade, 7.4 An�
 
 **V3:** Encerrar APÓS a última frase da Seção 7.4 (geralmente "Aprovar para uso comercial").
 
-### 3.3 PRESERVAR OBRIGATORIAMENTE:
+### 3.3 PRESERVAR OBRIGATORIAMENTE E RE-FORMATAR:
 - Todos os símbolos técnicos: ✅, ❌, ⚠️, 🔴, 📸, 📦, ⏳, 😷
-- Blocos indentados com 4 espaços (contêm dados técnicos críticos)
+- **REGRA DE FORMATAÇÃO VISUAL (MUITO IMPORTANTE):** **PROIBIDO usar indentação de 4 espaços** antes das linhas de texto normal, pois isso gera um "bloco de código" cinza horroroso na visualização (wall-of-text). Transforme qualquer texto indentado em tópicos com marcadores (ex: `▸ ` ou `- `) encostados na margem esquerda, mantendo os negritos.
 - Separadores `* * *` entre seções
 - Tabelas markdown completas (preservar alinhamento)
-- Sub-seções numeradas (2.2, 3.1, 5.1, 6.1, etc.)
+- Sub-seções numeradas (2.2, 3.1, 5.1, 6.1, etc.) em texto normal e bold (`**2.2 OBSERVAÇÕES:**`)
 
 ---
 
@@ -117,12 +117,12 @@ Sub-seções: 7.1 Nota (4 Blocos), 7.2 Fontes, 7.3 Quadro Produtividade, 7.4 An�
 
 ### Regras de formatação:
 - Saída em Markdown puro (sem blocos de código envolvendo tudo)
-- Cada composição separada por `---` (horizontal rule)
-- Título com `#` (H1), seções com `###` (H3), sub-seções com `####` (H4)
-- Tabelas com alinhamento limpo
-- Blocos indentados preservados com 4 espaços
+- Cada composição separada por uma linha em branco.
+- Título com `#` (H1), seções com `###` (H3). Sub-seções com `**X.X TÍTULO:**` (Inline Bold) ao invés de H4, para manter a leitura contínua e agradável.
+- Tabelas com alinhamento limpo.
+- **Nenhum parágrafo deve começar com 4 espaços.** Use marcadores de lista `▸` para itens.
 
-### Modelo V4 de saída:
+### Modelo V4/V3 Híbrido de saída (Padrão Ouro Visual):
 
 ```
 # 🛠️ COMPOSIÇÃO: [CÓDIGO] - [TÍTULO MAIÚSCULAS]
@@ -139,17 +139,25 @@ Sub-seções: 7.1 Nota (4 Blocos), 7.2 Fontes, 7.3 Quadro Produtividade, 7.4 An�
 * * *
 
 ### **SEÇÃO 1: PREMISSAS TÉCNICAS E DE ESCOPO**
-[conteúdo preservado]
+**1.1 ESCOPO DETALHADO:**
+▸ [conteúdo convertido em tópicos soltos encostados na margem, sem 4 espaços de recuo]
+▸ [mais conteúdo...]
 
 * * *
 
 ### **SEÇÃO 2: LISTA DE INSUMOS — COM PERDAS CALCULADAS**
-[tabela + observações preservadas]
+[tabela]
+
+**2.2 OBSERVAÇÕES SOBRE INSUMOS:**
+▸ [observações em tópicos soltos...]
 
 * * *
 
 ### **SEÇÃO 3: ESTIMATIVA DE MÃO DE OBRA — HH POR FUNÇÃO**
-[tabela + decomposição preservadas]
+[tabela]
+
+**3.1 JUSTIFICATIVA DO FATOR:**
+▸ [decomposição preservada em texto normal com bullets]
 
 * * *
 
@@ -159,17 +167,27 @@ Sub-seções: 7.1 Nota (4 Blocos), 7.2 Fontes, 7.3 Quadro Produtividade, 7.4 An�
 * * *
 
 ### **SEÇÃO 5: INDICADORES CHAVE DE CUSTO E PLANEJAMENTO**
-[tabela + análise preservadas]
+[tabela]
+
+**5.1 ANÁLISE DE CUSTO:**
+▸ [análise preservada em texto normal com bullets]
 
 * * *
 
 ### **SEÇÃO 6: DICAS, SEGURANÇA E CRITÉRIOS DE QUALIDADE**
-[6.1 + 6.2 + 6.3 preservados]
+**6.1 DICAS:**
+✅ DICA 1: [texto na margem]
+
+**6.2 SEGURANÇA:**
+🔴 RISCO: [texto na margem]
 
 * * *
 
 ### **SEÇÃO 7: ANÁLISE TÉCNICA DO ENGENHEIRO**
-[7.1 + 7.2 + 7.3 + 7.4 preservados]
+**7.1 NOTA DO ENGENHEIRO:**
+[blocos de contexto limpos sem formato de código]
+
+[7.2 + 7.3 + 7.4 preservados]
 ```
 
 ---
@@ -183,6 +201,6 @@ Sub-seções: 7.1 Nota (4 Blocos), 7.2 Fontes, 7.3 Quadro Produtividade, 7.4 An�
 | Composição sem 7.3 Quadro Produtividade | Manter como está |
 | Seções fora de ordem | Reordenar para 1-7 |
 | Tabela com colunas desalinhadas | Alinhar colunas |
-| Blocos indentados sem 4 espaços | Normalizar para 4 espaços |
+| Blocos indentados com 4 espaços | Normalizar removendo 4 espaços e trocando por `▸` |
 | Texto de chat misturado entre seções | Remover texto de chat |
-| Múltiplas composições | Separar em blocos independentes com `---` |
+| Múltiplas composições | Separar em blocos independentes |
