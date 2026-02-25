@@ -149,7 +149,15 @@ function Md({ text }) {
 
   const flushT = () => {
     if (!tR.length) return;
-    const hdr = tR[0].split('|').filter(Boolean).map(c => c.trim().replace(/\*\*/g, ''));
+
+    let hdr = [];
+    if (!tR[0].includes('|')) {
+      // Old pipeless header fallback (V3 prompt format)
+      hdr = tR[0].replace(/^#\s*/, '').split(/\s{2,}|\t/).filter(Boolean).map(c => c.trim().replace(/\*\*/g, ''));
+    } else {
+      hdr = tR[0].split('|').filter(Boolean).map(c => c.trim().replace(/\*\*/g, ''));
+    }
+
     // Ignore the markdown divider `|---|---|` by checking if row contains more than just formatting chars
     const rows = tR.slice(1).filter(row => row.replace(/[\s|:\-]/g, '').length > 0);
     const is73 = lastH.includes('7.3') || lastH.includes('PRODUTIVIDADE') || hdr.some(h => h.toLowerCase().includes('produtividade') || h.toLowerCase().includes('variação'));
@@ -177,10 +185,12 @@ function Md({ text }) {
     const isIndented = l.startsWith('    ') || l.startsWith('\t');
 
     const nextLine = lines[i + 1] ? lines[i + 1].trim() : '';
-    const hasDividerNext = nextLine.includes('|') && (nextLine.includes('---') || nextLine.includes(':-'));
+    const isNextDivider = nextLine.includes('---') && (nextLine.includes('|') || nextLine.startsWith('---'));
     const isPipeRow = t.includes('|') && t.split('|').length > 2;
 
-    if ((t.startsWith('|') && t.endsWith('|')) || (isPipeRow && (tR.length > 0 || hasDividerNext))) { tR.push(t); return; }
+    if ((t.startsWith('|') && t.endsWith('|')) || (isPipeRow && (tR.length > 0 || isNextDivider)) || (tR.length === 0 && isNextDivider)) {
+      tR.push(t); return;
+    }
     if (tR.length) flushT();
 
     if (!t || t === '---' || t === '***' || t === '* * *') { if (t) els.push(<hr key={i} style={{ border: 'none', borderTop: `1px solid ${C.bd}`, margin: '20px 0' }} />); return; }
@@ -308,6 +318,7 @@ const ic = {
   copy: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>,
   x: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>,
   menu: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 6h16M4 12h16M4 18h16" /></svg>,
+  pin: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>,
 };
 
 export default function Home() {
@@ -328,6 +339,7 @@ export default function Home() {
   const [confirmDel, setConfirmDel] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [sbOpen, setSbOpen] = useState(false);
+  const [sbPinned, setSbPinned] = useState(true);
 
   const nf = (m, ok = true) => { setNt({ m, ok }); setTimeout(() => setNt(null), 3000); };
 
@@ -460,25 +472,30 @@ export default function Home() {
 
   return (
     <div style={{ minHeight: '100vh', background: BG, color: TX, fontFamily: FS, display: 'flex', overflowX: 'hidden' }}>
-      {isMobile && <button onClick={() => setSbOpen(!sbOpen)} style={{ position: 'fixed', top: 16, left: 16, zIndex: 60, background: SF, border: `1px solid ${BD}`, color: TX, padding: '6px 8px', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{ic.menu}</button>}
-      {isMobile && sbOpen && <div onClick={() => setSbOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 40 }} />}
+      {(isMobile || !sbPinned) && <button onClick={() => setSbOpen(!sbOpen)} style={{ position: 'fixed', top: 16, left: 16, zIndex: 60, background: SF, border: `1px solid ${BD}`, color: TX, padding: '6px 8px', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{ic.menu}</button>}
+      {(isMobile || !sbPinned) && sbOpen && <div onClick={() => setSbOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 40 }} />}
       {/* SIDEBAR */}
-      <div style={{ width: 210, background: SF, borderRight: `1px solid ${BD}`, display: 'flex', flexDirection: 'column', position: 'fixed', top: 0, left: isMobile ? (sbOpen ? 0 : -210) : 0, bottom: 0, zIndex: 50, transition: 'left 0.3s' }}>
-        <div onClick={() => { setVw('home'); setPid(null); setCid(null); if (isMobile) setSbOpen(false); }} style={{ padding: '18px 14px', borderBottom: `1px solid ${BD}`, display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
+      <div style={{ width: 210, background: SF, borderRight: `1px solid ${BD}`, display: 'flex', flexDirection: 'column', position: 'fixed', top: 0, left: (isMobile || !sbPinned) ? (sbOpen ? 0 : -210) : 0, bottom: 0, zIndex: 50, transition: 'left 0.3s' }}>
+        <div onClick={() => { setVw('home'); setPid(null); setCid(null); if (isMobile || !sbPinned) setSbOpen(false); }} style={{ padding: '18px 14px', borderBottom: `1px solid ${BD}`, display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
           <img src="/logo.png" alt="H-QUANT" style={{ height: 32, objectFit: 'contain' }} />
           <div><div style={{ fontSize: 13, fontWeight: 700, fontFamily: FN, letterSpacing: '0.5px' }}>H-QUANT</div><div style={{ fontSize: 9, color: TL, letterSpacing: '1px' }}>COMPOSIÇÕES</div></div>
         </div>
         <div style={{ padding: '10px 0', flex: 1 }}>
           {[['home', ic.folder, 'Projetos'], ['busca', ic.search, 'Buscar Composição']].map(([id, icon, label]) => {
             const act = vw === id || (id === 'home' && ['proj', 'comp'].includes(vw));
-            return <div key={id} onClick={() => { setVw(id); setPid(null); setCid(null); if (id === 'busca') setQ(''); if (isMobile) setSbOpen(false); }} style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '10px 16px', cursor: 'pointer', color: act ? A : TL, background: act ? AD : 'transparent', borderLeft: act ? `2px solid ${A}` : '2px solid transparent', fontSize: 13, fontWeight: act ? 600 : 400 }}>{icon}<span>{label}</span></div>;
+            return <div key={id} onClick={() => { setVw(id); setPid(null); setCid(null); if (id === 'busca') setQ(''); if (isMobile || !sbPinned) setSbOpen(false); }} style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '10px 16px', cursor: 'pointer', color: act ? A : TL, background: act ? AD : 'transparent', borderLeft: act ? `2px solid ${A}` : '2px solid transparent', fontSize: 13, fontWeight: act ? 600 : 400 }}>{icon}<span>{label}</span></div>;
           })}
         </div>
+        {!isMobile && (
+          <div style={{ padding: '10px 16px', cursor: 'pointer', color: TL, display: 'flex', alignItems: 'center', gap: 9, fontSize: 13 }} onClick={() => { setSbPinned(!sbPinned); setSbOpen(false); }}>
+            {sbPinned ? <>{ic.pin}<span>Recolher Menu</span></> : ''}
+          </div>
+        )}
         <div style={{ padding: '12px 16px', borderTop: `1px solid ${BD}`, fontSize: 12, color: TL }}>{projetos.length} projetos • {tot} composições</div>
       </div>
 
       {/* MAIN */}
-      <div style={{ marginLeft: isMobile ? 0 : 210, flex: 1, padding: isMobile ? '70px 20px 20px' : '0 32px 32px', minHeight: '100vh', maxWidth: 1600, transition: 'all 0.3s', width: '100%' }}>
+      <div style={{ marginLeft: (!isMobile && sbPinned) ? 210 : 0, flex: 1, padding: (!isMobile && sbPinned) ? '0 32px 32px' : '70px 32px 32px', minHeight: '100vh', maxWidth: 1600, transition: 'all 0.3s', width: '100%' }}>
         {nt && <div style={{ position: 'fixed', top: 14, right: 14, zIndex: 999, padding: '10px 18px', borderRadius: 8, background: nt.ok ? GR : RD, color: '#fff', fontSize: 12, fontWeight: 600, boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>{nt.ok ? '✓' : '✕'} {nt.m}</div>}
 
         {/* HOME */}
