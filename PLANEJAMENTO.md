@@ -10,8 +10,9 @@ Este documento guarda as ideias, melhorias e funcionalidades planejadas para o f
 | A5 | Validação matemática (somas consistentes) | Composer | Média | ⏳ Pendente |
 | A6 | Alerta de variação de preço >20% | Biblioteca | Média | ⏳ Pendente |
 | A7 | Aliases de insumos (busca fuzzy) | Biblioteca | Média | ⏳ Pendente |
-| A8 | Confiabilidade de fonte (🟢🟡🔴) | Biblioteca | Baixa | ⏳ Pendente |
-| A9 | Versionamento composições (v1, v2) | Supabase | Baixa | ⏳ Pendente |
+| A8 | Recolher e expandir painel lateral UI/UX | UI | Alta | ✅ Concluído |
+| A9 | Confiabilidade de fonte (🟢🟡🔴) | Biblioteca | Baixa | ⏳ Pendente |
+| A10 | Versionamento composições (v1, v2) | Supabase | Baixa | ⏳ Pendente |
 | A10 | Exportação Notion | Integração | Futuro | ⏳ Pendente |
 
 ---
