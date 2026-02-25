@@ -152,13 +152,15 @@ function Md({ text }) {
 
     let hdr = [];
     if (!tR[0].includes('|')) {
-      // Old pipeless header fallback (V3 prompt format)
       hdr = tR[0].replace(/^#\s*/, '').split(/\s{2,}|\t/).filter(Boolean).map(c => c.trim().replace(/\*\*/g, ''));
     } else {
       hdr = tR[0].split('|').filter(Boolean).map(c => c.trim().replace(/\*\*/g, ''));
+      if (tR[0].startsWith('#')) {
+        if (hdr.length > 0 && hdr[0] === '#') hdr.shift();
+        else if (hdr.length > 0) hdr[0] = hdr[0].replace(/^#\s*/, '');
+      }
     }
 
-    // Ignore the markdown divider `|---|---|` by checking if row contains more than just formatting chars
     const rows = tR.slice(1).filter(row => row.replace(/[\s|:\-]/g, '').length > 0);
     const is73 = lastH.includes('7.3') || lastH.includes('PRODUTIVIDADE') || hdr.some(h => h.toLowerCase().includes('produtividade') || h.toLowerCase().includes('variação'));
     els.push(
@@ -184,16 +186,28 @@ function Md({ text }) {
     let t = l.trim();
     const isIndented = l.startsWith('    ') || l.startsWith('\t');
 
-    const nextLine = lines[i + 1] ? lines[i + 1].trim() : '';
-    const isNextDivider = nextLine.includes('---') && (nextLine.includes('|') || nextLine.startsWith('---'));
-    const isPipeRow = t.includes('|') && t.split('|').length > 2;
+    let isNextDivider = false;
+    for (let j = 1; j <= 2; j++) {
+      if (lines[i + j] !== undefined) {
+        let nl = lines[i + j].trim();
+        if (!nl) continue;
+        if (nl.includes('-') && (nl.includes('|') || nl.startsWith('-'))) {
+          if (nl.replace(/[\s|:\-]/g, '').length === 0) isNextDivider = true;
+        }
+        break;
+      }
+    }
+    const isPipeRow = t.includes('|') && t.split('|').length > 1;
 
     if ((t.startsWith('|') && t.endsWith('|')) || (isPipeRow && (tR.length > 0 || isNextDivider)) || (tR.length === 0 && isNextDivider)) {
       tR.push(t); return;
     }
     if (tR.length) flushT();
 
-    if (!t || t === '---' || t === '***' || t === '* * *') { if (t) els.push(<hr key={i} style={{ border: 'none', borderTop: `1px solid ${C.bd}`, margin: '20px 0' }} />); return; }
+    // ignore empty lines unless they were skipped by table loop
+    if (!t) return;
+
+    if (t === '---' || t === '***' || t === '* * *') { els.push(<hr key={i} style={{ border: 'none', borderTop: `1px solid ${C.bd}`, margin: '20px 0' }} />); return; }
 
     if (t.startsWith('### ')) { const txt = t.slice(4).replace(/\*\*/g, ''); lastH = txt; els.push(<h3 key={i} style={{ color: C.ay, fontSize: 15, fontWeight: 700, margin: '28px 0 12px', padding: '6px 0', borderBottom: `1px solid ${C.bd}` }}>{txt}</h3>); return; }
 
@@ -489,7 +503,7 @@ export default function Home() {
         </div>
         {!isMobile && (
           <div style={{ padding: '10px 16px', cursor: 'pointer', color: TL, display: 'flex', alignItems: 'center', gap: 9, fontSize: 13 }} onClick={() => { setSbPinned(!sbPinned); setSbOpen(false); }}>
-            {sbPinned ? <>{ic.pin}<span>Recolher Menu</span></> : ''}
+            {ic.pin}<span>{sbPinned ? 'Recolher Menu' : 'Fixar Menu'}</span>
           </div>
         )}
         <div style={{ padding: '12px 16px', borderTop: `1px solid ${BD}`, fontSize: 12, color: TL }}>{projetos.length} projetos • {tot} composições</div>
