@@ -149,7 +149,15 @@ function Md({ text }) {
 
   const flushT = () => {
     if (!tR.length) return;
-    const hdr = tR[0].split('|').filter(Boolean).map(c => c.trim().replace(/\*\*/g, ''));
+
+    let hdr = [];
+    if (!tR[0].includes('|')) {
+      // Old pipeless header fallback (V3 prompt format)
+      hdr = tR[0].replace(/^#\s*/, '').split(/\s{2,}|\t/).filter(Boolean).map(c => c.trim().replace(/\*\*/g, ''));
+    } else {
+      hdr = tR[0].split('|').filter(Boolean).map(c => c.trim().replace(/\*\*/g, ''));
+    }
+
     // Ignore the markdown divider `|---|---|` by checking if row contains more than just formatting chars
     const rows = tR.slice(1).filter(row => row.replace(/[\s|:\-]/g, '').length > 0);
     const is73 = lastH.includes('7.3') || lastH.includes('PRODUTIVIDADE') || hdr.some(h => h.toLowerCase().includes('produtividade') || h.toLowerCase().includes('variação'));
@@ -176,7 +184,13 @@ function Md({ text }) {
     let t = l.trim();
     const isIndented = l.startsWith('    ') || l.startsWith('\t');
 
-    if (t.startsWith('|') && t.endsWith('|')) { tR.push(t); return; }
+    const nextLine = lines[i + 1] ? lines[i + 1].trim() : '';
+    const isNextDivider = nextLine.includes('---') && (nextLine.includes('|') || nextLine.startsWith('---'));
+    const isPipeRow = t.includes('|') && t.split('|').length > 2;
+
+    if ((t.startsWith('|') && t.endsWith('|')) || (isPipeRow && (tR.length > 0 || isNextDivider)) || (tR.length === 0 && isNextDivider)) {
+      tR.push(t); return;
+    }
     if (tR.length) flushT();
 
     if (!t || t === '---' || t === '***' || t === '* * *') { if (t) els.push(<hr key={i} style={{ border: 'none', borderTop: `1px solid ${C.bd}`, margin: '20px 0' }} />); return; }
