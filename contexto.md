@@ -83,3 +83,12 @@ Toda nova feature, deploy ou bugfix crítico desenvolvido colaborativamente entr
     - **Destaque Visual nos Indicadores (Contraste):** Os "Cards" de Indicadores na visualização da composição perderam impacto com o novo Fundo Azul. O código JSX foi atualizado injetando uma propriedade flexível `highlight` que aplica um "tint" de transparência (8-10%) da cor nativa do indicador acompanhado de uma borda destacada superior. Os blocos de `Mão de Obra`, `Equipamento`, `HH` e `Produtividade` agora saltam visualmente com identidades únicas (Azul, Dourado, Verde) como dashboards modernos corporativos.
     - **Menu Lateral Responsivo (Mobile-first ready):** Injeção de React States (`isMobile` e `sbOpen`) atrelados a um listener do tamanho da tela (`window.innerWidth`). Em celulares ou telas pequenas, o menu esquerdo recolhe por completo escondendo seus 210px fora da tela (Off-canvas) e um discreto botão Menu "Hambúrguer" passa a controlá-lo, liberando o precioso espaço para os cálculos orçamentários vitais.
 - **Status:** Entregue na branch ativa (`theme-gold-slate`).
+
+---
+
+### [24 de Fevereiro de 2026] - Correção do Parser (Look-ahead) e Painel Lateral Fixável (Pin/Unpin)
+- **Objetivo/Motivo:** Finalizar as validações do parser Markdown garantindo que composições antigas com formatação irregular (Prompt V3) funcionem 100%, além de aprimorar a usabilidade do painel de navegação em telas cheias e reduzidas no desktop.
+- **Alterações Arquiteturais ou UI:**
+    - **Leitura Imune a "Blank Lines" (Look-ahead):** O algoritmo de tabelas do `<Md />` agora tem uma visão profunda de pular linhas em branco caso a IA se esqueça de colocar os delimitadores. Ele lê à frente e encontra os traços da tabela para amarrar os títulos perfeitamente. Colunas soltas, nunca mais.
+    - **Toggle Expand/Collapse do Menu (`sbPinned`):** O layout grid Flexbox do aplicativo recebeu atualizações matemáticas para expandir 100% o campo de visualização se o menu lateral for recolhido por completo na opção Desktop, controlando via React State a imersão total na planilha orçamentária.
+- **Status:** Concluído. Branch `main` e `theme-gold-slate` perfeitamente alinhadas com as melhorias.
