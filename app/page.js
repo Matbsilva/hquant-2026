@@ -462,6 +462,27 @@ export default function Home() {
   const [selMode, setSelMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set());
   const [confirmBatchDel, setConfirmBatchDel] = useState(false);
+  const [dragInfo, setDragInfo] = useState(null);
+  const [seqMap, setSeqMap] = useState({});
+  const [validationWarning, setValidationWarning] = useState(null);
+
+  useEffect(() => {
+    if (vw !== 'proj') {
+      if (Object.keys(seqMap).length > 0) setSeqMap({});
+    } else if (pid && pComps.length > 0) {
+      setSeqMap(prev => {
+        let newMap = { ...prev };
+        let changed = false;
+        pComps.forEach((c) => {
+          if (!newMap[c.id]) {
+            newMap[c.id] = Object.keys(newMap).length + 1;
+            changed = true;
+          }
+        });
+        return changed ? newMap : prev;
+      });
+    }
+  }, [vw, pid, pComps]);
 
   const nf = (m, ok = true) => { setNt({ m, ok }); setTimeout(() => setNt(null), 3000); };
 
@@ -554,15 +575,44 @@ export default function Home() {
     setAiParsing(false);
   };
 
-  const addComp = async () => {
+  const addComp = async (force = false) => {
     if (!fC.trim() || !pid) return;
+
+    const parts = splitComps(fC);
+
+    if (!force) {
+      const missingSectionsComps = [];
+      parts.forEach((txt, idx) => {
+        const missing = [];
+        for (let i = 1; i <= 7; i++) {
+          if (!new RegExp(`SEÇÃO ${i}|SECAO ${i}`, 'i').test(txt)) {
+            missing.push(i);
+          }
+        }
+        if (missing.length > 0) {
+          const tituloFallback = txt.split('\n').find(l => l.trim().length > 5)?.replace(/[#*🛠️]/g, '').trim().slice(0, 100) || `Composição ${idx + 1}`;
+          const title = aiComps && aiComps[idx] ? (aiComps[idx].titulo || tituloFallback) : tituloFallback;
+          missingSectionsComps.push({ title, missing });
+        }
+      });
+
+      if (missingSectionsComps.length > 0) {
+        setValidationWarning(missingSectionsComps);
+        return;
+      }
+    }
+
+    setValidationWarning(null);
     setImporting(true);
     let rows;
+    const baseTime = Date.now();
+
     // Use AI-parsed data if available
     if (aiComps && aiComps.length > 0) {
       const textParts = splitComps(fC);
       rows = aiComps.map((c, i) => ({
         projeto_id: pid,
+        created_at: new Date(baseTime + i * 1000).toISOString(),
         codigo: c.codigo || 'SEM-CÓD',
         titulo: c.titulo || 'Composição',
         unidade: c.unidade || '',
@@ -574,11 +624,11 @@ export default function Home() {
       }));
     } else {
       // Regex fallback
-      const parts = splitComps(fC);
-      rows = parts.map(txt => {
+      rows = parts.map((txt, i) => {
         const p = parseComp(txt);
         return {
           projeto_id: pid,
+          created_at: new Date(baseTime + i * 1000).toISOString(),
           codigo: p.codigo || 'SEM-CÓD',
           titulo: p.titulo || txt.split('\n').find(l => l.trim().length > 5)?.replace(/[#*🛠️]/g, '').trim().slice(0, 100) || 'Composição',
           unidade: p.unidade || '',
@@ -603,6 +653,35 @@ export default function Home() {
     setComposicoes(prev => prev.filter(c => c.id !== id));
     if (cid === id) { setVw('proj'); setCid(null); }
     nf('Excluída');
+  };
+
+  const onDropComp = async (e, targetCid) => {
+    e.preventDefault();
+    setDragInfo(null);
+    if (selMode) return;
+    const draggedId = e.dataTransfer.getData('text/plain');
+    if (!draggedId || draggedId === targetCid) return;
+
+    const compList = [...pComps];
+    const fromIdx = compList.findIndex(c => c.id === draggedId);
+    const toIdx = compList.findIndex(c => c.id === targetCid);
+    if (fromIdx < 0 || toIdx < 0) return;
+
+    const [moved] = compList.splice(fromIdx, 1);
+    compList.splice(toIdx, 0, moved);
+
+    const earliest = compList.reduce((min, c) => Math.min(min, new Date(c.created_at).getTime()), Date.now() - compList.length * 1000);
+    const updates = compList.map((c, i) => ({ ...c, created_at: new Date(earliest + i * 1000).toISOString() }));
+
+    setComposicoes(prev => {
+      const other = prev.filter(p => p.projeto_id !== pid);
+      return [...other, ...updates].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    });
+
+    const { error } = await supabase.from('composicoes').upsert(updates.map(({ id, projeto_id, codigo, titulo, unidade, grupo, tags, conteudo_completo, custo_unitario, hh_unitario, created_at }) => ({
+      id, projeto_id, codigo, titulo, unidade, grupo, tags, conteudo_completo, custo_unitario, hh_unitario, created_at
+    })));
+    if (error) nf('Erro ao salvar nova ordem', false);
   };
 
   const batchCount = fC.trim() ? splitComps(fC).length : 0;
@@ -698,7 +777,13 @@ export default function Home() {
             const isSel = selectedIds.has(c.id);
 
             return (
-              <div key={c.id} style={{ ...cd, padding: '16px 20px', marginBottom: 12, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, borderColor: isSel ? A : BD, background: isSel ? `rgba(245,158,11,0.06)` : SF, transition: 'all 0.15s' }}
+              <div key={c.id} draggable={!selMode}
+                onDragStart={e => { e.dataTransfer.setData('text/plain', c.id); setDragInfo(c.id); }}
+                onDragEnd={() => setDragInfo(null)}
+                onDragOver={e => { e.preventDefault(); if (dragInfo && dragInfo !== c.id) e.currentTarget.style.borderTop = `2px solid ${A}`; }}
+                onDragLeave={e => { if (dragInfo && dragInfo !== c.id) e.currentTarget.style.borderTop = ''; }}
+                onDrop={e => { e.currentTarget.style.borderTop = ''; onDropComp(e, c.id); }}
+                style={{ ...cd, padding: '16px 20px', marginBottom: 12, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, borderColor: isSel ? A : BD, background: dragInfo === c.id ? `rgba(245,158,11,0.02)` : (isSel ? `rgba(245,158,11,0.06)` : SF), transition: 'all 0.15s', cursor: selMode ? 'pointer' : (dragInfo ? 'grabbing' : 'grab') }}
                 onClick={() => { if (selMode) { toggleSel(c.id); } else { setCid(c.id); setVw('comp'); } }}
                 onMouseEnter={e => { if (!isSel) { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; } }}
                 onMouseLeave={e => { if (!isSel) { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; } }}
@@ -710,7 +795,7 @@ export default function Home() {
                         {isSel && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={BG} strokeWidth="3"><path d="M20 6L9 17l-5-5" /></svg>}
                       </div>
                     ) : (
-                      <div style={{ color: A, fontSize: 11, fontFamily: FN, background: AD, borderRadius: 6, padding: '4px 10px', fontWeight: 800, textAlign: 'center', marginTop: 2 }}>#{String(i + 1).padStart(2, '0')}</div>
+                      <div style={{ color: A, fontSize: 11, fontFamily: FN, background: AD, borderRadius: 6, padding: '4px 10px', fontWeight: 800, textAlign: 'center', marginTop: 2 }}>#{String(seqMap[c.id] || i + 1).padStart(2, '0')}</div>
                     )}
                     {!selMode && <div style={{ display: 'flex', flexDirection: 'column', gap: 4, width: '100%' }}>
                       <button className="list-btn" title="Copiar" onClick={e => { e.stopPropagation(); navigator.clipboard.writeText(normalizeComposition(c.conteudo_completo) || ''); setNt({ ok: true, m: 'Copiado!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: '5px 4px', border: 'none', background: 'rgba(56, 189, 248, 0.1)', color: '#38BDF8', width: '100%', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = '#38BDF8'; e.currentTarget.style.color = '#fff'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(56, 189, 248, 0.1)'; e.currentTarget.style.color = '#38BDF8'; }}>{ic.copy}</button>
@@ -724,10 +809,30 @@ export default function Home() {
                       {c.codigo && <span style={{ ...bg(A), fontSize: 10, padding: '3px 8px', letterSpacing: '0.5px' }}>{c.codigo}</span>}
                     </div>
                     <div style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.4, color: '#FFFFFF', marginBottom: 6 }}>{cleanMd(c.titulo)}</div>
-                    <div style={{ fontSize: 11, color: TM, display: 'flex', gap: 14, flexWrap: 'wrap', lineHeight: 1.4 }}>
-                      {dataV && <span><strong style={{ color: TL, fontWeight: 600 }}>DATA:</strong> {dataV} &nbsp; </span>}
-                      {det.equipe && <span style={{ whiteSpace: 'normal', display: 'block' }}><strong style={{ color: TL, fontWeight: 600 }}>EQUIPE:</strong> {det.equipe.slice(0, 200)}{det.equipe.length > 200 ? '...' : ''}</span>}
-                    </div>
+
+                    {(() => {
+                      const mData = c.conteudo_completo.match(/\*\*DATA:\*\*\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/DATA:\s*(.*?)(?:\n|$|\|)/i);
+                      const dataV = mData ? mData[1].split(/\*\*/)[0].trim() : '';
+
+                      const mTurno = c.conteudo_completo.match(/\*\*TURNO:\*\*\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/TURNO:\s*(.*?)(?:\n|$|\|)/i);
+                      const turnoV = mTurno ? mTurno[1].split(/\*\*/)[0].trim() : '';
+
+                      const mFator = c.conteudo_completo.match(/\*\*FATOR:\*\*\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/FATOR:\s*(.*?)(?:\n|$|\|)/i);
+                      const fatorV = mFator ? mFator[1].split(/\*\*/)[0].trim() : '';
+
+                      const mQref = c.conteudo_completo.match(/\*\*QUANTIDADE (?:REF|DE REFERÊNCIA):\*\*\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/QUANTIDADE (?:REF|DE REFERÊNCIA):\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/\*\*REFERÊNCIA:\*\*\s*(.*?)(?:\n|$|\|)/i);
+                      const qrefV = mQref ? mQref[1].split(/\*\*/)[0].trim() : (c.qref || '');
+
+                      return (
+                        <div style={{ fontSize: 11, color: TM, display: 'flex', gap: 14, flexWrap: 'wrap', lineHeight: 1.4 }}>
+                          {dataV && <span><strong style={{ color: TL, fontWeight: 600 }}>DATA:</strong> {dataV} &nbsp; </span>}
+                          {turnoV && <span><strong style={{ color: TL, fontWeight: 600 }}>TURNO:</strong> {turnoV} &nbsp; </span>}
+                          {fatorV && <span><strong style={{ color: TL, fontWeight: 600 }}>FATOR:</strong> {fatorV} &nbsp; </span>}
+                          {qrefV && <span><strong style={{ color: TL, fontWeight: 600 }}>REF:</strong> {qrefV} &nbsp; </span>}
+                          {det.equipe && <span style={{ whiteSpace: 'normal', display: 'block' }}><strong style={{ color: TL, fontWeight: 600 }}>EQUIPE:</strong> {det.equipe.slice(0, 200)}{det.equipe.length > 200 ? '...' : ''}</span>}
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
 
@@ -776,6 +881,17 @@ export default function Home() {
               </button>
             </div>
           )}
+
+          {/* FAB BUTTON FOR ADD COMP */}
+          <button
+            title="Adicionar Composição"
+            onClick={() => { setMl('nc'); setFC(''); }}
+            style={{ position: 'fixed', bottom: 32, right: 32, background: A, color: BG, width: 60, height: 60, borderRadius: 30, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 20px rgba(245,158,11,0.5)', cursor: 'pointer', border: 'none', zIndex: 90, transition: 'all 0.2s' }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.boxShadow = '0 6px 24px rgba(245,158,11,0.6)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(245,158,11,0.5)'; }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14" /></svg>
+          </button>
         </>}
 
 
@@ -786,6 +902,9 @@ export default function Home() {
           const compIdx = pComps.findIndex(c => c.id === comp.id);
           const seqNum = compIdx >= 0 ? `#${String(compIdx + 1).padStart(2, '0')}` : '';
           const cleanGrupo = comp.grupo ? comp.grupo.split(/\*\*/)[0].trim() : '';
+
+          const mQref = comp.conteudo_completo.match(/\*\*QUANTIDADE (?:REF|DE REFERÊNCIA):\*\*\s*(.*?)(?:\n|$|\|)/i) || comp.conteudo_completo.match(/QUANTIDADE (?:REF|DE REFERÊNCIA):\s*(.*?)(?:\n|$|\|)/i) || comp.conteudo_completo.match(/\*\*REFERÊNCIA:\*\*\s*(.*?)(?:\n|$|\|)/i);
+          const qrefDetailV = mQref ? mQref[1].split(/\*\*/)[0].trim() : (comp.qref || '');
 
           const indCard = (label, value, color, suffix, highlight = false) => value != null ? (
             <div style={{ background: highlight ? `${color}10` : BG, border: `1px solid ${highlight ? `${color}30` : BD}`, borderTop: highlight ? `3px solid ${color}` : `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
@@ -808,26 +927,22 @@ export default function Home() {
             {/* --- INDICADORES CONSOLIDADOS --- */}
             <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 10, padding: 20, marginBottom: 20 }}>
               <div style={{ fontSize: 11, color: A, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 14 }}>📊 Indicadores</div>
-              {/* Custos */}
+              {/* Row 1: Custos */}
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
                 {indCard(`Custo Direto Total/${un}`, comp.custo_unitario ? Number(comp.custo_unitario) : null, A, `R$/${un}`)}
                 {indCard(`Material/${un}`, det.custo_material, '#FBBF24', `R$/${un}`)}
                 {indCard(`Mão de Obra/${un}`, det.custo_mo, BL, `R$/${un}`, true)}
                 {indCard(`Equipamento/${un}`, det.custo_equip, '#A78BFA', `R$/${un}`, true)}
-                {indCard(`Peso/${un}`, det.peso_total, TL, 'kg')}
               </div>
-              {/* HH por função */}
-              {det.hhProfs.length > 0 && <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
-                {det.hhProfs.map((p, i) => <div key={i} style={{ background: `${BL}10`, border: `1px solid ${BL}30`, borderTop: `3px solid ${BL}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
-                  <div style={{ fontSize: 10, color: BL, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>HH {p.nome}</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{p.hh.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} <span style={{ fontSize: 11, color: BL, fontWeight: 500 }}>HH/{un}</span></div>
-                </div>)}
-              </div>}
-              {/* Produtividade + Equipe + HH Total + Rendimento */}
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {/* Row 2: Produtividade, Rendimento, HH, Equipe */}
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
                 {det.produtividade && <div style={{ background: `${A}10`, border: `1px solid ${A}30`, borderTop: `3px solid ${A}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
                   <div style={{ fontSize: 10, color: A, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Produtividade/Dia</div>
                   <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{det.produtividade} <span style={{ fontSize: 11, color: A, fontWeight: 500 }}>{un}/dia</span></div>
+                </div>}
+                {det.rendimento && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Rendimento Diário</div>
+                  <div style={{ fontSize: 14, color: GR, fontWeight: 600, fontFamily: FN }}>{det.rendimento}</div>
                 </div>}
                 {comp.hh_unitario && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
                   <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>HH Total Equipe/{un}</div>
@@ -837,11 +952,23 @@ export default function Home() {
                   <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Composição da Equipe</div>
                   <div style={{ fontSize: 14, color: TX, fontWeight: 500 }}>{det.equipe}</div>
                 </div>}
-                {det.rendimento && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
-                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Rendimento Diário</div>
-                  <div style={{ fontSize: 14, color: GR, fontWeight: 600, fontFamily: FN }}>{det.rendimento}</div>
-                </div>}
               </div>
+              {/* Row 3: Quantidade Ref, Peso Total */}
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+                {qrefDetailV && <div style={{ background: '#10B98110', border: `1px solid #10B98130`, borderTop: `3px solid #10B981`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: '#10B981', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Qtd. de Referência</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{qrefDetailV}</div>
+                </div>}
+                {indCard(`Peso/${un}`, det.peso_total, TL, 'kg')}
+              </div>
+              {/* HH por função */}
+              {det.hhProfs.length > 0 && <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {det.hhProfs.map((p, i) => <div key={i} style={{ background: `${BL}10`, border: `1px solid ${BL}30`, borderTop: `3px solid ${BL}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: BL, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>HH {p.nome}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{p.hh.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} <span style={{ fontSize: 11, color: BL, fontWeight: 500 }}>HH/{un}</span></div>
+                </div>)}
+              </div>}
+              {/* HH por função END */}
             </div>
             <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 10, padding: 26 }}><Md text={normalizeComposition(comp.conteudo_completo)} /></div>
           </>;
@@ -878,115 +1005,143 @@ export default function Home() {
           {!q && <div style={{ textAlign: 'center', padding: 60, color: TM, opacity: 0.3 }}><div style={{ fontSize: 28, marginBottom: 8 }}>🔍</div><p>Digite para buscar...</p></div>}
         </>}
 
-      </div>
+      </div >
 
       {/* DELETE CONFIRMATION MODAL */}
-      {confirmDel && <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setConfirmDel(null)}>
-        <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 12, padding: 28, maxWidth: 400, width: '90%' }} onClick={e => e.stopPropagation()}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: RD, marginBottom: 12 }}>⚠️ Apagar composição?</div>
-          {confirmDel.codigo && <div style={{ ...bg(RD), marginBottom: 8 }}>{confirmDel.codigo}</div>}
-          <div style={{ fontSize: 13, color: TL, marginBottom: 6 }}>{cleanMd(confirmDel.titulo)}</div>
-          <div style={{ fontSize: 11, color: TM, marginBottom: 20 }}>Esta ação não pode ser desfeita.</div>
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-            <button onClick={() => setConfirmDel(null)} style={{ ...bt('g'), padding: '8px 16px' }}>Cancelar</button>
-            <button onClick={async () => { const id = confirmDel.id; setConfirmDel(null); await supabase.from('composicoes').delete().eq('id', id); setComposicoes(prev => prev.filter(c => c.id !== id)); if (cid === id) { setVw('proj'); setCid(null); } nf('Composição excluída'); }} style={{ ...bt('d'), padding: '8px 16px' }}>Apagar</button>
+      {
+        confirmDel && <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setConfirmDel(null)}>
+          <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 12, padding: 28, maxWidth: 400, width: '90%' }} onClick={e => e.stopPropagation()}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: RD, marginBottom: 12 }}>⚠️ Apagar composição?</div>
+            {confirmDel.codigo && <div style={{ ...bg(RD), marginBottom: 8 }}>{confirmDel.codigo}</div>}
+            <div style={{ fontSize: 13, color: TL, marginBottom: 6 }}>{cleanMd(confirmDel.titulo)}</div>
+            <div style={{ fontSize: 11, color: TM, marginBottom: 20 }}>Esta ação não pode ser desfeita.</div>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              <button onClick={() => setConfirmDel(null)} style={{ ...bt('g'), padding: '8px 16px' }}>Cancelar</button>
+              <button onClick={async () => { const id = confirmDel.id; setConfirmDel(null); await supabase.from('composicoes').delete().eq('id', id); setComposicoes(prev => prev.filter(c => c.id !== id)); if (cid === id) { setVw('proj'); setCid(null); } nf('Composição excluída'); }} style={{ ...bt('d'), padding: '8px 16px' }}>Apagar</button>
+            </div>
           </div>
         </div>
-      </div>}
+      }
 
 
       {/* BATCH DELETE CONFIRMATION MODAL */}
-      {confirmBatchDel && <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 1001, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setConfirmBatchDel(false)}>
-        <div style={{ background: SF, border: `1px solid ${RD}`, borderRadius: 12, padding: 28, maxWidth: 420, width: '90%' }} onClick={e => e.stopPropagation()}>
-          <div style={{ fontSize: 15, fontWeight: 700, color: RD, marginBottom: 10 }}>⚠️ Excluir {selectedIds.size} composiç{selectedIds.size !== 1 ? 'ões' : 'ão'}?</div>
-          <div style={{ fontSize: 12, color: TL, marginBottom: 6 }}>As seguintes composições serão removidas permanentemente:</div>
-          <div style={{ maxHeight: 160, overflowY: 'auto', marginBottom: 16, display: 'flex', flexDirection: 'column', gap: 4 }}>
-            {pComps.filter(c => selectedIds.has(c.id)).map(c => (
-              <div key={c.id} style={{ fontSize: 11, color: TM, display: 'flex', gap: 6, alignItems: 'center' }}>
-                {c.codigo && <span style={{ ...bg(RD), fontSize: 8 }}>{c.codigo}</span>}
-                <span style={{ color: TL }}>{cleanMd(c.titulo).slice(0, 70)}...</span>
-              </div>
-            ))}
-          </div>
-          <div style={{ fontSize: 11, color: TM, marginBottom: 20 }}>Esta ação não pode ser desfeita.</div>
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-            <button onClick={() => setConfirmBatchDel(false)} style={{ ...bt('g'), padding: '8px 16px' }}>Cancelar</button>
-            <button onClick={batchDelete} style={{ ...bt('d'), padding: '8px 16px' }}>Excluir {selectedIds.size}</button>
+      {
+        confirmBatchDel && <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 1001, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setConfirmBatchDel(false)}>
+          <div style={{ background: SF, border: `1px solid ${RD}`, borderRadius: 12, padding: 28, maxWidth: 420, width: '90%' }} onClick={e => e.stopPropagation()}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: RD, marginBottom: 10 }}>⚠️ Excluir {selectedIds.size} composiç{selectedIds.size !== 1 ? 'ões' : 'ão'}?</div>
+            <div style={{ fontSize: 12, color: TL, marginBottom: 6 }}>As seguintes composições serão removidas permanentemente:</div>
+            <div style={{ maxHeight: 160, overflowY: 'auto', marginBottom: 16, display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {pComps.filter(c => selectedIds.has(c.id)).map(c => (
+                <div key={c.id} style={{ fontSize: 11, color: TM, display: 'flex', gap: 6, alignItems: 'center' }}>
+                  {c.codigo && <span style={{ ...bg(RD), fontSize: 8 }}>{c.codigo}</span>}
+                  <span style={{ color: TL }}>{cleanMd(c.titulo).slice(0, 70)}...</span>
+                </div>
+              ))}
+            </div>
+            <div style={{ fontSize: 11, color: TM, marginBottom: 20 }}>Esta ação não pode ser desfeita.</div>
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              <button onClick={() => setConfirmBatchDel(false)} style={{ ...bt('g'), padding: '8px 16px' }}>Cancelar</button>
+              <button onClick={batchDelete} style={{ ...bt('d'), padding: '8px 16px' }}>Excluir {selectedIds.size}</button>
+            </div>
           </div>
         </div>
-      </div>}
+      }
+
+      {/* MISSING SECTIONS VALIDATION MODAL */}
+      {
+        validationWarning && <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 1005, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setValidationWarning(null)}>
+          <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 12, padding: 28, maxWidth: 480, width: '90%', maxHeight: '80vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#F59E0B', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>⚠️ Aviso de Validação</div>
+            <div style={{ fontSize: 13, color: TL, marginBottom: 16, lineHeight: 1.5 }}>As seguintes composições não possuem todas as seções (1 a 7) recomendadas. Isso pode resultar em indicadores ou cálculos incorretos.</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
+              {validationWarning.map((warn, i) => (
+                <div key={i} style={{ padding: 10, background: BG, borderRadius: 6, border: `1px solid ${BD}` }}>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: TX, marginBottom: 4 }}>{warn.title}</div>
+                  <div style={{ fontSize: 11, color: RD, fontWeight: 500 }}>Seções não encontradas: {warn.missing.map(m => `Seção ${m}`).join(', ')}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 8 }}>
+              <button onClick={() => setValidationWarning(null)} style={{ ...bt('g'), padding: '8px 16px' }}>Cancelar</button>
+              <button onClick={() => { setValidationWarning(null); addComp(true); }} style={{ ...bt('p'), padding: '8px 16px', background: '#F59E0B', color: BG }}>Adicionar Mesmo Assim</button>
+            </div>
+          </div>
+        </div>
+      }
 
       {/* MODALS */}
-      {ml && <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 900, backdropFilter: 'blur(4px)' }} onClick={() => !importing && setMl(null)}>
-        <div style={{ background: S2, border: `1px solid ${BD}`, borderRadius: 12, padding: 28, width: '92%', maxWidth: ml === 'nc' ? 760 : 500, maxHeight: '88vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
-          {ml === 'np' && <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}><h2 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>Novo Projeto</h2><button style={{ ...bt('g'), padding: 4, border: 'none' }} onClick={() => setMl(null)}>{ic.x}</button></div>
-            <label style={{ fontSize: 11, color: TM, display: 'block', marginBottom: 4, fontWeight: 600 }}>NOME *</label>
-            <input type="text" placeholder="Ex: 4740/25 - Orçamento Civil" value={fN} onChange={e => setFN(e.target.value)} style={{ ...inp, marginBottom: 16 }} autoFocus />
-            <label style={{ fontSize: 11, color: TM, display: 'block', marginBottom: 4, fontWeight: 600 }}>DESCRIÇÃO</label>
-            <input type="text" placeholder="Breve descrição" value={fD} onChange={e => setFD(e.target.value)} style={{ ...inp, marginBottom: 20 }} />
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}><button style={bt('g')} onClick={() => setMl(null)}>Cancelar</button><button style={{ ...bt(), opacity: fN.trim() ? 1 : 0.4 }} onClick={addP}>Criar Projeto</button></div>
-          </>}
-          {ml === 'nc' && <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14 }}>
-              <div><h2 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>Adicionar Composições</h2><p style={{ fontSize: 10, color: TM, margin: '3px 0 0' }}>Projeto: {proj?.nome}</p></div>
-              <button style={{ ...bt('g'), padding: 4, border: 'none' }} onClick={() => !importing && setMl(null)}>{ic.x}</button>
-            </div>
-            <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '10px 14px', marginBottom: 14 }}>
-              <p style={{ fontSize: 11, color: TD, lineHeight: 1.5, margin: 0, marginBottom: 8 }}><strong style={{ color: A }}>Individual ou Lote:</strong> Cole composições no padrão Markdown ou faça upload dos arquivos .md abaixo.</p>
-              <input type="file" multiple accept=".md" onChange={async e => {
-                const files = Array.from(e.target.files);
-                if (!files.length) return;
-                const texts = await Promise.all(files.map(f => new Promise(res => {
-                  const reader = new FileReader();
-                  reader.onload = e => res(e.target.result);
-                  reader.readAsText(f);
-                })));
-                setFC(prev => (prev ? prev + '\n\n\n' : '') + texts.join('\n\n\n'));
-              }} style={{ fontSize: 11, color: TL }} />
-            </div>
-            <textarea placeholder="Cole aqui uma ou mais composições ou faça o upload acima..." value={fC} onChange={e => { setFC(e.target.value); setAiComps(null); setAiError(null); }} style={{ width: '100%', padding: '14px 16px', background: BG, border: `1px solid ${BD}`, borderRadius: 8, color: TX, fontSize: 11, fontFamily: FN, outline: 'none', resize: 'vertical', minHeight: 300, lineHeight: 1.7 }} />
-            {/* AI Parse Button */}
-            {fC.trim() && <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
-              <button onClick={analyzeWithAI} disabled={aiParsing} style={{ ...bt(), background: aiComps ? GR : 'linear-gradient(135deg, #8B5CF6, #6366F1)', border: 'none', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, padding: '8px 16px', opacity: aiParsing ? 0.6 : 1 }}>
-                {aiParsing ? <><span style={{ display: 'inline-block', width: 12, height: 12, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Analisando...</> : aiComps ? '✅ IA Concluída' : '🤖 Analisar com IA'}
-              </button>
-              {aiError && <span style={{ fontSize: 10, color: '#EF4444' }}>⚠️ {aiError}</span>}
-              {!aiComps && !aiParsing && <span style={{ fontSize: 10, color: TM }}>Regex detectou {batchCount} composiç{batchCount > 1 ? 'ões' : 'ão'}</span>}
-            </div>}
-            {/* Regex Preview */}
-            {fC.trim() && !aiComps && <div style={{ marginTop: 12, padding: 12, background: BG, borderRadius: 8, border: `1px solid ${BD}` }}>
-              <div style={{ fontSize: 9, color: TM, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 8, fontWeight: 700 }}>PREVIEW REGEX ({batchCount})</div>
-              {splitComps(fC).map((txt, i) => {
-                const p = parseComp(txt); return <div key={i} style={{ padding: '6px 0', borderBottom: i < batchCount - 1 ? `1px solid ${BD}` : 'none', fontSize: 11 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ color: TM, fontFamily: FN, fontSize: 10 }}>{String(i + 1).padStart(2, '0')}</span>{p.codigo && <span style={{ ...bg(), fontSize: 8 }}>{p.codigo}</span>}<span style={{ color: TX, fontWeight: 500 }}>{p.titulo || '—'}</span></div>
-                  <div style={{ color: TD, fontSize: 10, marginLeft: 22 }}>Un: {p.unidade || '—'}{p.custo ? ` • R$ ${p.custo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : ''}{p.hh ? ` • ${p.hh} HH` : ''}</div>
-                </div>;
-              })}
-            </div>}
-            {/* AI Preview */}
-            {aiComps && <div style={{ marginTop: 12, padding: 12, background: 'rgba(139,92,246,0.06)', borderRadius: 8, border: '1px solid rgba(139,92,246,0.3)' }}>
-              <div style={{ fontSize: 9, color: '#A78BFA', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 8, fontWeight: 700 }}>🤖 COMPOSIÇÕES IDENTIFICADAS PELA IA ({aiComps.length})</div>
-              {aiComps.map((c, i) => <div key={i} style={{ padding: '8px 0', borderBottom: i < aiComps.length - 1 ? '1px solid rgba(139,92,246,0.15)' : 'none', fontSize: 11 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <span style={{ color: '#A78BFA', fontFamily: FN, fontSize: 10, fontWeight: 700 }}>{String(i + 1).padStart(2, '0')}</span>
-                  {c.codigo && <span style={{ background: 'rgba(139,92,246,0.15)', color: '#C4B5FD', padding: '1px 6px', borderRadius: 4, fontSize: 8, fontWeight: 600 }}>{c.codigo}</span>}
-                  <span style={{ color: TX, fontWeight: 500 }}>{c.titulo || '—'}</span>
-                </div>
-                <div style={{ color: TD, fontSize: 10, marginLeft: 22, marginTop: 2 }}>
-                  {c.unidade && `Un: ${c.unidade}`}{c.custo_unitario ? ` • R$ ${Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : ''}{c.hh_unitario ? ` • ${c.hh_unitario} HH` : ''}{c.equipe ? ` • ${c.equipe}` : ''}
-                </div>
-              </div>)}
-            </div>}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 16 }}>
-              <button style={bt('g')} onClick={() => { if (!importing) { setMl(null); setAiComps(null); setAiError(null); } }}>Cancelar</button>
-              <button style={{ ...bt(), opacity: fC.trim() && !importing ? 1 : 0.4, background: aiComps ? GR : A }} onClick={addComp} disabled={importing}>
-                {importing ? 'Importando...' : aiComps ? `Salvar ${aiComps.length} da IA` : `Salvar ${batchCount > 1 ? batchCount + ' Composições' : 'Composição'}`}
-              </button>
-            </div>
-          </>}
+      {
+        ml && <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 900, backdropFilter: 'blur(4px)' }} onClick={() => !importing && setMl(null)}>
+          <div style={{ background: S2, border: `1px solid ${BD}`, borderRadius: 12, padding: 28, width: '92%', maxWidth: ml === 'nc' ? 760 : 500, maxHeight: '88vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+            {ml === 'np' && <>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}><h2 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>Novo Projeto</h2><button style={{ ...bt('g'), padding: 4, border: 'none' }} onClick={() => setMl(null)}>{ic.x}</button></div>
+              <label style={{ fontSize: 11, color: TM, display: 'block', marginBottom: 4, fontWeight: 600 }}>NOME *</label>
+              <input type="text" placeholder="Ex: 4740/25 - Orçamento Civil" value={fN} onChange={e => setFN(e.target.value)} style={{ ...inp, marginBottom: 16 }} autoFocus />
+              <label style={{ fontSize: 11, color: TM, display: 'block', marginBottom: 4, fontWeight: 600 }}>DESCRIÇÃO</label>
+              <input type="text" placeholder="Breve descrição" value={fD} onChange={e => setFD(e.target.value)} style={{ ...inp, marginBottom: 20 }} />
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}><button style={bt('g')} onClick={() => setMl(null)}>Cancelar</button><button style={{ ...bt(), opacity: fN.trim() ? 1 : 0.4 }} onClick={addP}>Criar Projeto</button></div>
+            </>}
+            {ml === 'nc' && <>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14 }}>
+                <div><h2 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>Adicionar Composições</h2><p style={{ fontSize: 10, color: TM, margin: '3px 0 0' }}>Projeto: {proj?.nome}</p></div>
+                <button style={{ ...bt('g'), padding: 4, border: 'none' }} onClick={() => !importing && setMl(null)}>{ic.x}</button>
+              </div>
+              <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '10px 14px', marginBottom: 14 }}>
+                <p style={{ fontSize: 11, color: TD, lineHeight: 1.5, margin: 0, marginBottom: 8 }}><strong style={{ color: A }}>Individual ou Lote:</strong> Cole composições no padrão Markdown ou faça upload dos arquivos .md abaixo.</p>
+                <input type="file" multiple accept=".md" onChange={async e => {
+                  const files = Array.from(e.target.files);
+                  if (!files.length) return;
+                  const texts = await Promise.all(files.map(f => new Promise(res => {
+                    const reader = new FileReader();
+                    reader.onload = e => res(e.target.result);
+                    reader.readAsText(f);
+                  })));
+                  setFC(prev => (prev ? prev + '\n\n\n' : '') + texts.join('\n\n\n'));
+                }} style={{ fontSize: 11, color: TL }} />
+              </div>
+              <textarea placeholder="Cole aqui uma ou mais composições ou faça o upload acima..." value={fC} onChange={e => { setFC(e.target.value); setAiComps(null); setAiError(null); }} style={{ width: '100%', padding: '14px 16px', background: BG, border: `1px solid ${BD}`, borderRadius: 8, color: TX, fontSize: 11, fontFamily: FN, outline: 'none', resize: 'vertical', minHeight: 300, lineHeight: 1.7 }} />
+              {/* AI Parse Button */}
+              {fC.trim() && <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
+                <button onClick={analyzeWithAI} disabled={aiParsing} style={{ ...bt(), background: aiComps ? GR : 'linear-gradient(135deg, #8B5CF6, #6366F1)', border: 'none', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, padding: '8px 16px', opacity: aiParsing ? 0.6 : 1 }}>
+                  {aiParsing ? <><span style={{ display: 'inline-block', width: 12, height: 12, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> Analisando...</> : aiComps ? '✅ IA Concluída' : '🤖 Analisar com IA'}
+                </button>
+                {aiError && <span style={{ fontSize: 10, color: '#EF4444' }}>⚠️ {aiError}</span>}
+                {!aiComps && !aiParsing && <span style={{ fontSize: 10, color: TM }}>Regex detectou {batchCount} composiç{batchCount > 1 ? 'ões' : 'ão'}</span>}
+              </div>}
+              {/* Regex Preview */}
+              {fC.trim() && !aiComps && <div style={{ marginTop: 12, padding: 12, background: BG, borderRadius: 8, border: `1px solid ${BD}` }}>
+                <div style={{ fontSize: 9, color: TM, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 8, fontWeight: 700 }}>PREVIEW REGEX ({batchCount})</div>
+                {splitComps(fC).map((txt, i) => {
+                  const p = parseComp(txt); return <div key={i} style={{ padding: '6px 0', borderBottom: i < batchCount - 1 ? `1px solid ${BD}` : 'none', fontSize: 11 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ color: TM, fontFamily: FN, fontSize: 10 }}>{String(i + 1).padStart(2, '0')}</span>{p.codigo && <span style={{ ...bg(), fontSize: 8 }}>{p.codigo}</span>}<span style={{ color: TX, fontWeight: 500 }}>{p.titulo || '—'}</span></div>
+                    <div style={{ color: TD, fontSize: 10, marginLeft: 22 }}>Un: {p.unidade || '—'}{p.custo ? ` • R$ ${p.custo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : ''}{p.hh ? ` • ${p.hh} HH` : ''}</div>
+                  </div>;
+                })}
+              </div>}
+              {/* AI Preview */}
+              {aiComps && <div style={{ marginTop: 12, padding: 12, background: 'rgba(139,92,246,0.06)', borderRadius: 8, border: '1px solid rgba(139,92,246,0.3)' }}>
+                <div style={{ fontSize: 9, color: '#A78BFA', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 8, fontWeight: 700 }}>🤖 COMPOSIÇÕES IDENTIFICADAS PELA IA ({aiComps.length})</div>
+                {aiComps.map((c, i) => <div key={i} style={{ padding: '8px 0', borderBottom: i < aiComps.length - 1 ? '1px solid rgba(139,92,246,0.15)' : 'none', fontSize: 11 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ color: '#A78BFA', fontFamily: FN, fontSize: 10, fontWeight: 700 }}>{String(i + 1).padStart(2, '0')}</span>
+                    {c.codigo && <span style={{ background: 'rgba(139,92,246,0.15)', color: '#C4B5FD', padding: '1px 6px', borderRadius: 4, fontSize: 8, fontWeight: 600 }}>{c.codigo}</span>}
+                    <span style={{ color: TX, fontWeight: 500 }}>{c.titulo || '—'}</span>
+                  </div>
+                  <div style={{ color: TD, fontSize: 10, marginLeft: 22, marginTop: 2 }}>
+                    {c.unidade && `Un: ${c.unidade}`}{c.custo_unitario ? ` • R$ ${Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : ''}{c.hh_unitario ? ` • ${c.hh_unitario} HH` : ''}{c.equipe ? ` • ${c.equipe}` : ''}
+                  </div>
+                </div>)}
+              </div>}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 16 }}>
+                <button style={bt('g')} onClick={() => { if (!importing) { setMl(null); setAiComps(null); setAiError(null); } }}>Cancelar</button>
+                <button style={{ ...bt(), opacity: fC.trim() && !importing ? 1 : 0.4, background: aiComps ? GR : A }} onClick={addComp} disabled={importing}>
+                  {importing ? 'Importando...' : aiComps ? `Salvar ${aiComps.length} da IA` : `Salvar ${batchCount > 1 ? batchCount + ' Composições' : 'Composição'}`}
+                </button>
+              </div>
+            </>}
+          </div>
         </div>
-      </div>}
+      }
 
       <style>{`*{box-sizing:border-box;margin:0;padding:0}body{background:${BG};overflow-x:hidden}::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:3px}::selection{background:${A};color:${BG}}input:focus,textarea:focus{border-color:${A}!important;box-shadow:0 0 0 2px ${AD}}code{font-family:${FN}}@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
