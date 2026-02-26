@@ -812,6 +812,15 @@ export default function Home() {
                     <div style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.4, color: '#FFFFFF', marginBottom: 6 }}>{cleanMd(c.titulo)}</div>
 
                     {(() => {
+                      const mData = c.conteudo_completo.match(/\*\*DATA:\*\*\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/DATA:\s*(.*?)(?:\n|$|\|)/i);
+                      const dataV = mData ? mData[1].split(/\*\*/)[0].trim() : '';
+                      const mTurno = c.conteudo_completo.match(/\*\*TURNO:\*\*\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/TURNO:\s*(.*?)(?:\n|$|\|)/i);
+                      const turnoV = mTurno ? mTurno[1].split(/\*\*/)[0].trim() : '';
+                      const mFator = c.conteudo_completo.match(/\*\*FATOR:\*\*\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/FATOR:\s*(.*?)(?:\n|$|\|)/i);
+                      const fatorV = mFator ? mFator[1].split(/\*\*/)[0].trim() : '';
+                      const mQref = c.conteudo_completo.match(/\*\*QUANTIDADE (?:REF|DE REFERÊNCIA):\*\*\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/QUANTIDADE (?:REF|DE REFERÊNCIA):\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/\*\*REFERÊNCIA:\*\*\s*(.*?)(?:\n|$|\|)/i);
+                      const qrefDetailV = mQref ? mQref[1].split(/\*\*/)[0].trim() : (c.qref || '');
+
                       return (
                         <div style={{ fontSize: 11, color: TM, display: 'flex', gap: 14, flexWrap: 'wrap', lineHeight: 1.4 }}>
                           {dataV && <span><strong style={{ color: TL, fontWeight: 600 }}>DATA:</strong> {dataV} &nbsp; </span>}
