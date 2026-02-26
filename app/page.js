@@ -110,12 +110,21 @@ function parseCompDetail(text) {
     return stripped.length === 0 && l.includes('-');
   };
 
-  // 1. Custo material (SUBTOTAL da tabela de insumos)
-  let custo_material = null, peso_total = null;
+  const exCusto = (kw) => {
+    const m = text.match(new RegExp(`\\|\\s*\\*\\*?Custo de ${kw}\\*\\*?\\s*\\|(?:[^|]*\\|)?\\s*R\\$\\s*([\\d.,]+)`, 'i')) ||
+      text.match(new RegExp(`Custo de ${kw}[:\\s*]+R\\$\\s*([\\d.,]+)`, 'i'));
+    return m ? parseNum(m[1]) : null;
+  };
+
+  // 1. Custo material (SUBTOTAL da tabela de insumos ou Secao 5)
+  let custo_material = exCusto('Materiais');
+  let peso_total = null;
   const matRow = text.split('\n').find(l => /\|\s*\*\*SUBTOTAL/i.test(l));
   if (matRow) {
-    const vals = matRow.match(/R\$\s*([\d.,]+)/g);
-    custo_material = vals && vals.length >= 1 ? rp(vals[0]) : null;
+    if (custo_material == null) {
+      const vals = matRow.match(/R\$\s*([\d.,]+)/g);
+      custo_material = vals && vals.length >= 1 ? rp(vals[0]) : null;
+    }
     if (matRow.includes('|')) {
       const cols = matRow.split('|');
       const lastItem = cols[cols.length - 2].replace(/\*\*/g, '').trim();
@@ -124,21 +133,21 @@ function parseCompDetail(text) {
   }
 
   // 2. Custo M.O. total
-  let custo_mo = null;
+  let custo_mo = exCusto('Mão de Obra') || exCusto('M\\.O\\.');
   const moRow = text.split('\n').find(l => /\|\s*\*\*TOTAL M\.O/i.test(l));
-  if (moRow) {
+  if (custo_mo == null && moRow) {
     const vals = moRow.match(/R\$\s*([\d.,]+)/g);
     custo_mo = vals && vals.length >= 1 ? rp(vals[0]) : null;
   }
 
   // 3. Custo Equipamento
-  let custo_equip = null;
+  let custo_equip = exCusto('Equipamentos');
   const lines = text.split('\n');
   const sec2StartIndex = lines.findIndex(l => l.includes('SEÇÃO 2') || l.includes('TABELA UNIFICADA'));
   const sec3StartIndex = lines.findIndex(l => l.includes('SEÇÃO 3') || l.includes('ESTIMATIVA DE MÃO DE OBRA'));
   const sec4StartIndex = lines.findIndex(l => l.includes('SEÇÃO 4') || l.includes('QUANTITATIVOS'));
 
-  if (sec2StartIndex > -1) {
+  if (custo_equip == null && sec2StartIndex > -1) {
     const end = sec3StartIndex > -1 ? sec3StartIndex : lines.length;
     let eqSum = 0;
     for (let i = sec2StartIndex; i < end; i++) {
@@ -822,12 +831,42 @@ export default function Home() {
                       const qrefDetailV = mQref ? mQref[1].split(/\*\*/)[0].trim() : (c.qref || '');
 
                       return (
-                        <div style={{ fontSize: 11, color: TM, display: 'flex', gap: 14, flexWrap: 'wrap', lineHeight: 1.4 }}>
-                          {dataV && <span><strong style={{ color: TL, fontWeight: 600 }}>DATA:</strong> {dataV} &nbsp; </span>}
-                          {turnoV && <span><strong style={{ color: TL, fontWeight: 600 }}>TURNO:</strong> {turnoV} &nbsp; </span>}
-                          {fatorV && <span><strong style={{ color: TL, fontWeight: 600 }}>FATOR:</strong> {fatorV} &nbsp; </span>}
-                          {qrefDetailV && <span><strong style={{ color: TL, fontWeight: 600 }}>REF:</strong> {qrefDetailV} &nbsp; </span>}
-                          {det.equipe && <span style={{ whiteSpace: 'normal', display: 'block' }}><strong style={{ color: TL, fontWeight: 600 }}>EQUIPE:</strong> {det.equipe.slice(0, 200)}{det.equipe.length > 200 ? '...' : ''}</span>}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                          <div style={{ fontSize: 11, color: TM, display: 'flex', gap: 14, flexWrap: 'wrap', lineHeight: 1.4 }}>
+                            {dataV && <span><strong style={{ color: TL, fontWeight: 600 }}>DATA:</strong> {dataV} &nbsp; </span>}
+                            {turnoV && <span><strong style={{ color: TL, fontWeight: 600 }}>TURNO:</strong> {turnoV} &nbsp; </span>}
+                            {fatorV && <span><strong style={{ color: TL, fontWeight: 600 }}>FATOR:</strong> {fatorV} &nbsp; </span>}
+                            {qrefDetailV && <span><strong style={{ color: TL, fontWeight: 600 }}>REF:</strong> {qrefDetailV} &nbsp; </span>}
+                            {det.equipe && <span style={{ whiteSpace: 'normal', display: 'block' }}><strong style={{ color: TL, fontWeight: 600 }}>EQUIPE:</strong> {det.equipe.slice(0, 200)}{det.equipe.length > 200 ? '...' : ''}</span>}
+                          </div>
+
+                          {/* Resumo de Indicadores (Cartão Fechado) */}
+                          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 2 }}>
+                            {c.custo_unitario != null && (
+                              <div style={{ background: '#10B98110', border: `1px solid #10B98130`, borderRadius: 6, padding: '6px 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                                <span style={{ fontSize: 10, color: '#10B981', fontWeight: 600, textTransform: 'uppercase' }}>Total:</span>
+                                <span style={{ fontSize: 13, color: TX, fontWeight: 700, fontFamily: FN }}>{Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                              </div>
+                            )}
+                            {det.custo_material != null && (
+                              <div style={{ background: '#F59E0B10', border: `1px solid #F59E0B30`, borderRadius: 6, padding: '6px 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                                <span style={{ fontSize: 10, color: '#F59E0B', fontWeight: 600, textTransform: 'uppercase' }}>Material:</span>
+                                <span style={{ fontSize: 13, color: TX, fontWeight: 700, fontFamily: FN }}>{det.custo_material.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                              </div>
+                            )}
+                            {det.custo_mo != null && (
+                              <div style={{ background: `${BL}10`, border: `1px solid ${BL}30`, borderRadius: 6, padding: '6px 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                                <span style={{ fontSize: 10, color: BL, fontWeight: 600, textTransform: 'uppercase' }}>M.O.:</span>
+                                <span style={{ fontSize: 13, color: TX, fontWeight: 700, fontFamily: FN }}>{det.custo_mo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                              </div>
+                            )}
+                            {det.custo_equip != null && (
+                              <div style={{ background: '#A78BFA10', border: `1px solid #A78BFA30`, borderRadius: 6, padding: '6px 10px', display: 'flex', alignItems: 'center', gap: 6 }}>
+                                <span style={{ fontSize: 10, color: '#A78BFA', fontWeight: 600, textTransform: 'uppercase' }}>Equip:</span>
+                                <span style={{ fontSize: 13, color: TX, fontWeight: 700, fontFamily: FN }}>{det.custo_equip.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       );
                     })()}
