@@ -90,9 +90,28 @@ Toda nova feature, deploy ou bugfix crítico desenvolvido colaborativamente entr
 
 ---
 
-### [24 de Fevereiro de 2026] - Correção do Parser (Look-ahead) e Painel Lateral Fixável (Pin/Unpin)
-- **Objetivo/Motivo:** Finalizar as validações do parser Markdown garantindo que composições antigas com formatação irregular (Prompt V3) funcionem 100%, além de aprimorar a usabilidade do painel de navegação em telas cheias e reduzidas no desktop.
+### [25 de Fevereiro de 2026] - Melhorias Visuais (Rich Text) e Tema Oficial
+- **Objetivo/Motivo:** Finalizar a Fase 1 do Roadmap: Restaurar o tema escuro oficial da empresa (Black & Amber) e melhorar a legibilidade da Seção 5 (Análise do Engenheiro).
 - **Alterações Arquiteturais ou UI:**
-    - **Leitura Imune a "Blank Lines" (Look-ahead):** O algoritmo de tabelas do `<Md />` agora tem uma visão profunda de pular linhas em branco caso a IA se esqueça de colocar os delimitadores. Ele lê à frente e encontra os traços da tabela para amarrar os títulos perfeitamente. Colunas soltas, nunca mais.
-    - **Toggle Expand/Collapse do Menu (`sbPinned`):** O layout grid Flexbox do aplicativo recebeu atualizações matemáticas para expandir 100% o campo de visualização se o menu lateral for recolhido por completo na opção Desktop, controlando via React State a imersão total na planilha orçamentária.
-- **Status:** Concluído. Branch `main` e `theme-gold-slate` perfeitamente alinhadas com as melhorias.
+    - Restaurado `page.js` e `layout.js` para o fundo `#0A0908` e destaque `#F59E0B`.
+    - Componente `<Md />` ganhou a função `formatRich` que detecta e colore dinamicamente palavras-chave como `DRIVER PRINCIPAL`, `CRÍTICO`, `Economia` e `Trade-off`.
+    - Atualizados `GEM-PARSER-V4.md` e o sistema de inteligência da API `route.js` para obrigarem a IA a gerar essas palavras em caixa alta.
+    - Adicionada a regra de "Digitação por Voz" no contexto.
+- **Status:** Concluído e em Produção (Main).
+
+---
+
+## 5. Próximos Passos (Pronto para Iniciar)
+
+Quando um novo assistente assumir, ele deve iniciar IMEDIATAMENTE a **Fase 2: Refatoração Arquitetural**. O arquivo `page.js` possui +800 linhas e precisa ser modularizado **antes** da criação de novas features.
+
+**Fase 2: Refatoração (`app/page.js` -> Componentes)**
+- Extrair `parsers.js` (Regex e limpeza) para `lib/`
+- Extrair `<Md />` para `components/Md.js`
+- Extrair Sidebar, Modais e Views (`HomeView`, `ProjectView`, `CompDetailView`) para `components/`
+- *Regra:* Não alterar regras de negócio durante a refatoração. Apenas separar em arquivos e garantir que o build (`npm run build`) continua passando.
+
+**Fase 3: Features Rápidas (Quick Wins)**
+- #16: Favoritos (Adicionar estrela ⭐ e filtro na Sidebar).
+- #11: Busca Full-text (Buscar dentro do conteúdo completo, não só no título).
+- #3: Exportação Excel (Botão de download na tela de Detalhes da Composição usando `SheetJS`).
