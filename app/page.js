@@ -377,7 +377,7 @@ function Md({ text }) {
 }
 
 // --- THEME ---
-const A = '#D4AF37', BG = '#0F172A', SF = '#1E293B', S2 = '#334155', BD = 'rgba(212,175,55,0.15)', AD = 'rgba(212,175,55,0.15)', TX = '#F8FAFC', TD = '#94A3B8', TM = '#94A3B8', TL = '#CBD5E1', RD = '#EF4444', GR = '#10B981', BL = '#3B82F6', FN = "'JetBrains Mono',monospace", FS = "'DM Sans',system-ui,sans-serif";
+const A = '#F59E0B', BG = '#0A0908', SF = '#161412', S2 = '#1C1A17', BD = 'rgba(245,158,11,0.08)', AD = 'rgba(245,158,11,0.12)', TX = '#F5F5F4', TD = '#A8A29E', TM = '#A8A29E', TL = '#D6D3D1', RD = '#EF4444', GR = '#22C55E', BL = '#60A5FA', FN = "'JetBrains Mono',monospace", FS = "'DM Sans',system-ui,sans-serif";
 
 const ic = {
   folder: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" /></svg>,
@@ -547,9 +547,9 @@ export default function Home() {
       {(isMobile || !sbPinned) && sbOpen && <div onClick={() => setSbOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 40 }} />}
       {/* SIDEBAR */}
       <div style={{ width: 210, background: SF, borderRight: `1px solid ${BD}`, display: 'flex', flexDirection: 'column', position: 'fixed', top: 0, left: (isMobile || !sbPinned) ? (sbOpen ? 0 : -210) : 0, bottom: 0, zIndex: 50, transition: 'left 0.3s' }}>
-        <div onClick={() => { setVw('home'); setPid(null); setCid(null); if (isMobile || !sbPinned) setSbOpen(false); }} style={{ padding: '18px 14px', borderBottom: `1px solid ${BD}`, display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
-          <img src="/logo.png" alt="H-QUANT" style={{ height: 32, objectFit: 'contain' }} />
-          <div><div style={{ fontSize: 13, fontWeight: 700, fontFamily: FN, letterSpacing: '0.5px' }}>H-QUANT</div><div style={{ fontSize: 9, color: TL, letterSpacing: '1px' }}>COMPOSIÇÕES</div></div>
+        <div onClick={() => { setVw('home'); setPid(null); setCid(null); if (isMobile || !sbPinned) setSbOpen(false); }} style={{ padding: '18px 14px', borderBottom: `1px solid ${BD}`, display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+          <div style={{ width: 30, height: 30, borderRadius: 6, background: AD, display: 'flex', alignItems: 'center', justifyContent: 'center', color: A, fontSize: 15, fontWeight: 800, fontFamily: FN }}>H</div>
+          <div><div style={{ fontSize: 14, fontWeight: 700, fontFamily: FN, letterSpacing: '0.5px' }}>H-QUANT</div><div style={{ fontSize: 10, color: TL, letterSpacing: '2px' }}>COMPOSIÇÕES 2026</div></div>
         </div>
         <div style={{ padding: '10px 0', flex: 1 }}>
           {[['home', ic.folder, 'Projetos'], ['busca', ic.search, 'Buscar Composição']].map(([id, icon, label]) => {

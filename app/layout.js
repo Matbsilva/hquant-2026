@@ -9,7 +9,7 @@ export default function RootLayout({ children }) {
       <head>
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
       </head>
-      <body style={{ margin: 0, padding: 0, background: '#0F172A' }}>{children}</body>
+      <body style={{ margin: 0, padding: 0, background: '#0A0908' }}>{children}</body>
     </html>
   );
 }
