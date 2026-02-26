@@ -935,30 +935,36 @@ export default function Home() {
                 {indCard(`Mão de Obra/${un}`, det.custo_mo, BL, `R$/${un}`, true)}
                 {indCard(`Equipamento/${un}`, det.custo_equip, '#A78BFA', `R$/${un}`, true)}
               </div>
-              {/* Row 2: HH e Equipe */}
+
+              {/* Row 2: HH, Equipe, Produtividade (Cyan Theme) */}
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
-                {det.hhProfs.map((p, i) => <div key={i} style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
-                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>HH {p.nome}</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{p.hh.toLocaleString('pt-BR', { minimumFractionDigits: 4 })} <span style={{ fontSize: 11, color: TL, fontWeight: 500 }}>HH/{un}</span></div>
+                {det.hhProfs.map((p, i) => <div key={i} style={{ background: '#06B6D410', border: `1px solid #06B6D430`, borderTop: `3px solid #06B6D4`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: '#06B6D4', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>HH {p.nome}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{p.hh.toLocaleString('pt-BR', { minimumFractionDigits: 4 })} <span style={{ fontSize: 11, color: '#06B6D4', fontWeight: 500 }}>HH/{un}</span></div>
                 </div>)}
-                {comp.hh_unitario && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
-                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>HH Total Equipe/{un}</div>
+                {comp.hh_unitario && <div style={{ background: '#06B6D410', border: `1px solid #06B6D430`, borderTop: `3px solid #06B6D4`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: '#06B6D4', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>HH Total Equipe/{un}</div>
                   <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{comp.hh_unitario}</div>
                 </div>}
-                {det.equipe && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 200px', minWidth: 180 }}>
-                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Composição da Equipe</div>
+                {det.equipe && <div style={{ background: '#06B6D410', border: `1px solid #06B6D430`, borderTop: `3px solid #06B6D4`, borderRadius: 8, padding: '12px 14px', flex: '1 1 200px', minWidth: 180 }}>
+                  <div style={{ fontSize: 10, color: '#06B6D4', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Composição da Equipe</div>
                   <div style={{ fontSize: 14, color: TX, fontWeight: 500 }}>{det.equipe}</div>
                 </div>}
-              </div>
-              {/* Row 3: Produtividade, Rendimento, Qtd Ref, Peso */}
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
-                {det.produtividade && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
-                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Produtividade/Dia</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{det.produtividade} <span style={{ fontSize: 11, color: TL, fontWeight: 500 }}>{un}/dia</span></div>
+                {det.produtividade && <div style={{ background: '#06B6D410', border: `1px solid #06B6D430`, borderTop: `3px solid #06B6D4`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: '#06B6D4', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Produtividade/Dia</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{det.produtividade} <span style={{ fontSize: 11, color: '#06B6D4', fontWeight: 500 }}>{un}/dia</span></div>
                 </div>}
+              </div>
+
+              {/* Row 3: Rendimento, Turno/Fator, Qtd Ref, Peso (Grey/No Highlight) */}
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
                 {det.rendimento && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
                   <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Rendimento Diário</div>
-                  <div style={{ fontSize: 14, color: GR, fontWeight: 600, fontFamily: FN }}>{det.rendimento}</div>
+                  <div style={{ fontSize: 14, color: TX, fontWeight: 600, fontFamily: FN }}>{det.rendimento}</div>
+                </div>}
+                {(turnoV || fatorV) && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Turno / Fator</div>
+                  <div style={{ fontSize: 14, color: TX, fontWeight: 600, fontFamily: FN }}>{turnoV || '-'} <span style={{ color: TL, fontWeight: 400 }}>/ {fatorV || '-'}</span></div>
                 </div>}
                 {qrefDetailV && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
                   <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Qtd. de Referência</div>
