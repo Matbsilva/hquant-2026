@@ -459,8 +459,35 @@ export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
   const [sbOpen, setSbOpen] = useState(false);
   const [sbPinned, setSbPinned] = useState(true);
+  const [selMode, setSelMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [confirmBatchDel, setConfirmBatchDel] = useState(false);
 
   const nf = (m, ok = true) => { setNt({ m, ok }); setTimeout(() => setNt(null), 3000); };
+
+  const toggleSel = (id) => setSelectedIds(prev => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
+  const selectAll = (ids) => setSelectedIds(new Set(ids));
+  const clearSel = () => { setSelectedIds(new Set()); setSelMode(false); };
+
+  const downloadMD = (comps) => {
+    const content = comps.map(c => normalizeComposition(c.conteudo_completo)).join('\n\n---\n\n');
+    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = comps.length === 1 ? `${comps[0].codigo || 'composicao'}.md` : `composicoes-${new Date().toISOString().slice(0, 10)}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const batchDelete = async () => {
+    const ids = [...selectedIds];
+    await Promise.all(ids.map(id => supabase.from('composicoes').delete().eq('id', id)));
+    setComposicoes(prev => prev.filter(c => !selectedIds.has(c.id)));
+    clearSel();
+    setConfirmBatchDel(false);
+    nf(`${ids.length} composiç${ids.length > 1 ? 'ões excluídas' : 'ão excluída'}`);
+  };
 
   // Load data
   const loadData = useCallback(async () => {
@@ -641,37 +668,62 @@ export default function Home() {
 
         {/* PROJECT */}
         {vw === 'proj' && pid && <>
-          <div style={{ padding: '24px 0 16px', borderBottom: `1px solid ${BD}`, marginBottom: 22, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {/* STICKY HEADER */}
+          <div style={{ position: 'sticky', top: 0, zIndex: 20, background: BG, borderBottom: `1px solid ${BD}`, padding: '16px 0', marginBottom: 22, display: 'flex', justifyContent: 'space-between', alignItems: 'center', backdropFilter: 'blur(8px)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <button style={{ ...bt('g'), padding: 6 }} onClick={() => { setVw('home'); setPid(null); }}>{ic.back}</button>
+              <button style={{ ...bt('g'), padding: 6 }} onClick={() => { setVw('home'); setPid(null); clearSel(); }}>{ic.back}</button>
               <div><h1 style={{ fontSize: 20, fontWeight: 700, margin: 0, fontFamily: FN }}>{proj?.nome}</h1>{proj?.descricao && <p style={{ fontSize: 13, color: TL, margin: '3px 0 0' }}>{proj.descricao}</p>}</div>
             </div>
-            <button style={bt()} onClick={() => { setMl('nc'); setFC(''); }}>{ic.plus} Composição</button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {selMode ? (
+                <>
+                  <button style={{ ...bt('g'), fontSize: 11, padding: '5px 10px' }} onClick={() => selectAll(pComps.map(c => c.id))}>Todos</button>
+                  <button style={{ ...bt('g'), fontSize: 11, padding: '5px 10px' }} onClick={clearSel}>Cancelar</button>
+                </>
+              ) : (
+                <button style={{ ...bt('g'), fontSize: 11, padding: '5px 10px' }} onClick={() => { setSelMode(true); setSelectedIds(new Set()); }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /></svg>
+                  Selecionar
+                </button>
+              )}
+              <button style={bt()} onClick={() => { setMl('nc'); setFC(''); }}>{ic.plus} Composição</button>
+            </div>
           </div>
+
           {pComps.map((c, i) => {
             const det = parseCompDetail(c.conteudo_completo);
             const mData = c.conteudo_completo.match(/\*\*DATA:\*\*\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/DATA:\s*(.*?)(?:\n|$|\|)/i);
             const dataV = mData ? mData[1].split(/\*\*/)[0].trim() : '';
             const un = c.unidade || 'un';
+            const isSel = selectedIds.has(c.id);
 
             return (
-              <div key={c.id} style={{ ...cd, padding: '16px 20px', marginBottom: 12, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }} onClick={() => { setCid(c.id); setVw('comp'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
+              <div key={c.id} style={{ ...cd, padding: '16px 20px', marginBottom: 12, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, borderColor: isSel ? A : BD, background: isSel ? `rgba(245,158,11,0.06)` : SF, transition: 'all 0.15s' }}
+                onClick={() => { if (selMode) { toggleSel(c.id); } else { setCid(c.id); setVw('comp'); } }}
+                onMouseEnter={e => { if (!isSel) { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; } }}
+                onMouseLeave={e => { if (!isSel) { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; } }}
+              >
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center', transition: 'all 0.2s' }}>
-                    <div style={{ color: A, fontSize: 11, fontFamily: FN, background: AD, borderRadius: 6, padding: '4px 10px', fontWeight: 800, textAlign: 'center', marginTop: 2 }}>#{String(i + 1).padStart(2, '0')}</div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4, width: '100%' }}>
+                    {selMode ? (
+                      <div style={{ width: 22, height: 22, borderRadius: 5, border: `2px solid ${isSel ? A : TM}`, background: isSel ? A : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 2, flexShrink: 0 }}>
+                        {isSel && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={BG} strokeWidth="3"><path d="M20 6L9 17l-5-5" /></svg>}
+                      </div>
+                    ) : (
+                      <div style={{ color: A, fontSize: 11, fontFamily: FN, background: AD, borderRadius: 6, padding: '4px 10px', fontWeight: 800, textAlign: 'center', marginTop: 2 }}>#{String(i + 1).padStart(2, '0')}</div>
+                    )}
+                    {!selMode && <div style={{ display: 'flex', flexDirection: 'column', gap: 4, width: '100%' }}>
                       <button className="list-btn" title="Copiar" onClick={e => { e.stopPropagation(); navigator.clipboard.writeText(normalizeComposition(c.conteudo_completo) || ''); setNt({ ok: true, m: 'Copiado!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: '5px 4px', border: 'none', background: 'rgba(56, 189, 248, 0.1)', color: '#38BDF8', width: '100%', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = '#38BDF8'; e.currentTarget.style.color = '#fff'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(56, 189, 248, 0.1)'; e.currentTarget.style.color = '#38BDF8'; }}>{ic.copy}</button>
-                      <button className="list-btn" title="Excluir" onClick={e => { e.stopPropagation(); delC(c.id); }} style={{ ...bt('g'), padding: '5px 4px', border: 'none', background: 'rgba(239, 68, 68, 0.1)', color: '#EF4444', width: '100%', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = '#EF4444'; e.currentTarget.style.color = '#fff'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; e.currentTarget.style.color = '#EF4444'; }}>{ic.trash}</button>
-                    </div>
+                      <button className="list-btn" title="Baixar .MD" onClick={e => { e.stopPropagation(); downloadMD([c]); }} style={{ ...bt('g'), padding: '5px 4px', border: 'none', background: 'rgba(56, 189, 248, 0.1)', color: '#38BDF8', width: '100%', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = '#38BDF8'; e.currentTarget.style.color = '#fff'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(56, 189, 248, 0.1)'; e.currentTarget.style.color = '#38BDF8'; }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg></button>
+                      <button className="list-btn" title="Excluir" onClick={e => { e.stopPropagation(); setConfirmDel(c); }} style={{ ...bt('g'), padding: '5px 4px', border: 'none', background: 'rgba(239, 68, 68, 0.1)', color: '#EF4444', width: '100%', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = '#EF4444'; e.currentTarget.style.color = '#fff'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; e.currentTarget.style.color = '#EF4444'; }}>{ic.trash}</button>
+                    </div>}
                   </div>
 
                   <div style={{ minWidth: 0, flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
                       {c.codigo && <span style={{ ...bg(A), fontSize: 10, padding: '3px 8px', letterSpacing: '0.5px' }}>{c.codigo}</span>}
                     </div>
-
                     <div style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.4, color: '#FFFFFF', marginBottom: 6 }}>{cleanMd(c.titulo)}</div>
-
                     <div style={{ fontSize: 11, color: TM, display: 'flex', gap: 14, flexWrap: 'wrap', lineHeight: 1.4 }}>
                       {dataV && <span><strong style={{ color: TL, fontWeight: 600 }}>DATA:</strong> {dataV} &nbsp; </span>}
                       {det.equipe && <span style={{ whiteSpace: 'normal', display: 'block' }}><strong style={{ color: TL, fontWeight: 600 }}>EQUIPE:</strong> {det.equipe.slice(0, 200)}{det.equipe.length > 200 ? '...' : ''}</span>}
@@ -687,7 +739,6 @@ export default function Home() {
                         <span style={{ fontSize: 11, fontWeight: 600, color: A }}>R$/{un}</span>
                       </div>
                     )}
-
                     {c.hh_unitario != null && (
                       <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, justifyContent: 'flex-end' }}>
                         <span style={{ fontSize: 13, color: BL, fontWeight: 700, fontFamily: FN }}>{c.hh_unitario}</span>
@@ -695,7 +746,6 @@ export default function Home() {
                       </div>
                     )}
                   </div>
-
                   {det.hhProfs && det.hhProfs.length > 0 && (
                     <div style={{ textAlign: 'right', marginTop: 2, background: 'rgba(59, 130, 246, 0.05)', padding: '6px 10px', borderRadius: 6, border: `1px solid rgba(59, 130, 246, 0.1)` }}>
                       {det.hhProfs.map((pr, pi) => (
@@ -711,7 +761,23 @@ export default function Home() {
             );
           })}
           {!pComps.length && <div style={{ textAlign: 'center', padding: 60, color: TM }}><div style={{ fontSize: 32, marginBottom: 10, opacity: 0.3 }}>📋</div><p>Nenhuma composição</p></div>}
+
+          {/* BATCH ACTION BAR */}
+          {selMode && selectedIds.size > 0 && (
+            <div style={{ position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)', zIndex: 100, background: S2, border: `1px solid ${A}`, borderRadius: 12, padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 14, boxShadow: '0 8px 32px rgba(0,0,0,0.6)', backdropFilter: 'blur(12px)', whiteSpace: 'nowrap' }}>
+              <span style={{ fontSize: 13, color: A, fontWeight: 700, fontFamily: FN }}>{selectedIds.size} selecionada{selectedIds.size !== 1 ? 's' : ''}</span>
+              <div style={{ width: 1, height: 20, background: BD }} />
+              <button onClick={() => { const selComps = pComps.filter(c => selectedIds.has(c.id)); downloadMD(selComps); }} style={{ ...bt('g'), padding: '7px 14px', fontSize: 12, display: 'flex', alignItems: 'center', gap: 6, color: '#38BDF8', borderColor: 'rgba(56,189,248,0.3)' }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
+                Baixar .MD
+              </button>
+              <button onClick={() => setConfirmBatchDel(true)} style={{ ...bt('g'), padding: '7px 14px', fontSize: 12, display: 'flex', alignItems: 'center', gap: 6, color: RD, borderColor: 'rgba(239,68,68,0.3)' }}>
+                {ic.trash} Excluir
+              </button>
+            </div>
+          )}
         </>}
+
 
         {/* COMP DETAIL */}
         {vw === 'comp' && comp && (() => {
@@ -734,6 +800,7 @@ export default function Home() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>{seqNum && <span style={{ color: A, fontSize: 11, fontFamily: FN, background: AD, borderRadius: 4, padding: '2px 8px', fontWeight: 700 }}>{seqNum}</span>}{comp.codigo && <span style={bg()}>{comp.codigo}</span>}<h1 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>{cleanMd(comp.titulo)}</h1></div>
                 <p style={{ fontSize: 12, color: TL, margin: '4px 0 0' }}>Projeto: {pName(comp.projeto_id)}{cleanGrupo && ` • ${cleanGrupo}`}{comp.unidade && ` • Un: ${comp.unidade}`}</p>
               </div>
+              <button title="Baixar .MD" onClick={() => downloadMD([comp])} style={{ ...bt('g'), padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#38BDF8', borderColor: 'rgba(56,189,248,0.2)', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(56, 189, 248, 0.1)'; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg> Baixar .MD</button>
               <button title="Copiar composição" onClick={() => { navigator.clipboard.writeText(normalizeComposition(comp.conteudo_completo) || ''); setNt({ ok: true, m: 'Composição copiada!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#38BDF8', borderColor: 'rgba(56,189,248,0.2)', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(56, 189, 248, 0.1)'; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}>{ic.copy} Copiar</button>
               <button title="Apagar composição" onClick={() => setConfirmDel(comp)} style={{ ...bt('g'), padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#EF4444', borderColor: 'rgba(239,68,68,0.2)', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}>{ic.trash} Apagar</button>
             </div>
@@ -790,16 +857,27 @@ export default function Home() {
             <input type="text" placeholder="contrapiso, sóculo, CIV-SOCULO..." value={q} onChange={e => setQ(e.target.value)} style={{ ...inp, paddingLeft: 40, padding: '13px 14px 13px 40px' }} autoFocus />
           </div>
           {q && <p style={{ fontSize: 11, color: TM, marginBottom: 14 }}>{sR.length} resultado{sR.length !== 1 ? 's' : ''}</p>}
-          {sR.map(c => <div key={c.id} style={{ ...cd, padding: '14px 18px', marginBottom: 8, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }} onClick={() => { setCid(c.id); setPid(c.projeto_id); setVw('comp'); }} onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.background = S2; }} onMouseLeave={e => { e.currentTarget.style.borderColor = BD; e.currentTarget.style.background = SF; }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, flex: 1 }}><span style={{ color: A, marginTop: 2 }}>{ic.file}</span><div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6, flexWrap: 'wrap' }}>{c.codigo && <span style={{ ...bg(), fontSize: 9 }}>{c.codigo}</span>}<span style={{ fontSize: 13, fontWeight: 500, whiteSpace: 'normal', lineHeight: 1.5 }}>{cleanMd(c.titulo)}</span></div>
-              <div style={{ fontSize: 11, color: TL, marginTop: 4 }}>Projeto: {pName(c.projeto_id)}</div>
-            </div></div>
-            {c.custo_unitario && <span style={{ fontSize: 13, color: A, fontWeight: 600, fontFamily: FN, flexShrink: 0, marginTop: 2 }}>R$ {Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>}
+          {sR.map(c => <div key={c.id} style={{ ...cd, padding: '14px 18px', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, flex: 1, cursor: 'pointer', minWidth: 0 }} onClick={() => { setCid(c.id); setPid(c.projeto_id); setVw('comp'); }}
+              onMouseEnter={e => { e.currentTarget.parentElement.style.borderColor = A; e.currentTarget.parentElement.style.background = S2; }}
+              onMouseLeave={e => { e.currentTarget.parentElement.style.borderColor = BD; e.currentTarget.parentElement.style.background = SF; }}
+            >
+              <span style={{ color: A, marginTop: 2, flexShrink: 0 }}>{ic.file}</span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6, flexWrap: 'wrap' }}>{c.codigo && <span style={{ ...bg(), fontSize: 9 }}>{c.codigo}</span>}<span style={{ fontSize: 13, fontWeight: 500, whiteSpace: 'normal', lineHeight: 1.5 }}>{cleanMd(c.titulo)}</span></div>
+                <div style={{ fontSize: 11, color: TL, marginTop: 4 }}>Projeto: {pName(c.projeto_id)}</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+              {c.custo_unitario && <span style={{ fontSize: 13, color: A, fontWeight: 600, fontFamily: FN }}>R$ {Number(c.custo_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>}
+              <button title="Copiar" onClick={e => { e.stopPropagation(); navigator.clipboard.writeText(normalizeComposition(c.conteudo_completo) || ''); setNt({ ok: true, m: 'Copiado!' }); setTimeout(() => setNt(null), 2000); }} style={{ ...bt('g'), padding: '5px 8px', border: 'none', background: 'rgba(56,189,248,0.1)', color: '#38BDF8', display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = '#38BDF8'; e.currentTarget.style.color = '#fff'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(56,189,248,0.1)'; e.currentTarget.style.color = '#38BDF8'; }}>{ic.copy}</button>
+              <button title="Excluir" onClick={e => { e.stopPropagation(); setConfirmDel(c); }} style={{ ...bt('g'), padding: '5px 8px', border: 'none', background: 'rgba(239,68,68,0.1)', color: RD, display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = RD; e.currentTarget.style.color = '#fff'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.1)'; e.currentTarget.style.color = RD; }}>{ic.trash}</button>
+            </div>
           </div>)}
           {q && !sR.length && <div style={{ textAlign: 'center', padding: 50, color: TM }}>Nenhum resultado</div>}
           {!q && <div style={{ textAlign: 'center', padding: 60, color: TM, opacity: 0.3 }}><div style={{ fontSize: 28, marginBottom: 8 }}>🔍</div><p>Digite para buscar...</p></div>}
         </>}
+
       </div>
 
       {/* DELETE CONFIRMATION MODAL */}
@@ -816,6 +894,27 @@ export default function Home() {
         </div>
       </div>}
 
+
+      {/* BATCH DELETE CONFIRMATION MODAL */}
+      {confirmBatchDel && <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 1001, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setConfirmBatchDel(false)}>
+        <div style={{ background: SF, border: `1px solid ${RD}`, borderRadius: 12, padding: 28, maxWidth: 420, width: '90%' }} onClick={e => e.stopPropagation()}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: RD, marginBottom: 10 }}>⚠️ Excluir {selectedIds.size} composiç{selectedIds.size !== 1 ? 'ões' : 'ão'}?</div>
+          <div style={{ fontSize: 12, color: TL, marginBottom: 6 }}>As seguintes composições serão removidas permanentemente:</div>
+          <div style={{ maxHeight: 160, overflowY: 'auto', marginBottom: 16, display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {pComps.filter(c => selectedIds.has(c.id)).map(c => (
+              <div key={c.id} style={{ fontSize: 11, color: TM, display: 'flex', gap: 6, alignItems: 'center' }}>
+                {c.codigo && <span style={{ ...bg(RD), fontSize: 8 }}>{c.codigo}</span>}
+                <span style={{ color: TL }}>{cleanMd(c.titulo).slice(0, 70)}...</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ fontSize: 11, color: TM, marginBottom: 20 }}>Esta ação não pode ser desfeita.</div>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+            <button onClick={() => setConfirmBatchDel(false)} style={{ ...bt('g'), padding: '8px 16px' }}>Cancelar</button>
+            <button onClick={batchDelete} style={{ ...bt('d'), padding: '8px 16px' }}>Excluir {selectedIds.size}</button>
+          </div>
+        </div>
+      </div>}
 
       {/* MODALS */}
       {ml && <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 900, backdropFilter: 'blur(4px)' }} onClick={() => !importing && setMl(null)}>
