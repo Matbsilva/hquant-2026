@@ -118,6 +118,17 @@ Toda nova feature, deploy ou bugfix crítico desenvolvido colaborativamente entr
 
 ---
 
+### [26 de Fevereiro de 2026] - Reordenação Drag & Drop, Turno/Fator e Nova UI de Indicadores
+- **Objetivo/Motivo:** Melhorar a gestão do catálogo de composições permitindo ordenação personalizada com drag & drop sem perder formatação do código. Facilitar a leitura rápida extraindo "Turno" e "Fator" para exposição imediata, além de garantir segurança alertando sobre composições com seções incompletas.
+- **Alterações Arquiteturais ou UI:**
+    - **Lista UI (`page.js`):** Implementado Drag & Drop HTML5 nativo com bind numa matriz local `seqMap` para manter a numeração sequencial travada enquanto o usuário ajusta a ordem.
+    - **Ordenação via Sync de Datas:** Substituímos o uso de bibliotecas pesadas de D&D por um cálculo reverso de timestamp `created_at` (banco Supabase), distribuindo a injeção do item movido perfeitamente entre seus adjacentes. Ao recarregar a visualização, os itens vêm perfeitamente ordenados.
+    - **Extratores e Validadores:** Adicionados extratores embutidos na renderização para pinçar dinamicamente `TURNO:`, `FATOR:` e `QUANTIDADE DE REFERÊNCIA:` do Markdown puro. Adicionado interceptador na importação (`addComp`) que escaneia o batch por ausência de "SEÇÃO 1 a 7", exibindo um Modal amarelo escuro com botões de Bypass se necessário.
+    - **FAB Button:** O botão estático superior "+ Composição" ganhou reforço de um botão Flutuante inferior-direito.
+- **Status:** Concluído (Merge, Testado).
+
+---
+
 ## 5. Próximos Passos (Pronto para Iniciar)
 
 Quando um novo assistente assumir, ele deve iniciar IMEDIATAMENTE a **Fase 2: Refatoração Arquitetural**. O arquivo `page.js` possui +800 linhas e precisa ser modularizado **antes** da criação de novas features.
