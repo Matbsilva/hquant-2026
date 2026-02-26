@@ -930,21 +930,17 @@ export default function Home() {
               <div style={{ fontSize: 11, color: A, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 14 }}>📊 Indicadores</div>
               {/* Row 1: Custos */}
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
-                {indCard(`Custo Direto Total/${un}`, comp.custo_unitario ? Number(comp.custo_unitario) : null, A, `R$/${un}`)}
-                {indCard(`Material/${un}`, det.custo_material, '#FBBF24', `R$/${un}`)}
+                {indCard(`Custo Direto Total/${un}`, comp.custo_unitario ? Number(comp.custo_unitario) : null, '#10B981', `R$/${un}`, true)}
+                {indCard(`Material/${un}`, det.custo_material, '#F59E0B', `R$/${un}`, true)}
                 {indCard(`Mão de Obra/${un}`, det.custo_mo, BL, `R$/${un}`, true)}
                 {indCard(`Equipamento/${un}`, det.custo_equip, '#A78BFA', `R$/${un}`, true)}
               </div>
-              {/* Row 2: Produtividade, Rendimento, HH, Equipe */}
+              {/* Row 2: HH e Equipe */}
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
-                {det.produtividade && <div style={{ background: `${A}10`, border: `1px solid ${A}30`, borderTop: `3px solid ${A}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
-                  <div style={{ fontSize: 10, color: A, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Produtividade/Dia</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{det.produtividade} <span style={{ fontSize: 11, color: A, fontWeight: 500 }}>{un}/dia</span></div>
-                </div>}
-                {det.rendimento && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
-                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Rendimento Diário</div>
-                  <div style={{ fontSize: 14, color: GR, fontWeight: 600, fontFamily: FN }}>{det.rendimento}</div>
-                </div>}
+                {det.hhProfs.map((p, i) => <div key={i} style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>HH {p.nome}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{p.hh.toLocaleString('pt-BR', { minimumFractionDigits: 4 })} <span style={{ fontSize: 11, color: TL, fontWeight: 500 }}>HH/{un}</span></div>
+                </div>)}
                 {comp.hh_unitario && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
                   <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>HH Total Equipe/{un}</div>
                   <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{comp.hh_unitario}</div>
@@ -954,22 +950,22 @@ export default function Home() {
                   <div style={{ fontSize: 14, color: TX, fontWeight: 500 }}>{det.equipe}</div>
                 </div>}
               </div>
-              {/* Row 3: Quantidade Ref, Peso Total */}
+              {/* Row 3: Produtividade, Rendimento, Qtd Ref, Peso */}
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
-                {qrefDetailV && <div style={{ background: '#10B98110', border: `1px solid #10B98130`, borderTop: `3px solid #10B981`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
-                  <div style={{ fontSize: 10, color: '#10B981', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Qtd. de Referência</div>
+                {det.produtividade && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Produtividade/Dia</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{det.produtividade} <span style={{ fontSize: 11, color: TL, fontWeight: 500 }}>{un}/dia</span></div>
+                </div>}
+                {det.rendimento && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Rendimento Diário</div>
+                  <div style={{ fontSize: 14, color: GR, fontWeight: 600, fontFamily: FN }}>{det.rendimento}</div>
+                </div>}
+                {qrefDetailV && <div style={{ background: BG, border: `1px solid ${BD}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
+                  <div style={{ fontSize: 10, color: TM, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>Qtd. de Referência</div>
                   <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{qrefDetailV}</div>
                 </div>}
                 {indCard(`Peso/${un}`, det.peso_total, TL, 'kg')}
               </div>
-              {/* HH por função */}
-              {det.hhProfs.length > 0 && <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {det.hhProfs.map((p, i) => <div key={i} style={{ background: `${BL}10`, border: `1px solid ${BL}30`, borderTop: `3px solid ${BL}`, borderRadius: 8, padding: '12px 14px', flex: '1 1 140px', minWidth: 130 }}>
-                  <div style={{ fontSize: 10, color: BL, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6, fontWeight: 600 }}>HH {p.nome}</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: TX, fontFamily: FN }}>{p.hh.toLocaleString('pt-BR', { minimumFractionDigits: 2 })} <span style={{ fontSize: 11, color: BL, fontWeight: 500 }}>HH/{un}</span></div>
-                </div>)}
-              </div>}
-              {/* HH por função END */}
             </div>
             <div style={{ background: SF, border: `1px solid ${BD}`, borderRadius: 10, padding: 26 }}><Md text={normalizeComposition(comp.conteudo_completo)} /></div>
           </>;
