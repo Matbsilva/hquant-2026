@@ -103,10 +103,10 @@
     ✅ Tela de Poliéster para reforço em cantos, ralos e junções
     ✅ Trinchas/brochas profissionais (cerdas sintéticas para alcalinos)
     
-    Equipamentos:
+Equipamentos:
     ✅ Furadeira com hélice misturadora (preparo do produto)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Impermeabilizador Oficial (com adicional noturno 40%)
     ✅ 1 Ajudante (com adicional noturno 40%)
     
@@ -288,10 +288,10 @@
 
 
 Composição do Custo Unitário:
-Material: R$ 54,83/m ²  (47,2%)
-Equipamentos: R$  1,02/m ²  ( 0,9%)
-Mão de Obra: R$ 60,22/m ²  (51,9%) ← DRIVER PRINCIPAL
-TOTAL: R$ 116,07/m ²
+Material: R$ 54,83/m² (47,2%)
+Equipamentos: R$ 1,02/m² (0,9%)
+Mão de Obra: R$ 60,22/m² (51,9%) ← DRIVER PRINCIPAL
+TOTAL: R$ 116,07/m²
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (51,9%) — 3 demãos cruzadas + teste 72h.
 ▸ Viaplus 7000 = 43,1% do custo total (maior insumo individual).
@@ -413,7 +413,7 @@ TOTAL: R$ 116,07/m ²
     Decomposição:
       Impermeabilizador (0,5850 HH): 8 sub-etapas decompostas ✅
       Ajudante (0,5850 HH):          8 sub-etapas decompostas ✅
-      TOTAL: 1,1700 HH/m² ✅ (ver Seção 3.2)
+TOTAL: 1,1700 HH/m² ✅ (ver Seção 3.2)
     
     [BLOCO 3 — ALERTA CRÍTICO]
     ⚠️ O TESTE DE ESTANQUEIDADE 72H é NON-NEGOTIABLE.

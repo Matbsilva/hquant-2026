@@ -69,7 +69,7 @@
 
     ESTÁ INCLUÍDO NESTE SERVIÇO:
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (desmontagem estrutura, trabalho em altura, segurança elétrica)
     ✅ 2 Ajudantes de Obras (quebra de chapas, movimentação andaime, limpeza)
     
@@ -177,10 +177,10 @@
 
 
 Composição do Custo Unitário:
-Material: R$  0,00/m ²  ( 0,0%)
-Equipamentos: R$  1,80/m ²  (13,4%)
-Mão de Obra: R$ 11,61/m ²  (86,6%)  ← DRIVER PRINCIPAL
-TOTAL: R$ 13,41/m ²
+Material: R$ 0,00/m² (0,0%)
+Equipamentos: R$ 1,80/m² (13,4%)
+Mão de Obra: R$ 11,61/m² (86,6%) ← DRIVER PRINCIPAL
+TOTAL: R$ 13,41/m²
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (86,6%). Embora o Drywall seja fácil de quebrar,
 ▸ a altura de 3,50m e a necessidade de separar o metal do gesso (para reciclagem

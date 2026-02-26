@@ -86,10 +86,10 @@
     ✅ Areia Média Lavada (granulometria fina preferível)
     ✅ Aditivo Adesivo tipo Bianco (ponte de aderência + plastificação)
     
-    Equipamentos:
+Equipamentos:
     ✅ Ferramentas manuais de moldagem (gabarito PVC/PET, colher, esponja)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (moldagem curva, acabamento — com adicional noturno 40%)
     ✅ 1 Ajudante (preparo argamassa, apoio — com adicional noturno 40%)
     
@@ -266,8 +266,8 @@
 
 
 Composição do Custo Unitário:
-Material: R$  2,72/m (12,6%)
-Equipamentos: R$  0,27/m ( 1,3%)
+Material: R$ 2,72/m (12,6%)
+Equipamentos: R$ 0,27/m (1,3%)
 Mão de Obra: R$ 18,60/m (86,1%) ← DRIVER PRINCIPAL
 TOTAL: R$ 21,59/m
 

@@ -66,7 +66,7 @@
 
     ESTÁ INCLUÍDO NESTE SERVIÇO:
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (proteção de ralos, calibração do martelete, supervisão)
     ✅ 1 Ajudante de Obras (operação contínua do martelete, raspagem, limpeza grossa)
     
@@ -179,10 +179,10 @@
 
 
 Composição do Custo Unitário:
-Material: R$  0,00/m ²  ( 0,0%)
-Equipamentos: R$  3,95/m ²  (21,7%)
-Mão de Obra: R$ 14,26/m ²  (78,3%)  ← DRIVER PRINCIPAL
-TOTAL: R$ 18,21/m ²
+Material: R$ 0,00/m² (0,0%)
+Equipamentos: R$ 3,95/m² (21,7%)
+Mão de Obra: R$ 14,26/m² (78,3%) ← DRIVER PRINCIPAL
+TOTAL: R$ 18,21/m²
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (78,3%). A demolição de piso é fisicamente
 ▸ exaustiva (vibração + postura agachada). O custo reflete a necessidade de

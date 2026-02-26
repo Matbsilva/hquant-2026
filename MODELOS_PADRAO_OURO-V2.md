@@ -90,11 +90,11 @@ Tudo validado. Iniciando a geração 100% aderente ao Padrão Ouro v4.0.
     ✅ Cimento Portland CP-II (50kg)
     ✅ Areia Média Lavada (Sacos de 20kg)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (prumo, talisca, chapisco, emboço)
     ✅ 1 Ajudante de Obras (betoneira, transporte, elevação de massa, andaime)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação rateada)
     ✅ Andaime Tubular (locação rateada)
     ✅ Ferramentas manuais (colher, régua, desempenadeira, prumo)
@@ -222,10 +222,10 @@ Tudo validado. Iniciando a geração 100% aderente ao Padrão Ouro v4.0.
 
 
 Composição do Custo Unitário:
-Material: R$ 20,99/m ²  (25,2%)
-Equipamentos: R$  4,50/m ²  ( 5,4%)
-Mão de Obra: R$ 57,80/m ²  (69,4%)  ← DRIVER PRINCIPAL
-TOTAL: R$ 83,29/m ²
+Material: R$ 20,99/m² (25,2%)
+Equipamentos: R$ 4,50/m² (5,4%)
+Mão de Obra: R$ 57,80/m² (69,4%) ← DRIVER PRINCIPAL
+TOTAL: R$ 83,29/m²
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (69,4%).
 ▸ Reboco já é um serviço intensivo em M.O. Adicionando altura (andaime),
@@ -455,12 +455,12 @@ Nosso índice (1,88) está perfeitamente calibrado.
     ✅ Aditivo Adesivo tipo Bianco (ponte de aderência)
     ✅ Tela de Aço Reforçada 4,2mm malha 15×15cm (painel 2×3m)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação diária)
     ✅ Nível Laser (locação diária)
     ✅ Ferramentas manuais (régua, desempenadeira, colher, taliscas)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (com adicional noturno 40%)
     ✅ 1 Ajudante (com adicional noturno 40%)
     
@@ -666,10 +666,10 @@ Nosso índice (1,88) está perfeitamente calibrado.
 
 
 Composição do Custo Unitário:
-Material: R$ 67,21/m ²  (49,8%)
-Equipamentos: R$  8,50/m ²  ( 6,3%)
-Mão de Obra: R$ 59,15/m ²  (43,9%) ← SEGUNDO DRIVER
-TOTAL: R$ 134,86/m ²
+Material: R$ 67,21/m² (49,8%)
+Equipamentos: R$ 8,50/m² (6,3%)
+Mão de Obra: R$ 59,15/m² (43,9%) ← SEGUNDO DRIVER
+TOTAL: R$ 134,86/m²
 
 ▸ DRIVER PRINCIPAL: Material (49,8%) — Tela de aço 4,2mm = R$ 20,17/m² (15,0%).
 ▸ SEGUNDO DRIVER: Mão de Obra (43,9%) — Turno noturno = +40% custo/HH.
@@ -785,7 +785,7 @@ TOTAL: R$ 134,86/m ²
     Decomposição:
       Pedreiro (0,5350 HH): 8 sub-etapas ✅
       Ajudante (0,6450 HH): 8 sub-etapas ✅
-      TOTAL: 1,1800 HH/m² ✅ (ver Seção 3.2)
+TOTAL: 1,1800 HH/m² ✅ (ver Seção 3.2)
     
     [BLOCO 3 — ALERTA CRÍTICO]
     ⚠️ NÃO DANIFICAR a impermeabilização durante apicoamento.
@@ -998,11 +998,11 @@ TOTAL: R$ 134,86/m ²
     ✅ Tela Soldada Q61 fio 3,4mm malha 15×15cm (armadura da capa)
     ✅ Aditivo Adesivo tipo Bianco (aderência EPS/argamassa)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação diária, rateio por m²)
     ✅ Ferramentas manuais (colher, desempenadeira, régua, nível, soquete)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (nivelamento, sarrafeamento, desempeno)
     ✅ 1,5 Ajudante (preparo argamassa, transporte areia, assistência)
     
@@ -1225,10 +1225,10 @@ TOTAL: R$ 134,86/m ²
 
 
 Composição do Custo Unitário:
-Material: R$ 150,35/m ²  (60,8%)  ← DRIVER PRINCIPAL
-Equipamentos: R$   5,30/m ²  ( 2,1%)
-Mão de Obra: R$  91,51/m ²  (37,0%)
-TOTAL: R$ 247,16/m ²
+Material: R$ 150,35/m² (60,8%) ← DRIVER PRINCIPAL
+Equipamentos: R$ 5,30/m² (2,1%)
+Mão de Obra: R$ 91,51/m² (37,0%)
+TOTAL: R$ 247,16/m²
 
 ▸ DRIVER PRINCIPAL: Material (60,8%) — EPS sozinho = 22,9% do custo total.
 
@@ -1853,10 +1853,10 @@ TOTAL: R$ 247,16/m ²
     ✅ Tela de Poliéster para reforço em cantos, ralos e junções
     ✅ Trinchas/brochas profissionais (cerdas sintéticas para alcalinos)
     
-    Equipamentos:
+Equipamentos:
     ✅ Furadeira com hélice misturadora (preparo do produto)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Impermeabilizador Oficial (com adicional noturno 40%)
     ✅ 1 Ajudante (com adicional noturno 40%)
     
@@ -2038,10 +2038,10 @@ TOTAL: R$ 247,16/m ²
 
 
 Composição do Custo Unitário:
-Material: R$ 54,83/m ²  (47,2%)
-Equipamentos: R$  1,02/m ²  ( 0,9%)
-Mão de Obra: R$ 60,22/m ²  (51,9%) ← DRIVER PRINCIPAL
-TOTAL: R$ 116,07/m ²
+Material: R$ 54,83/m² (47,2%)
+Equipamentos: R$ 1,02/m² (0,9%)
+Mão de Obra: R$ 60,22/m² (51,9%) ← DRIVER PRINCIPAL
+TOTAL: R$ 116,07/m²
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (51,9%) — 3 demãos cruzadas + teste 72h.
 ▸ Viaplus 7000 = 43,1% do custo total (maior insumo individual).
@@ -2163,7 +2163,7 @@ TOTAL: R$ 116,07/m ²
     Decomposição:
       Impermeabilizador (0,5850 HH): 8 sub-etapas decompostas ✅
       Ajudante (0,5850 HH):          8 sub-etapas decompostas ✅
-      TOTAL: 1,1700 HH/m² ✅ (ver Seção 3.2)
+TOTAL: 1,1700 HH/m² ✅ (ver Seção 3.2)
     
     [BLOCO 3 — ALERTA CRÍTICO]
     ⚠️ O TESTE DE ESTANQUEIDADE 72H é NON-NEGOTIABLE.
@@ -2320,7 +2320,7 @@ TOTAL: R$ 116,07/m ²
 
     ESTÁ INCLUÍDO NESTE SERVIÇO:
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (corte de tirantes na laje, desmontagem de guias, supervisão)
     ✅ 2 Ajudantes de Obras (rompimento de placas, movimentação do andaime, amontoamento)
     
@@ -2438,10 +2438,10 @@ TOTAL: R$ 116,07/m ²
 
 
 Composição do Custo Unitário:
-Material: R$  0,00/m ²  ( 0,0%)
-Equipamentos: R$  1,80/m ²  (13,3%)
-Mão de Obra: R$ 11,70/m ²  (86,7%)  ← DRIVER PRINCIPAL
-TOTAL: R$ 13,50/m ²
+Material: R$ 0,00/m² (0,0%)
+Equipamentos: R$ 1,80/m² (13,3%)
+Mão de Obra: R$ 11,70/m² (86,7%) ← DRIVER PRINCIPAL
+TOTAL: R$ 13,50/m²
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (86,7%). Demolição é um serviço puramente
 ▸ de esforço humano. A altura de 3,50m é o fator que mais impacta, pois obriga

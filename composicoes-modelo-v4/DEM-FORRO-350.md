@@ -64,7 +64,7 @@
 
     ESTÁ INCLUÍDO NESTE SERVIÇO:
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (corte de tirantes na laje, desmontagem de guias, supervisão)
     ✅ 2 Ajudantes de Obras (rompimento de placas, movimentação do andaime, amontoamento)
     
@@ -182,10 +182,10 @@
 
 
 Composição do Custo Unitário:
-Material: R$  0,00/m ²  ( 0,0%)
-Equipamentos: R$  1,80/m ²  (13,3%)
-Mão de Obra: R$ 11,70/m ²  (86,7%)  ← DRIVER PRINCIPAL
-TOTAL: R$ 13,50/m ²
+Material: R$ 0,00/m² (0,0%)
+Equipamentos: R$ 1,80/m² (13,3%)
+Mão de Obra: R$ 11,70/m² (86,7%) ← DRIVER PRINCIPAL
+TOTAL: R$ 13,50/m²
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (86,7%). Demolição é um serviço puramente
 ▸ de esforço humano. A altura de 3,50m é o fator que mais impacta, pois obriga

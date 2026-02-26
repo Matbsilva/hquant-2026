@@ -77,11 +77,11 @@
     ✅ Cimento Portland CP-II (50kg)
     ✅ Areia Média Lavada (Sacos de 20kg)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (prumo, talisca, chapisco, emboço)
     ✅ 1 Ajudante de Obras (betoneira, transporte, elevação de massa, andaime)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação rateada)
     ✅ Andaime Tubular (locação rateada)
     ✅ Ferramentas manuais (colher, régua, desempenadeira, prumo)
@@ -191,10 +191,10 @@
 
 
 Composição do Custo Unitário:
-Material: R$ 20,99/m ²  (25,2%)
-Equipamentos: R$  4,50/m ²  ( 5,4%)
-Mão de Obra: R$ 57,80/m ²  (69,4%)  ← DRIVER PRINCIPAL
-TOTAL: R$ 83,29/m ²
+Material: R$ 20,99/m² (25,2%)
+Equipamentos: R$ 4,50/m² (5,4%)
+Mão de Obra: R$ 57,80/m² (69,4%) ← DRIVER PRINCIPAL
+TOTAL: R$ 83,29/m²
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (69,4%). O trabalho intensivo em andaime, somado
 ▸ ao fator noturno e logística de sacaria, reduz a produtividade em ~50% comparado

@@ -112,12 +112,12 @@
     ✅ Aditivo Adesivo tipo Bianco (ponte de aderência)
     ✅ Tela de Aço Reforçada 4,2mm malha 15×15cm (painel 2×3m)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação diária)
     ✅ Nível Laser (locação diária)
     ✅ Ferramentas manuais (régua, desempenadeira, colher, taliscas)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (com adicional noturno 40%)
     ✅ 1 Ajudante (com adicional noturno 40%)
     
@@ -323,10 +323,10 @@
 
 
 Composição do Custo Unitário:
-Material: R$ 67,21/m ²  (49,8%)
-Equipamentos: R$  8,50/m ²  ( 6,3%)
-Mão de Obra: R$ 59,15/m ²  (43,9%) ← SEGUNDO DRIVER
-TOTAL: R$ 134,86/m ²
+Material: R$ 67,21/m² (49,8%)
+Equipamentos: R$ 8,50/m² (6,3%)
+Mão de Obra: R$ 59,15/m² (43,9%) ← SEGUNDO DRIVER
+TOTAL: R$ 134,86/m²
 
 ▸ DRIVER PRINCIPAL: Material (49,8%) — Tela de aço 4,2mm = R$ 20,17/m² (15,0%).
 ▸ SEGUNDO DRIVER: Mão de Obra (43,9%) — Turno noturno = +40% custo/HH.
@@ -442,7 +442,7 @@ TOTAL: R$ 134,86/m ²
     Decomposição:
       Pedreiro (0,5350 HH): 8 sub-etapas ✅
       Ajudante (0,6450 HH): 8 sub-etapas ✅
-      TOTAL: 1,1800 HH/m² ✅ (ver Seção 3.2)
+TOTAL: 1,1800 HH/m² ✅ (ver Seção 3.2)
     
     [BLOCO 3 — ALERTA CRÍTICO]
     ⚠️ NÃO DANIFICAR a impermeabilização durante apicoamento.
@@ -606,7 +606,7 @@ TOTAL: R$ 134,86/m ²
 
     ESTÁ INCLUÍDO NESTE SERVIÇO:
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (marcação de caixas de luz/água, abertura de frentes, supervisão)
     ✅ 1 Ajudante de Obras (operação contínua do martelete leve, amontoamento)
     
@@ -719,10 +719,10 @@ TOTAL: R$ 134,86/m ²
 
 
 Composição do Custo Unitário:
-Material: R$  0,00/m ²  ( 0,0%)
-Equipamentos: R$  2,70/m ²  (18,8%)
-Mão de Obra: R$ 11,61/m ²  (81,2%)  ← DRIVER PRINCIPAL
-TOTAL: R$ 14,31/m ²
+Material: R$ 0,00/m² (0,0%)
+Equipamentos: R$ 2,70/m² (18,8%)
+Mão de Obra: R$ 11,61/m² (81,2%) ← DRIVER PRINCIPAL
+TOTAL: R$ 14,31/m²
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (81,2%). O uso do martelete locado representa
 ▸ quase 20% do custo, mas é o que viabiliza o preço baixo da M.O. Se não houvesse
@@ -929,7 +929,7 @@ Nosso cálculo matemático detalhado deu **0,470 HH/m²**. A matemática é perf
 
     ESTÁ INCLUÍDO NESTE SERVIÇO:
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (sondagem de espessura, fiscalização de tubulações, supervisão)
     ✅ 1 Ajudante de Obras (operação contínua do martelete 15kg, amontoamento pesado)
     
@@ -1041,10 +1041,10 @@ Nosso cálculo matemático detalhado deu **0,470 HH/m²**. A matemática é perf
 
 
 Composição do Custo Unitário:
-Material: R$  0,00/m ²  ( 0,0%)
-Equipamentos: R$  5,20/m ²  (19,9%)
-Mão de Obra: R$ 20,97/m ²  (80,1%)  ← DRIVER PRINCIPAL
-TOTAL: R$ 26,17/m ²
+Material: R$ 0,00/m² (0,0%)
+Equipamentos: R$ 5,20/m² (19,9%)
+Mão de Obra: R$ 20,97/m² (80,1%) ← DRIVER PRINCIPAL
+TOTAL: R$ 26,17/m²
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (80,1%).
 ▸ O volume de material demolido é massivo (100kg/m²). O tempo gasto não é só
@@ -1255,7 +1255,7 @@ Would you like me to proceed to **2.5 (Demolição de Drywall)**?```
 
     ESTÁ INCLUÍDO NESTE SERVIÇO:
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (desmontagem estrutura, trabalho em altura, segurança elétrica)
     ✅ 2 Ajudantes de Obras (quebra de chapas, movimentação andaime, limpeza)
     
@@ -1363,10 +1363,10 @@ Would you like me to proceed to **2.5 (Demolição de Drywall)**?```
 
 
 Composição do Custo Unitário:
-Material: R$  0,00/m ²  ( 0,0%)
-Equipamentos: R$  1,80/m ²  (13,4%)
-Mão de Obra: R$ 11,61/m ²  (86,6%)  ← DRIVER PRINCIPAL
-TOTAL: R$ 13,41/m ²
+Material: R$ 0,00/m² (0,0%)
+Equipamentos: R$ 1,80/m² (13,4%)
+Mão de Obra: R$ 11,61/m² (86,6%) ← DRIVER PRINCIPAL
+TOTAL: R$ 13,41/m²
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (86,6%). Embora o Drywall seja fácil de quebrar,
 ▸ a altura de 3,50m e a necessidade de separar o metal do gesso (para reciclagem
@@ -1571,7 +1571,7 @@ Would you like me to proceed to **3.1 (Contrapiso 4cm)**?
 
     ESTÁ INCLUÍDO NESTE SERVIÇO:
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (corte de tirantes na laje, desmontagem de guias, supervisão)
     ✅ 2 Ajudantes de Obras (rompimento de placas, movimentação do andaime, amontoamento)
     
@@ -1689,10 +1689,10 @@ Would you like me to proceed to **3.1 (Contrapiso 4cm)**?
 
 
 Composição do Custo Unitário:
-Material: R$  0,00/m ²  ( 0,0%)
-Equipamentos: R$  1,80/m ²  (13,3%)
-Mão de Obra: R$ 11,70/m ²  (86,7%)  ← DRIVER PRINCIPAL
-TOTAL: R$ 13,50/m ²
+Material: R$ 0,00/m² (0,0%)
+Equipamentos: R$ 1,80/m² (13,3%)
+Mão de Obra: R$ 11,70/m² (86,7%) ← DRIVER PRINCIPAL
+TOTAL: R$ 13,50/m²
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (86,7%). Demolição é um serviço puramente
 ▸ de esforço humano. A altura de 3,50m é o fator que mais impacta, pois obriga
@@ -1899,7 +1899,7 @@ A variação é de apenas 4,8%. O índice está matematicamente validado pelas t
 
     ESTÁ INCLUÍDO NESTE SERVIÇO:
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (proteção de ralos, calibração do martelete, supervisão)
     ✅ 1 Ajudante de Obras (operação contínua do martelete, raspagem, limpeza grossa)
     
@@ -2012,10 +2012,10 @@ A variação é de apenas 4,8%. O índice está matematicamente validado pelas t
 
 
 Composição do Custo Unitário:
-Material: R$  0,00/m ²  ( 0,0%)
-Equipamentos: R$  3,95/m ²  (21,7%)
-Mão de Obra: R$ 14,26/m ²  (78,3%)  ← DRIVER PRINCIPAL
-TOTAL: R$ 18,21/m ²
+Material: R$ 0,00/m² (0,0%)
+Equipamentos: R$ 3,95/m² (21,7%)
+Mão de Obra: R$ 14,26/m² (78,3%) ← DRIVER PRINCIPAL
+TOTAL: R$ 18,21/m²
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (78,3%). A demolição de piso é fisicamente
 ▸ exaustiva (vibração + postura agachada). O custo reflete a necessidade de
@@ -2238,10 +2238,10 @@ Nosso cálculo detalhado deu **0,588 HH/m²**. Diferença de 1,5%. Validação m
     ✅ Areia Média Lavada (granulometria fina preferível)
     ✅ Aditivo Adesivo tipo Bianco (ponte de aderência + plastificação)
     
-    Equipamentos:
+Equipamentos:
     ✅ Ferramentas manuais de moldagem (gabarito PVC/PET, colher, esponja)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (moldagem curva, acabamento — com adicional noturno 40%)
     ✅ 1 Ajudante (preparo argamassa, apoio — com adicional noturno 40%)
     
@@ -2418,8 +2418,8 @@ Nosso cálculo detalhado deu **0,588 HH/m²**. Diferença de 1,5%. Validação m
 
 
 Composição do Custo Unitário:
-Material: R$  2,72/m (12,6%)
-Equipamentos: R$  0,27/m ( 1,3%)
+Material: R$ 2,72/m (12,6%)
+Equipamentos: R$ 0,27/m (1,3%)
 Mão de Obra: R$ 18,60/m (86,1%) ← DRIVER PRINCIPAL
 TOTAL: R$ 21,59/m
 
@@ -2741,10 +2741,10 @@ TOTAL: R$ 21,59/m
     ✅ Tela de Poliéster para reforço em cantos, ralos e junções
     ✅ Trinchas/brochas profissionais (cerdas sintéticas para alcalinos)
     
-    Equipamentos:
+Equipamentos:
     ✅ Furadeira com hélice misturadora (preparo do produto)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Impermeabilizador Oficial (com adicional noturno 40%)
     ✅ 1 Ajudante (com adicional noturno 40%)
     
@@ -2926,10 +2926,10 @@ TOTAL: R$ 21,59/m
 
 
 Composição do Custo Unitário:
-Material: R$ 54,83/m ²  (47,2%)
-Equipamentos: R$  1,02/m ²  ( 0,9%)
-Mão de Obra: R$ 60,22/m ²  (51,9%) ← DRIVER PRINCIPAL
-TOTAL: R$ 116,07/m ²
+Material: R$ 54,83/m² (47,2%)
+Equipamentos: R$ 1,02/m² (0,9%)
+Mão de Obra: R$ 60,22/m² (51,9%) ← DRIVER PRINCIPAL
+TOTAL: R$ 116,07/m²
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (51,9%) — 3 demãos cruzadas + teste 72h.
 ▸ Viaplus 7000 = 43,1% do custo total (maior insumo individual).
@@ -3051,7 +3051,7 @@ TOTAL: R$ 116,07/m ²
     Decomposição:
       Impermeabilizador (0,5850 HH): 8 sub-etapas decompostas ✅
       Ajudante (0,5850 HH):          8 sub-etapas decompostas ✅
-      TOTAL: 1,1700 HH/m² ✅ (ver Seção 3.2)
+TOTAL: 1,1700 HH/m² ✅ (ver Seção 3.2)
     
     [BLOCO 3 — ALERTA CRÍTICO]
     ⚠️ O TESTE DE ESTANQUEIDADE 72H é NON-NEGOTIABLE.
@@ -3315,10 +3315,15 @@ Aumento do custo Equipamento (+15% vs Corte de Piso):
 | **Produtividade Diária** | m/noite | — | — | **~10 m/noite** (1P+1A) |
 
 #### **5.1 ANÁLISE / COMPARATIVO PAREDE vs PISO**
-Custo do rasgo na parede (15x15) é 9,7% mais caro que no piso (20x15), 
-mesmo tendo 25% menos volume (0,022 m³ vs 0,030 m³).
-Isso é o Paradoxo da Construção Vertical: a ergonomia derruba 
-a produtividade de tal forma que o ganho do volume é anulado pelo HH.
+
+Composição do Custo Unitário:
+Material: R$ 7,47/m (9,5%)
+Equipamentos: R$ 6,56/m (8,4%)
+Mão de Obra: R$ 64,32/m (82,1%) ← DRIVER PRINCIPAL
+TOTAL: R$ 78,35/m
+
+▸ DRIVER PRINCIPAL: M.O. (82,1%) — Custo do rasgo na parede (15x15) é 9,7% mais caro que no piso (20x15), mesmo tendo 25% menos volume (0,022 m³ vs 0,030 m³).
+▸ Observação: Paradoxo da Construção Vertical — a ergonomia derruba a produtividade de tal forma que o ganho do volume é anulado pelo HH.
 
 * * *
 
@@ -3505,9 +3510,14 @@ Produtividade base estimada do equipamento = ~30m a 45m / dia. Resultando em fra
 | **Produtividade Diária** | m/noite | — | — | **~12,5 m/noite** (1P+1A) |
 
 #### **5.1 ANÁLISE DE CUSTO / DRIVER**
-O serviço é 76,7% composto por Mão de Obra (R$ 54,77 de R$ 71,37).
-Serviços de "rasgo e fechamento" em retrofits são altamente intensivos em horas
-pois envolvem quebra seletiva para não danificar ao redor.
+
+Composição do Custo Unitário:
+Material: R$ 10,82/m (15,2%)
+Equipamentos: R$ 5,78/m (8,1%)
+Mão de Obra: R$ 54,77/m (76,7%) ← DRIVER PRINCIPAL
+TOTAL: R$ 71,37/m
+
+▸ DRIVER PRINCIPAL: Mão de Obra (76,7%) — Serviços de "rasgo e fechamento" em retrofits são altamente intensivos em horas pois envolvem quebra seletiva para não danificar ao redor.
 
 * * *
 
@@ -3705,12 +3715,16 @@ Carrinho Plataforma:
 | **Produtividade Diária** | m³/noite | — | — | **~3,1 m³/noite** (p/ cada Dupla) |
 
 #### **5.1 ANÁLISE DE CUSTO / ESTRUTURA E DRIVER**
-Composição 100% dependente de sacos e HH.
-Mat: 47,3% / M.O: 51,5%.
-O custo de R$ 310/m³ (só para jogar na doca sem caçamba) justifica
-frequentemente a locação de minicarregadeiras quando possível (rampas).
-No trabalho de "formiga" em andares altos, este custo é real e muitas
-vezes subestimado pelas construtoras, que "sugam" este HH da produção.
+
+Composição do Custo Unitário:
+Material: R$ 147,00/m³ (47,3%)
+Equipamentos: R$ 3,50/m³ (1,1%)
+Mão de Obra: R$ 160,10/m³ (51,5%) ← DRIVER PRINCIPAL
+TOTAL: R$ 310,60/m³
+
+▸ DRIVER PRINCIPAL: M.O. (51,5%) — Composição 100% dependente de sacos e HH.
+▸ Observação: O custo de R$ 310/m³ (só para jogar na doca sem caçamba) justifica frequentemente a locação de minicarregadeiras quando possível (rampas).
+▸ No trabalho de "formiga" em andares altos, este custo é real e muitas vezes subestimado pelas construtoras, que "sugam" este HH da produção.
 
 * * *
 
@@ -3901,10 +3915,14 @@ Carrinho Plataforma:
 | **Produtividade Diária** | t/noite | — | — | **~3,9 t/noite** (p/ cada Dupla ativa) |
 
 #### **5.1 ANÁLISE DE CUSTO / ESTRUTURA E DRIVER**
-Transportar 1 Saco de cimento (50kg) custaria R$ 6,55 (noturno) de M.O.
-Transportar 1 Saco de Areia/Argamassa (20kg) custa R$ 2,62.
-O frete "indoor" (doca-ilha) não é desprezível e encarece uma saca de
-cimento de R$ 34,00 para quase R$ 41,00 (+20%) só ao entrar no elevador.
+
+Composição do Custo Unitário:
+Equipamentos: R$ 2,50/t (1,9%)
+Mão de Obra: R$ 128,46/t (98,1%) ← DRIVER PRINCIPAL
+TOTAL: R$ 130,96/t
+
+▸ DRIVER PRINCIPAL: M.O. (98,1%) — Transportar 1 Saco de cimento (50kg) custa R$ 6,55 (noturno) de M.O. Transportar 1 Saco de Areia/Argamassa (20kg) custa R$ 2,62.
+▸ Observação: O frete "indoor" (doca-ilha) não é desprezível e encarece uma saca de cimento de R$ 34,00 para quase R$ 41,00 (+20%) só ao entrar no elevador.
 
 * * *
 
@@ -4137,9 +4155,13 @@ Areia Média Lavada:
 
 #### **5.1 ANÁLISE DE CUSTO**
 
-Material: R$ 25,36/m (38,4%) / M.O.: R$ 40,41/m (61,2%) ← DRIVER
+Composição do Custo Unitário:
+Material: R$ 25,36/m (38,4%)
 Equipamento: R$ 0,30/m (0,5%)
-Driver: M.O. (61,2%) — serviço artesanal de assentamento + emboço duplo
+Mão de Obra: R$ 40,41/m (61,2%) ← DRIVER PRINCIPAL
+TOTAL: R$ 66,07/m
+
+▸ DRIVER PRINCIPAL: M.O. (61,2%) — serviço artesanal de assentamento + emboço duplo.
 
 * * *
 
@@ -4639,11 +4661,11 @@ Uso: contenção simples, delimitação de áreas, base leve.
     ✅ Tela Soldada Q61 fio 3,4mm malha 15×15cm (armadura da capa)
     ✅ Aditivo Adesivo tipo Bianco (aderência EPS/argamassa)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação diária, rateio por m²)
     ✅ Ferramentas manuais (colher, desempenadeira, régua, nível, soquete)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (nivelamento, sarrafeamento, desempeno)
     ✅ 1,5 Ajudante (preparo argamassa, transporte areia, assistência)
     
@@ -4866,10 +4888,10 @@ Uso: contenção simples, delimitação de áreas, base leve.
 
 
 Composição do Custo Unitário:
-Material: R$ 150,35/m ²  (60,8%)  ← DRIVER PRINCIPAL
-Equipamentos: R$   5,30/m ²  ( 2,1%)
-Mão de Obra: R$  91,51/m ²  (37,0%)
-TOTAL: R$ 247,16/m ²
+Material: R$ 150,35/m² (60,8%) ← DRIVER PRINCIPAL
+Equipamentos: R$ 5,30/m² (2,1%)
+Mão de Obra: R$ 91,51/m² (37,0%)
+TOTAL: R$ 247,16/m²
 
 ▸ DRIVER PRINCIPAL: Material (60,8%) — EPS sozinho = 22,9% do custo total.
 
@@ -5218,11 +5240,11 @@ TOTAL: R$ 247,16/m ²
     ✅ Tela Soldada Q61 fio 3,4mm malha 15×15cm (armadura capa)
     ✅ Aditivo Adesivo tipo Bianco (aderência EPS/argamassa)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação diária, rateio por m²)
     ✅ Ferramentas manuais (colher, desempenadeira, régua, nível, soquete)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (nivelamento, sarrafeamento, desempeno)
     ✅ 1,5 Ajudante (preparo argamassa, transporte areia, assistência)
     
@@ -5447,10 +5469,10 @@ TOTAL: R$ 247,16/m ²
 
 
 Composição do Custo Unitário:
-Material: R$ 188,43/m ²  (60,7%)  ← DRIVER PRINCIPAL
-Equipamentos: R$   5,30/m ²  ( 1,7%)
-Mão de Obra: R$ 116,84/m ²  (37,6%)  ← SEGUNDO DRIVER
-TOTAL: R$ 310,57/m ²
+Material: R$ 188,43/m² (60,7%) ← DRIVER PRINCIPAL
+Equipamentos: R$ 5,30/m² (1,7%)
+Mão de Obra: R$ 116,84/m² (37,6%) ← SEGUNDO DRIVER
+TOTAL: R$ 310,57/m²
 
 ▸ DRIVER PRINCIPAL: Material (60,7%) — Areia ensacada sozinha = 22,8% do custo total.
 ▸ SEGUNDO DRIVER: Mão de Obra (37,6%) — HH alto por causa da logística manual.
@@ -5598,7 +5620,7 @@ TOTAL: R$ 310,57/m ²
     Decomposição validada:
       Pedreiro (1,5850 HH):  9 sub-etapas decompostas ✅
       Ajudante (2,3750 HH):  9 sub-etapas decompostas ✅
-      TOTAL: 3,9600 HH/m² ✅ (ver Seção 3.2)
+TOTAL: 3,9600 HH/m² ✅ (ver Seção 3.2)
     
     [BLOCO 3 — ALERTA CRÍTICO]
     ⚠️ A CURA ÚMIDA DE 7 DIAS é NON-NEGOTIABLE.
@@ -5804,11 +5826,11 @@ TOTAL: R$ 310,57/m ²
     ✅ Areia Média Lavada (Sacos de 20kg)
     ✅ Água para mistura e cura
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (nivelamento, mestras, acabamento)
     ✅ 1 Ajudante de Obras (betoneira, transporte de massa, compactação)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação rateada)
     ✅ Ferramentas manuais (régua, desempenadeira, enxada, nível laser)
 
@@ -5922,10 +5944,10 @@ TOTAL: R$ 310,57/m ²
 
 
 Composição do Custo Unitário:
-Material: R$ 31,93/m ²  (51,8%)  ← DRIVER PRINCIPAL
-Equipamentos: R$  1,40/m ²  ( 2,2%)
-Mão de Obra: R$ 28,37/m ²  (46,0%)
-TOTAL: R$ 61,70/m ²
+Material: R$ 31,93/m² (51,8%) ← DRIVER PRINCIPAL
+Equipamentos: R$ 1,40/m² (2,2%)
+Mão de Obra: R$ 28,37/m² (46,0%)
+TOTAL: R$ 61,70/m²
 
 ▸ DRIVER PRINCIPAL: Material (51,8%). O custo da areia ensacada pesa muito.
 ▸ A logística de elevator/doca IMPEDE o uso de granel, justificando o sobrecusto.
@@ -6114,11 +6136,11 @@ Would you like me to proceed to **3.2 (Revestimento de Parede)**?
     ✅ Cimento Portland CP-II (50kg)
     ✅ Areia Média Lavada (Sacos de 20kg)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (prumo, talisca, chapisco, emboço)
     ✅ 1 Ajudante de Obras (betoneira, transporte, elevação de massa, andaime)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação rateada)
     ✅ Andaime Tubular (locação rateada)
     ✅ Ferramentas manuais (colher, régua, desempenadeira, prumo)
@@ -6228,10 +6250,10 @@ Would you like me to proceed to **3.2 (Revestimento de Parede)**?
 
 
 Composição do Custo Unitário:
-Material: R$ 20,99/m ²  (25,2%)
-Equipamentos: R$  4,50/m ²  ( 5,4%)
-Mão de Obra: R$ 57,80/m ²  (69,4%)  ← DRIVER PRINCIPAL
-TOTAL: R$ 83,29/m ²
+Material: R$ 20,99/m² (25,2%)
+Equipamentos: R$ 4,50/m² (5,4%)
+Mão de Obra: R$ 57,80/m² (69,4%) ← DRIVER PRINCIPAL
+TOTAL: R$ 83,29/m²
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (69,4%). O trabalho intensivo em andaime, somado
 ▸ ao fator noturno e logística de sacaria, reduz a produtividade em ~50% comparado
@@ -6403,11 +6425,11 @@ Base CPOS (1,50 HH) ÷ 0,85 (Noturno) = 1,76 HH. Adicionando ajuste logístico d
     ✅ Areia Média Lavada (Sacos de 20kg)
     ✅ Pedrisco / Pedra 0 (Sacos de 20kg)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (esquadro, assentamento, concretagem capa, emboço)
     ✅ 1 Ajudante de Obras (preparo de massa/concreto, cortes EPS, transporte)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação rateada)
     ✅ Ferramentas manuais (serrote p/ EPS, desempenadeira, colher, nível)
 
@@ -6535,8 +6557,8 @@ Base CPOS (1,50 HH) ÷ 0,85 (Noturno) = 1,76 HH. Adicionando ajuste logístico d
 
 Composição do Custo Unitário:
 Material: R$ 203,22/un (46,4%)
-Equipamentos: R$   2,60/un ( 0,6%)
-Mão de Obra: R$ 232,46/un (53,0%)  ← DRIVER PRINCIPAL
+Equipamentos: R$ 2,60/un (0,6%)
+Mão de Obra: R$ 232,46/un (53,0%) ← DRIVER PRINCIPAL
 TOTAL: R$ 438,28/un
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (53,0%), seguida intimamente pelo Material (46,4%).
@@ -6750,11 +6772,11 @@ Se pegarmos o histórico da Expertise Quantiza de 7,60 HH/un e removermos o fato
     ✅ Cimento Portland CP-II (50kg)
     ✅ Areia Média Lavada (Sacos de 20kg)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (esquadro, assentamento, prumo, nível, emboço)
     ✅ 1 Ajudante de Obras (preparo de massa, transporte de tijolos e areia)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação rateada)
     ✅ Ferramentas manuais (desgaste de colher, esquadro, nível laser, desempenadeira)
 
@@ -6877,8 +6899,8 @@ Se pegarmos o histórico da Expertise Quantiza de 7,60 HH/un e removermos o fato
 
 Composição do Custo Unitário:
 Material: R$ 206,98/un (36,3%)
-Equipamentos: R$   2,60/un ( 0,4%)
-Mão de Obra: R$ 361,05/un (63,3%)  ← DRIVER PRINCIPAL
+Equipamentos: R$ 2,60/un (0,4%)
+Mão de Obra: R$ 361,05/un (63,3%) ← DRIVER PRINCIPAL
 TOTAL: R$ 570,63/un
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (63,3%).

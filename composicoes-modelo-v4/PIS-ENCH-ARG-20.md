@@ -122,11 +122,11 @@
     ✅ Tela Soldada Q61 fio 3,4mm malha 15×15cm (armadura da capa)
     ✅ Aditivo Adesivo tipo Bianco (aderência EPS/argamassa)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação diária, rateio por m²)
     ✅ Ferramentas manuais (colher, desempenadeira, régua, nível, soquete)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (nivelamento, sarrafeamento, desempeno)
     ✅ 1,5 Ajudante (preparo argamassa, transporte areia, assistência)
     
@@ -349,10 +349,10 @@
 
 
 Composição do Custo Unitário:
-Material: R$ 150,35/m ²  (60,8%)  ← DRIVER PRINCIPAL
-Equipamentos: R$   5,30/m ²  ( 2,1%)
-Mão de Obra: R$  91,51/m ²  (37,0%)
-TOTAL: R$ 247,16/m ²
+Material: R$ 150,35/m² (60,8%) ← DRIVER PRINCIPAL
+Equipamentos: R$ 5,30/m² (2,1%)
+Mão de Obra: R$ 91,51/m² (37,0%)
+TOTAL: R$ 247,16/m²
 
 ▸ DRIVER PRINCIPAL: Material (60,8%) — EPS sozinho = 22,9% do custo total.
 

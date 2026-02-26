@@ -157,10 +157,15 @@ Aumento do custo Equipamento (+15% vs Corte de Piso):
 | **Produtividade Diária** | m/noite | — | — | **~10 m/noite** (1P+1A) |
 
 #### **5.1 ANÁLISE / COMPARATIVO PAREDE vs PISO**
-Custo do rasgo na parede (15x15) é 9,7% mais caro que no piso (20x15), 
-mesmo tendo 25% menos volume (0,022 m³ vs 0,030 m³).
-Isso é o Paradoxo da Construção Vertical: a ergonomia derruba 
-a produtividade de tal forma que o ganho do volume é anulado pelo HH.
+
+Composição do Custo Unitário:
+Material: R$ 7,47/m (9,5%)
+Equipamentos: R$ 6,56/m (8,4%)
+Mão de Obra: R$ 64,32/m (82,1%) ← DRIVER PRINCIPAL
+TOTAL: R$ 78,35/m
+
+▸ DRIVER PRINCIPAL: M.O. (82,1%) — Custo do rasgo na parede (15x15) é 9,7% mais caro que no piso (20x15), mesmo tendo 25% menos volume (0,022 m³ vs 0,030 m³).
+▸ Observação: Paradoxo da Construção Vertical — a ergonomia derruba a produtividade de tal forma que o ganho do volume é anulado pelo HH.
 
 * * *
 

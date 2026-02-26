@@ -115,11 +115,11 @@
     ✅ Tela Soldada Q61 fio 3,4mm malha 15×15cm (armadura capa)
     ✅ Aditivo Adesivo tipo Bianco (aderência EPS/argamassa)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação diária, rateio por m²)
     ✅ Ferramentas manuais (colher, desempenadeira, régua, nível, soquete)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (nivelamento, sarrafeamento, desempeno)
     ✅ 1,5 Ajudante (preparo argamassa, transporte areia, assistência)
     
@@ -344,10 +344,10 @@
 
 
 Composição do Custo Unitário:
-Material: R$ 188,43/m ²  (60,7%)  ← DRIVER PRINCIPAL
-Equipamentos: R$   5,30/m ²  ( 1,7%)
-Mão de Obra: R$ 116,84/m ²  (37,6%)  ← SEGUNDO DRIVER
-TOTAL: R$ 310,57/m ²
+Material: R$ 188,43/m² (60,7%) ← DRIVER PRINCIPAL
+Equipamentos: R$ 5,30/m² (1,7%)
+Mão de Obra: R$ 116,84/m² (37,6%) ← SEGUNDO DRIVER
+TOTAL: R$ 310,57/m²
 
 ▸ DRIVER PRINCIPAL: Material (60,7%) — Areia ensacada sozinha = 22,8% do custo total.
 ▸ SEGUNDO DRIVER: Mão de Obra (37,6%) — HH alto por causa da logística manual.
@@ -495,7 +495,7 @@ TOTAL: R$ 310,57/m ²
     Decomposição validada:
       Pedreiro (1,5850 HH):  9 sub-etapas decompostas ✅
       Ajudante (2,3750 HH):  9 sub-etapas decompostas ✅
-      TOTAL: 3,9600 HH/m² ✅ (ver Seção 3.2)
+TOTAL: 3,9600 HH/m² ✅ (ver Seção 3.2)
     
     [BLOCO 3 — ALERTA CRÍTICO]
     ⚠️ A CURA ÚMIDA DE 7 DIAS é NON-NEGOTIABLE.

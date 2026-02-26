@@ -104,12 +104,12 @@
     ✅ Aditivo Adesivo tipo Bianco (ponte de aderência)
     ✅ Tela de Aço Reforçada 4,2mm malha 15×15cm (painel 2×3m)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação diária)
     ✅ Nível Laser (locação diária)
     ✅ Ferramentas manuais (régua, desempenadeira, colher, taliscas)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (com adicional noturno 40%)
     ✅ 1 Ajudante (com adicional noturno 40%)
     
@@ -315,10 +315,10 @@
 
 
 Composição do Custo Unitário:
-Material: R$ 67,21/m ²  (49,8%)
-Equipamentos: R$  8,50/m ²  ( 6,3%)
-Mão de Obra: R$ 59,15/m ²  (43,9%) ← SEGUNDO DRIVER
-TOTAL: R$ 134,86/m ²
+Material: R$ 67,21/m² (49,8%)
+Equipamentos: R$ 8,50/m² (6,3%)
+Mão de Obra: R$ 59,15/m² (43,9%) ← SEGUNDO DRIVER
+TOTAL: R$ 134,86/m²
 
 ▸ DRIVER PRINCIPAL: Material (49,8%) — Tela de aço 4,2mm = R$ 20,17/m² (15,0%).
 ▸ SEGUNDO DRIVER: Mão de Obra (43,9%) — Turno noturno = +40% custo/HH.
@@ -434,7 +434,7 @@ TOTAL: R$ 134,86/m ²
     Decomposição:
       Pedreiro (0,5350 HH): 8 sub-etapas ✅
       Ajudante (0,6450 HH): 8 sub-etapas ✅
-      TOTAL: 1,1800 HH/m² ✅ (ver Seção 3.2)
+TOTAL: 1,1800 HH/m² ✅ (ver Seção 3.2)
     
     [BLOCO 3 — ALERTA CRÍTICO]
     ⚠️ NÃO DANIFICAR a impermeabilização durante apicoamento.

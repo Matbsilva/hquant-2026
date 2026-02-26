@@ -167,9 +167,14 @@ Produtividade base estimada do equipamento = ~30m a 45m / dia. Resultando em fra
 | **Produtividade Diária** | m/noite | — | — | **~12,5 m/noite** (1P+1A) |
 
 #### **5.1 ANÁLISE DE CUSTO / DRIVER**
-O serviço é 76,7% composto por Mão de Obra (R$ 54,77 de R$ 71,37).
-Serviços de "rasgo e fechamento" em retrofits são altamente intensivos em horas
-pois envolvem quebra seletiva para não danificar ao redor.
+
+Composição do Custo Unitário:
+Material: R$ 10,82/m (15,2%)
+Equipamentos: R$ 5,78/m (8,1%)
+Mão de Obra: R$ 54,77/m (76,7%) ← DRIVER PRINCIPAL
+TOTAL: R$ 71,37/m
+
+▸ DRIVER PRINCIPAL: Mão de Obra (76,7%) — Serviços de "rasgo e fechamento" em retrofits são altamente intensivos em horas pois envolvem quebra seletiva para não danificar ao redor.
 
 * * *
 

@@ -79,11 +79,11 @@
     ✅ Cimento Portland CP-II (50kg)
     ✅ Areia Média Lavada (Sacos de 20kg)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (esquadro, assentamento, prumo, nível, emboço)
     ✅ 1 Ajudante de Obras (preparo de massa, transporte de tijolos e areia)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação rateada)
     ✅ Ferramentas manuais (desgaste de colher, esquadro, nível laser, desempenadeira)
 
@@ -206,8 +206,8 @@
 
 Composição do Custo Unitário:
 Material: R$ 206,98/un (36,3%)
-Equipamentos: R$   2,60/un ( 0,4%)
-Mão de Obra: R$ 361,05/un (63,3%)  ← DRIVER PRINCIPAL
+Equipamentos: R$ 2,60/un (0,4%)
+Mão de Obra: R$ 361,05/un (63,3%) ← DRIVER PRINCIPAL
 TOTAL: R$ 570,63/un
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (63,3%).

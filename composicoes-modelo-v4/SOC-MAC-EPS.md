@@ -84,11 +84,11 @@
     ✅ Areia Média Lavada (Sacos de 20kg)
     ✅ Pedrisco / Pedra 0 (Sacos de 20kg)
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (esquadro, assentamento, concretagem capa, emboço)
     ✅ 1 Ajudante de Obras (preparo de massa/concreto, cortes EPS, transporte)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação rateada)
     ✅ Ferramentas manuais (serrote p/ EPS, desempenadeira, colher, nível)
 
@@ -216,8 +216,8 @@
 
 Composição do Custo Unitário:
 Material: R$ 203,22/un (46,4%)
-Equipamentos: R$   2,60/un ( 0,6%)
-Mão de Obra: R$ 232,46/un (53,0%)  ← DRIVER PRINCIPAL
+Equipamentos: R$ 2,60/un (0,6%)
+Mão de Obra: R$ 232,46/un (53,0%) ← DRIVER PRINCIPAL
 TOTAL: R$ 438,28/un
 
 ▸ DRIVER PRINCIPAL: Mão de Obra (53,0%), seguida intimamente pelo Material (46,4%).

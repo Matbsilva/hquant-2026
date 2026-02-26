@@ -156,12 +156,16 @@ Carrinho Plataforma:
 | **Produtividade Diária** | m³/noite | — | — | **~3,1 m³/noite** (p/ cada Dupla) |
 
 #### **5.1 ANÁLISE DE CUSTO / ESTRUTURA E DRIVER**
-Composição 100% dependente de sacos e HH.
-Mat: 47,3% / M.O: 51,5%.
-O custo de R$ 310/m³ (só para jogar na doca sem caçamba) justifica
-frequentemente a locação de minicarregadeiras quando possível (rampas).
-No trabalho de "formiga" em andares altos, este custo é real e muitas
-vezes subestimado pelas construtoras, que "sugam" este HH da produção.
+
+Composição do Custo Unitário:
+Material: R$ 147,00/m³ (47,3%)
+Equipamentos: R$ 3,50/m³ (1,1%)
+Mão de Obra: R$ 160,10/m³ (51,5%) ← DRIVER PRINCIPAL
+TOTAL: R$ 310,60/m³
+
+▸ DRIVER PRINCIPAL: M.O. (51,5%) — Composição 100% dependente de sacos e HH.
+▸ Observação: O custo de R$ 310/m³ (só para jogar na doca sem caçamba) justifica frequentemente a locação de minicarregadeiras quando possível (rampas).
+▸ No trabalho de "formiga" em andares altos, este custo é real e muitas vezes subestimado pelas construtoras, que "sugam" este HH da produção.
 
 * * *
 

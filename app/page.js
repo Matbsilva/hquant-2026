@@ -359,7 +359,7 @@ function Md({ text }) {
     }
 
     // Cost breakdown lines: "Material: R$ ...", "Equipamentos: R$ ...", "Mão de Obra: R$ ...", "TOTAL: R$ ..."
-    const costLineMatch = t.match(/^(Material|Equipamentos?|Mão de Obra|TOTAL):?\s+(R\$\s*[\d.,]+\/\w+)\s*(\([^)]+\))?\s*(←\s*.+)?$/i);
+    const costLineMatch = t.match(/^(Material|Equipamentos?|Mão de Obra|TOTAL):?\s+(R\$\s*[\d.,]+\/[\w²³]+)\s*(\([^)]+\))?\s*(←\s*.+)?$/i);
     if (costLineMatch) {
       const label = costLineMatch[1];
       const value = costLineMatch[2];

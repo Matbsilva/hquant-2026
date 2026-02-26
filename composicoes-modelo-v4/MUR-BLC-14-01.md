@@ -192,9 +192,13 @@ Areia Média Lavada:
 
 #### **5.1 ANÁLISE DE CUSTO**
 
-Material: R$ 25,36/m (38,4%) / M.O.: R$ 40,41/m (61,2%) ← DRIVER
+Composição do Custo Unitário:
+Material: R$ 25,36/m (38,4%)
 Equipamento: R$ 0,30/m (0,5%)
-Driver: M.O. (61,2%) — serviço artesanal de assentamento + emboço duplo
+Mão de Obra: R$ 40,41/m (61,2%) ← DRIVER PRINCIPAL
+TOTAL: R$ 66,07/m
+
+▸ DRIVER PRINCIPAL: M.O. (61,2%) — serviço artesanal de assentamento + emboço duplo.
 
 * * *
 

@@ -75,11 +75,11 @@
     ✅ Areia Média Lavada (Sacos de 20kg)
     ✅ Água para mistura e cura
     
-    Mão de Obra:
+Mão de Obra:
     ✅ 1 Pedreiro Oficial (nivelamento, mestras, acabamento)
     ✅ 1 Ajudante de Obras (betoneira, transporte de massa, compactação)
     
-    Equipamentos:
+Equipamentos:
     ✅ Betoneira 400L (locação rateada)
     ✅ Ferramentas manuais (régua, desempenadeira, enxada, nível laser)
 
@@ -193,10 +193,10 @@
 
 
 Composição do Custo Unitário:
-Material: R$ 31,93/m ²  (51,8%)  ← DRIVER PRINCIPAL
-Equipamentos: R$  1,40/m ²  ( 2,2%)
-Mão de Obra: R$ 28,37/m ²  (46,0%)
-TOTAL: R$ 61,70/m ²
+Material: R$ 31,93/m² (51,8%) ← DRIVER PRINCIPAL
+Equipamentos: R$ 1,40/m² (2,2%)
+Mão de Obra: R$ 28,37/m² (46,0%)
+TOTAL: R$ 61,70/m²
 
 ▸ DRIVER PRINCIPAL: Material (51,8%). O custo da areia ensacada pesa muito.
 ▸ A logística de elevator/doca IMPEDE o uso de granel, justificando o sobrecusto.

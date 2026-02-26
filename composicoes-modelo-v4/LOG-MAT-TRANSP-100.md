@@ -155,10 +155,14 @@ Carrinho Plataforma:
 | **Produtividade Diária** | t/noite | — | — | **~3,9 t/noite** (p/ cada Dupla ativa) |
 
 #### **5.1 ANÁLISE DE CUSTO / ESTRUTURA E DRIVER**
-Transportar 1 Saco de cimento (50kg) custaria R$ 6,55 (noturno) de M.O.
-Transportar 1 Saco de Areia/Argamassa (20kg) custa R$ 2,62.
-O frete "indoor" (doca-ilha) não é desprezível e encarece uma saca de
-cimento de R$ 34,00 para quase R$ 41,00 (+20%) só ao entrar no elevador.
+
+Composição do Custo Unitário:
+Equipamentos: R$ 2,50/t (1,9%)
+Mão de Obra: R$ 128,46/t (98,1%) ← DRIVER PRINCIPAL
+TOTAL: R$ 130,96/t
+
+▸ DRIVER PRINCIPAL: M.O. (98,1%) — Transportar 1 Saco de cimento (50kg) custa R$ 6,55 (noturno) de M.O. Transportar 1 Saco de Areia/Argamassa (20kg) custa R$ 2,62.
+▸ Observação: O frete "indoor" (doca-ilha) não é desprezível e encarece uma saca de cimento de R$ 34,00 para quase R$ 41,00 (+20%) só ao entrar no elevador.
 
 * * *
 
