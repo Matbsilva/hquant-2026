@@ -343,10 +343,35 @@ function Md({ text }) {
     }
 
     // Custom Highlight for "5.1 ANÁLISE DE CUSTO"
-    if (t.includes('5.1 ANÁLISE DE CUSTO:')) {
+    if (t.includes('5.1 ANÁLISE DE CUSTO')) {
       els.push(
-        <div key={i} style={{ margin: '24px 0 16px', padding: '16px 20px', background: 'rgba(59, 130, 246, 0.08)', borderLeft: `3px solid ${BL}`, borderRadius: '0 8px 8px 0' }}>
-          <div style={{ color: BL, fontSize: 14, fontWeight: 800, textTransform: 'uppercase', marginBottom: 12, letterSpacing: '0.5px' }}>📈 5.1 ANÁLISE DE CUSTO</div>
+        <div key={i} style={{ margin: '24px 0 12px', padding: '14px 20px', background: 'rgba(59, 130, 246, 0.08)', borderLeft: `3px solid ${BL}`, borderRadius: '0 8px 8px 0' }}>
+          <div style={{ color: BL, fontSize: 14, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.5px' }}>📈 {t.replace(/\*\*/g, '').replace(/^#+\s*/, '')}</div>
+        </div>
+      );
+      return;
+    }
+
+    // Composição do Custo Unitário header
+    if (t === 'Composição do Custo Unitário:' || t === 'Composição do Custo Unitário') {
+      els.push(<div key={i} style={{ margin: '12px 0 6px', fontSize: 12, color: C.a, fontWeight: 700, letterSpacing: '0.3px', textTransform: 'uppercase' }}>{t}</div>);
+      return;
+    }
+
+    // Cost breakdown lines: "Material: R$ ...", "Equipamentos: R$ ...", "Mão de Obra: R$ ...", "TOTAL: R$ ..."
+    const costLineMatch = t.match(/^(Material|Equipamentos?|Mão de Obra|TOTAL):?\s+(R\$\s*[\d.,]+\/\w+)\s*(\([^)]+\))?\s*(←\s*.+)?$/i);
+    if (costLineMatch) {
+      const label = costLineMatch[1];
+      const value = costLineMatch[2];
+      const pct = costLineMatch[3] || '';
+      const arrow = costLineMatch[4] || '';
+      const isTotal = /TOTAL/i.test(label);
+      els.push(
+        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 16px', margin: '2px 0', background: isTotal ? 'rgba(245,158,11,0.06)' : 'rgba(255,255,255,0.02)', borderRadius: 6, fontSize: 12, flexWrap: 'wrap' }}>
+          <span style={{ color: isTotal ? C.a : C.lt, fontWeight: isTotal ? 700 : 500, minWidth: 110 }}>{label}:</span>
+          <span style={{ color: isTotal ? C.a : C.ay, fontWeight: 700, fontFamily: "'JetBrains Mono',monospace", fontSize: 12 }}>{value}</span>
+          {pct && <span style={{ color: C.d, fontSize: 11 }}>{pct}</span>}
+          {arrow && <span style={{ background: 'rgba(96,165,250,0.12)', color: '#60A5FA', padding: '2px 8px', borderRadius: 4, fontWeight: 700, fontSize: 10, whiteSpace: 'nowrap', letterSpacing: '0.3px' }}>{arrow.replace('←', '◂').trim()}</span>}
         </div>
       );
       return;
@@ -370,7 +395,7 @@ function Md({ text }) {
           const parts = t2.split(kw.r);
           el = parts.map((p, pIdx) => {
             if (p.match(kw.r)) {
-              return <span key={pIdx} style={{ background: kw.bg, color: kw.c, padding: '2px 6px', borderRadius: 4, fontWeight: 700, fontSize: 11, letterSpacing: '0.5px' }}>{kw.i}{p.toUpperCase()}</span>;
+              return <span key={pIdx} style={{ background: kw.bg, color: kw.c, padding: '2px 8px', borderRadius: 4, fontWeight: 700, fontSize: 11, letterSpacing: '0.5px', whiteSpace: 'nowrap', display: 'inline-block', lineHeight: 1.6 }}>{kw.i}{p.toUpperCase()}</span>;
             }
             return p;
           });
@@ -388,18 +413,7 @@ function Md({ text }) {
     };
 
     if (t.includes('**') || /(DRIVER|NOTA|CRÍTICO|ALERTA|Economia|Trade-off)/i.test(t)) {
-      // Don't format the first line if it's the 5.1 block continuation, but here we just render it.
-      // If it's part of the composition unit cost analysis:
-      if (t.includes('Material: R$') || t.includes('Equipamentos: R$') || t.includes('Mão de Obra: R$')) {
-        els.push(
-          <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 16px', margin: '4px 0', background: 'rgba(255,255,255,0.02)', borderRadius: 6, fontSize: 12, color: C.lt }}>
-            <span>{formatRich(t)}</span>
-          </div>
-        );
-        return;
-      }
-
-      els.push(<div key={i} style={{ margin: isIndented ? '4px 0 4px 12px' : '6px 0', fontSize: 13, color: C.lt, lineHeight: 1.6 }}>{formatRich(t)}</div>);
+      els.push(<div key={i} style={{ margin: isIndented ? '4px 0 4px 12px' : '6px 0', fontSize: 13, color: C.lt, lineHeight: 1.8, flexWrap: 'wrap' }}>{formatRich(t)}</div>);
       return;
     }
 

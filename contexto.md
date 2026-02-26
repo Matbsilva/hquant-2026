@@ -7,8 +7,8 @@ Este documento (`contexto.md`) é a ata definitiva e a fonte única da verdade t
 
 ## 1. Nossas Regras de Engajamento
 
-### 1.1. Diretiva Primordial: Ler e Atualizar
-Toda nova interação com um Assistente IA sênior deve começar pela leitura deste arquivo (para obtenção de contexto histórico) e **sempre** ser finalizada com a criação de uma nova entrada no "Diário de Bordo" neste próprio documento, garantindo o versionamento do pensamento.
+### 1.1. Diretiva Primordial: Ler e Atualizar OBRIGATORIAMENTE
+Toda nova interação com um Assistente IA sênior deve começar pela leitura deste arquivo (para obtenção de contexto histórico) e SEMPRE, SEM EXCEÇÃO, ser finalizada com a criação de uma nova entrada no "Diário de Bordo" neste próprio documento. Regra Restrita: A IA deve atualizar o Diário de Bordo autonomamente e sem precisar pedir permissão ou aguardar o comando do Mat, garantindo o versionamento contínuo de pensamento e alterações técnicas logo após qualquer commit de código.
 
 ### 1.2. Papéis (Personas)
 *   **Mat (Product/Business Owner & Executor):** Detentor da visão do produto, define requisitos técnicos e estéticos da construtora/orçamento, realiza curadoria humana e executa comandos locais de controle, push e deploy em produção.
@@ -98,6 +98,23 @@ Toda nova feature, deploy ou bugfix crítico desenvolvido colaborativamente entr
     - Atualizados `GEM-PARSER-V4.md` e o sistema de inteligência da API `route.js` para obrigarem a IA a gerar essas palavras em caixa alta.
     - Adicionada a regra de "Digitação por Voz" no contexto.
 - **Status:** Concluído e em Produção (Main).
+
+---
+
+### [26 de Fevereiro de 2026] - Atualização da Diretiva Primordial
+- **Objetivo/Motivo:** Reforçar a obrigatoriedade de registrar autonomamente as informações no Diário de Bordo e ler obrigatoriamente as diretrizes ao iniciar novas interações.
+- **Alterações Arquiteturais ou UI:** Nenhuma alteração de código. Atualização apenas na Seção 1.1 do `contexto.md` inserindo a regra estrita de autonomia da IA em relação ao Diário de Bordo.
+- **Status:** Concluído.
+
+---
+
+### [26 de Fevereiro de 2026] - Fix Rich Text/Pills Seção 5.1 + Prompt V5
+- **Objetivo/Motivo:** Corrigir quebra de layout nas pills coloridas (DRIVER PRINCIPAL, SEGUNDO DRIVER, ECONOMIA) na sub-seção 5.1 (Análise de Custo) e melhorar o prompt de geração de composições.
+- **Alterações Arquiteturais ou UI:**
+    - **`app/page.js` (Renderizador `<Md />`):** Adicionado `whiteSpace: nowrap` + `display: inline-block` nas pills de keywords para impedir quebra mid-word. Criado novo bloco de renderização estruturada para linhas de custo (Material/Equipamentos/M.O./TOTAL) com grid label+valor+percentual+seta. O indicador `←` agora renderiza como pill separada azul. Melhorada detecção do header `5.1 ANÁLISE DE CUSTO` (mais flexível).
+    - **`PROMPT-COMPOSICAO-V5.md` (NOVO):** Versão 5.0 do prompt de composições com regras explícitas de formatação visual para Seção 5.1: proibição de blocos indentados com 4 espaços, linhas de custo sem indentação, keywords em bullets `▸` próprios, tabela comparativa rente à margem.
+    - **`GEM-PARSER-V4.md`:** Adicionada regra de formatação v5.0 para Seção 5.1.
+- **Status:** Concluído (Build 0 errors).
 
 ---
 
