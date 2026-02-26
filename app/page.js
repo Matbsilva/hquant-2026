@@ -677,8 +677,8 @@ export default function Home() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               {selMode ? (
                 <>
-                  <button style={{ ...bt('g'), fontSize: 11, padding: '5px 10px' }} onClick={() => selectAll(pComps.map(c => c.id))}>Todos</button>
-                  <button style={{ ...bt('g'), fontSize: 11, padding: '5px 10px' }} onClick={clearSel}>Cancelar</button>
+                  <button style={{ ...bt('g'), fontSize: 11, padding: '5px 10px', color: GR, borderColor: 'rgba(34,197,94,0.3)', transition: 'all 0.2s' }} onClick={() => selectAll(pComps.map(c => c.id))} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(34,197,94,0.15)'; e.currentTarget.style.borderColor = GR; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(34,197,94,0.3)'; }}>Todos</button>
+                  <button style={{ ...bt('g'), fontSize: 11, padding: '5px 10px', color: RD, borderColor: 'rgba(239,68,68,0.3)', transition: 'all 0.2s' }} onClick={clearSel} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.15)'; e.currentTarget.style.borderColor = RD; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)'; }}>Cancelar</button>
                 </>
               ) : (
                 <button style={{ ...bt('g'), fontSize: 11, padding: '6px 12px', color: GR, borderColor: 'rgba(34,197,94,0.3)', transition: 'all 0.2s' }} onClick={() => { setSelMode(true); setSelectedIds(new Set()); }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(34,197,94,0.15)'; e.currentTarget.style.borderColor = GR; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(34,197,94,0.3)'; }}>
@@ -771,7 +771,7 @@ export default function Home() {
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
                 Baixar .MD
               </button>
-              <button onClick={() => setConfirmBatchDel(true)} style={{ ...bt('g'), padding: '7px 14px', fontSize: 12, display: 'flex', alignItems: 'center', gap: 6, color: RD, borderColor: 'rgba(239,68,68,0.3)' }}>
+              <button onClick={() => setConfirmBatchDel(true)} style={{ ...bt('g'), padding: '7px 14px', fontSize: 12, display: 'flex', alignItems: 'center', gap: 6, color: RD, borderColor: 'rgba(239,68,68,0.3)', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.15)'; e.currentTarget.style.borderColor = RD; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.3)'; }}>
                 {ic.trash} Excluir
               </button>
             </div>
