@@ -316,14 +316,14 @@ function Md({ text }) {
         for (let j = 0; j < parts.length; j += 2) {
           const key = parts[j].replace(/\*\*/g, '').replace(':', '');
           const val = (parts[j + 1] || '').trim();
-          metaEls.push(<p key={i + '-' + j} style={{ margin: '6px 0', fontSize: 12, lineHeight: 1.6 }}><span style={{ color: C.a, fontWeight: 600 }}>{key}:</span> <span style={{ color: C.lt }}>{val.replace(/\*\*/g, '')}</span></p>);
+          metaEls.push(<div key={i + '-' + j} style={{ margin: '6px 0', fontSize: 12, lineHeight: 1.6 }}><span style={{ color: C.a, fontWeight: 600 }}>{key}:</span> <span style={{ color: C.lt }}>{val.replace(/\*\*/g, '')}</span></div>);
         }
         els.push(<div key={i}>{metaEls}</div>);
         return;
       }
 
       const clean = t.replace(/\*\*/g, ''); const idx = clean.indexOf(':');
-      if (idx > 0) { els.push(<p key={i} style={{ margin: '6px 0', fontSize: 12, lineHeight: 1.6 }}><span style={{ color: C.a, fontWeight: 600 }}>{clean.slice(0, idx)}:</span> <span style={{ color: C.lt }}>{clean.slice(idx + 1).trim()}</span></p>); return; }
+      if (idx > 0) { els.push(<div key={i} style={{ margin: '6px 0', fontSize: 12, lineHeight: 1.6 }}><span style={{ color: C.a, fontWeight: 600 }}>{clean.slice(0, idx)}:</span> <span style={{ color: C.lt }}>{clean.slice(idx + 1).trim()}</span></div>); return; }
     }
 
     // Parse indented bullet points explicitly as they are common in V4
