@@ -342,33 +342,32 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL (v4.0)**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 188,43/m²  (60,7%)  ← DRIVER PRINCIPAL
-      Equipamentos: R$   5,30/m²  ( 1,7%)
-      Mão de Obra:  R$ 116,84/m²  (37,6%)  ← SEGUNDO DRIVER
-      TOTAL:        R$ 310,57/m²
-    
-    DRIVER PRINCIPAL: Material (60,7%) — Areia ensacada sozinha = 22,8% do custo total.
-    SEGUNDO DRIVER: Mão de Obra (37,6%) — HH alto por causa da logística manual.
-    
-    Observação Crítica:
-    1. Se areia vier A GRANEL em vez de ensacada:
-       Economia: ~R$ 35/m² (-11,3% no custo total)
-       Custo areia granel: ~R$ 2,50/saco equiv. vs R$ 5,50 ensacada
-    
-    2. Se usar concreto usinado em vez de argamassa manual:
-       A mão de obra cairia ~60% (bombeamento vs transporte manual)
-       Mas custo material subiria ~40% (concreto usinado > argamassa)
-       Trade-off: pode compensar em obras > 500 m²
 
-    | Abordagem | Custo/m² | Prazo (264 m²) | Risco | Trade-off |
-    |---|---|---|---|---|
-    | Argamassa 1:4 + EPS (ADOTADO) | R$ 310,57 | 14 dias + 7 cura | Médio | ✅ Custo menor, logística pesada |
-    | Concreto usinado + EPS | R$ 285,00 | 5 dias + 7 cura | Baixo | Custo M.O. menor, material maior |
-    | Argamassa + areia granel | R$ 275,00 | 14 dias + 7 cura | Médio | ⚠️ Precisa acesso para caminhão |
-    | Laje nervurada pré-moldada | R$ 350,00 | 7 dias + 14 cura | Baixo | Custo alto, prazo médio |
+Composição do Custo Unitário:
+Material: R$ 188,43/m ²  (60,7%)  ← DRIVER PRINCIPAL
+Equipamentos: R$   5,30/m ²  ( 1,7%)
+Mão de Obra: R$ 116,84/m ²  (37,6%)  ← SEGUNDO DRIVER
+TOTAL: R$ 310,57/m ²
+
+▸ DRIVER PRINCIPAL: Material (60,7%) — Areia ensacada sozinha = 22,8% do custo total.
+▸ SEGUNDO DRIVER: Mão de Obra (37,6%) — HH alto por causa da logística manual.
+
+▸ Observação Crítica:
+▸ 1. Se areia vier A GRANEL em vez de ensacada:
+▸ Economia: ~R$ 35/m² (-11,3% no custo total)
+▸ Custo areia granel: ~R$ 2,50/saco equiv. vs R$ 5,50 ensacada
+
+▸ 2. Se usar concreto usinado em vez de argamassa manual:
+▸ A mão de obra cairia ~60% (bombeamento vs transporte manual)
+▸ Mas custo material subiria ~40% (concreto usinado > argamassa)
+▸ Trade-off: pode compensar em obras > 500 m²
+
+| Abordagem | Custo/m² | Prazo (264 m²) | Risco | Trade-off |
+|---|---|---|---|---|
+| Argamassa 1:4 + EPS (ADOTADO) | R$ 310,57 | 14 dias + 7 cura | Médio | ✅ Custo menor, logística pesada |
+| Concreto usinado + EPS | R$ 285,00 | 5 dias + 7 cura | Baixo | Custo M.O. menor, material maior |
+| Argamassa + areia granel | R$ 275,00 | 14 dias + 7 cura | Médio | ⚠️ Precisa acesso para caminhão |
+| Laje nervurada pré-moldada | R$ 350,00 | 7 dias + 14 cura | Baixo | Custo alto, prazo médio |
 
 * * *
 

@@ -175,17 +175,16 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$  0,00/m²  ( 0,0%)
-      Equipamentos: R$  1,80/m²  (13,4%)
-      Mão de Obra:  R$ 11,61/m²  (86,6%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 13,41/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (86,6%). Embora o Drywall seja fácil de quebrar, 
-    a altura de 3,50m e a necessidade de separar o metal do gesso (para reciclagem 
-    e organização) consomem tempo da equipe.
+
+Composição do Custo Unitário:
+Material: R$  0,00/m ²  ( 0,0%)
+Equipamentos: R$  1,80/m ²  (13,4%)
+Mão de Obra: R$ 11,61/m ²  (86,6%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 13,41/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (86,6%). Embora o Drywall seja fácil de quebrar,
+▸ a altura de 3,50m e a necessidade de separar o metal do gesso (para reciclagem
+▸ e organização) consomem tempo da equipe.
 
 * * *
 

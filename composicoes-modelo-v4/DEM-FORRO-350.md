@@ -180,17 +180,16 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$  0,00/m²  ( 0,0%)
-      Equipamentos: R$  1,80/m²  (13,3%)
-      Mão de Obra:  R$ 11,70/m²  (86,7%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 13,50/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (86,7%). Demolição é um serviço puramente 
-    de esforço humano. A altura de 3,50m é o fator que mais impacta, pois obriga 
-    a equipe a montar, subir, descer e arrastar andaimes constantemente.
+
+Composição do Custo Unitário:
+Material: R$  0,00/m ²  ( 0,0%)
+Equipamentos: R$  1,80/m ²  (13,3%)
+Mão de Obra: R$ 11,70/m ²  (86,7%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 13,50/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (86,7%). Demolição é um serviço puramente
+▸ de esforço humano. A altura de 3,50m é o fator que mais impacta, pois obriga
+▸ a equipe a montar, subir, descer e arrastar andaimes constantemente.
 
 * * *
 

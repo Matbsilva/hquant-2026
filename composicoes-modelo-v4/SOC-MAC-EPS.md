@@ -213,18 +213,17 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 203,22/un (46,4%)
-      Equipamentos: R$   2,60/un ( 0,6%)
-      Mão de Obra:  R$ 232,46/un (53,0%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 438,28/un
-    
-    DRIVER PRINCIPAL: Mão de Obra (53,0%), seguida intimamente pelo Material (46,4%).
-    Curiosidade: O custo de material deste sóculo de bloco+EPS (R$ 203) é quase
-    idêntico ao do sóculo de tijolo maciço (R$ 206). No entanto, como a Mão de Obra
-    cai drasticamente, este sóculo fica R$ 132 MAIS BARATO por unidade!
+
+Composição do Custo Unitário:
+Material: R$ 203,22/un (46,4%)
+Equipamentos: R$   2,60/un ( 0,6%)
+Mão de Obra: R$ 232,46/un (53,0%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 438,28/un
+
+▸ DRIVER PRINCIPAL: Mão de Obra (53,0%), seguida intimamente pelo Material (46,4%).
+▸ Curiosidade: O custo de material deste sóculo de bloco+EPS (R$ 203) é quase
+▸ idêntico ao do sóculo de tijolo maciço (R$ 206). No entanto, como a Mão de Obra
+▸ cai drasticamente, este sóculo fica R$ 132 MAIS BARATO por unidade!
 
 * * *
 

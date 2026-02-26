@@ -191,16 +191,15 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 31,93/m²  (51,8%)  ← DRIVER PRINCIPAL
-      Equipamentos: R$  1,40/m²  ( 2,2%)
-      Mão de Obra:  R$ 28,37/m²  (46,0%)
-      TOTAL:        R$ 61,70/m²
-    
-    DRIVER PRINCIPAL: Material (51,8%). O custo da areia ensacada pesa muito. 
-    A logística de elevator/doca IMPEDE o uso de granel, justificando o sobrecusto.
+
+Composição do Custo Unitário:
+Material: R$ 31,93/m ²  (51,8%)  ← DRIVER PRINCIPAL
+Equipamentos: R$  1,40/m ²  ( 2,2%)
+Mão de Obra: R$ 28,37/m ²  (46,0%)
+TOTAL: R$ 61,70/m ²
+
+▸ DRIVER PRINCIPAL: Material (51,8%). O custo da areia ensacada pesa muito.
+▸ A logística de elevator/doca IMPEDE o uso de granel, justificando o sobrecusto.
 
 * * *
 

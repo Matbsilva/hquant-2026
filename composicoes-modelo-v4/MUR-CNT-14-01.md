@@ -222,14 +222,14 @@
 
 #### **5.1 ANÁLISE DE CUSTO / COMPARATIVO**
 
-    Comparativo Muretas 14cm (Altura ~20cm):
-    1.1 Simples (Bloco comum): R$  66,07/m
-    1.2 Estrutural (Canaleta + Graute + Epóxi): R$ 123,77/m
-    
-    Variação: +87% de custo.
-    Onde está o custo extra?
-    • Material: +R$ 22,56/m (Epóxi R$2 + Aço R$4 + Bloco Canaleta R$3 + Insumos M.Conc)
-    • M.Obra:   +R$ 30,14/m (+76% HH devido a furação, epóxi, armação e grauteamento)
+▸ Comparativo Muretas 14cm (Altura ~20cm):
+▸ 1.1 Simples (Bloco comum): R$ 66,07/m
+▸ 1.2 Estrutural (Canaleta + Graute + Epóxi): R$ 123,77/m
+
+▸ Variação: +87% de custo.
+▸ Onde está o custo extra?
+▸ Material: +R$ 22,56/m (Epóxi R$2 + Aço R$4 + Bloco Canaleta R$3 + Insumos M.Conc)
+▸ M.Obra: +R$ 30,14/m (+76% HH devido a furação, epóxi, armação e grauteamento)
 
 * * *
 

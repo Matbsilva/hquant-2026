@@ -203,17 +203,16 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 206,98/un (36,3%)
-      Equipamentos: R$   2,60/un ( 0,4%)
-      Mão de Obra:  R$ 361,05/un (63,3%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 570,63/un
-    
-    DRIVER PRINCIPAL: Mão de Obra (63,3%). 
-    O tijolo maciço é barato, mas o tempo de assentamento e emboço de 
-    pequenas faces cheias de cantos consome horas de pedreiro oficial.
+
+Composição do Custo Unitário:
+Material: R$ 206,98/un (36,3%)
+Equipamentos: R$   2,60/un ( 0,4%)
+Mão de Obra: R$ 361,05/un (63,3%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 570,63/un
+
+▸ DRIVER PRINCIPAL: Mão de Obra (63,3%).
+▸ O tijolo maciço é barato, mas o tempo de assentamento e emboço de
+▸ pequenas faces cheias de cantos consome horas de pedreiro oficial.
 
 * * *
 

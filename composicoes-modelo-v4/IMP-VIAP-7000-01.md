@@ -286,32 +286,31 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL (v4.0)**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 54,83/m²  (47,2%)
-      Equipamentos: R$  1,02/m²  ( 0,9%)
-      Mão de Obra:  R$ 60,22/m²  (51,9%) ← DRIVER PRINCIPAL
-      TOTAL:        R$ 116,07/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (51,9%) — 3 demãos cruzadas + teste 72h.
-    Viaplus 7000 = 43,1% do custo total (maior insumo individual).
-    
-    Observação Crítica:
-    O custo de M.O. é elevado pois inclui 3 demãos com cura entre elas
-    + setuprep de teste de estanqueidade. Em turno diurno, o custo cairia
-    ~17% (sem fator ÷0.85 e sem adicional noturno).
-    
-    ⚠️ CUSTO DE FALHA:
-    Se teste reprovar: refazer 3 demãos = R$ 116/m² × 2 = R$ 232/m²
-    Se infiltração pós-obra: remoção revestimento + refazer = R$ 450-600/m²
 
-    | Abordagem | Custo/m² | Prazo | Risco | Trade-off |
-    |---|---|---|---|---|
-    | Viaplus 7000 — 3 demãos (ADOTADO) | R$ 116,07 | 12 dias | Baixo | ✅ Melhor custo-benefício, flexível |
-    | Manta asfáltica 4mm | R$ 95,00 | 4 dias | Médio | ⚠️ Precisa maçarico + risco incêndio noturno |
-    | Poliureia projetada | R$ 180,00 | 2 dias | Baixo | Custo 55% maior, aplicação rápida |
-    | Viaplus 1000 (rígido) | R$ 85,00 | 8 dias | Alto | ⚠️ Não flexível — fissura em movimentação |
+Composição do Custo Unitário:
+Material: R$ 54,83/m ²  (47,2%)
+Equipamentos: R$  1,02/m ²  ( 0,9%)
+Mão de Obra: R$ 60,22/m ²  (51,9%) ← DRIVER PRINCIPAL
+TOTAL: R$ 116,07/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (51,9%) — 3 demãos cruzadas + teste 72h.
+▸ Viaplus 7000 = 43,1% do custo total (maior insumo individual).
+
+▸ Observação Crítica:
+▸ O custo de M.O. é elevado pois inclui 3 demãos com cura entre elas
+▸ + setuprep de teste de estanqueidade. Em turno diurno, o custo cairia
+▸ ~17% (sem fator ÷0.85 e sem adicional noturno).
+
+▸ ⚠️ CUSTO DE FALHA:
+▸ Se teste reprovar: refazer 3 demãos = R$ 116/m² × 2 = R$ 232/m²
+▸ Se infiltração pós-obra: remoção revestimento + refazer = R$ 450-600/m²
+
+| Abordagem | Custo/m² | Prazo | Risco | Trade-off |
+|---|---|---|---|---|
+| Viaplus 7000 — 3 demãos (ADOTADO) | R$ 116,07 | 12 dias | Baixo | ✅ Melhor custo-benefício, flexível |
+| Manta asfáltica 4mm | R$ 95,00 | 4 dias | Médio | ⚠️ Precisa maçarico + risco incêndio noturno |
+| Poliureia projetada | R$ 180,00 | 2 dias | Baixo | Custo 55% maior, aplicação rápida |
+| Viaplus 1000 (rígido) | R$ 85,00 | 8 dias | Alto | ⚠️ Não flexível — fissura em movimentação |
 
 * * *
 

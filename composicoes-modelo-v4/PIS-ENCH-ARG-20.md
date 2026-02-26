@@ -347,31 +347,30 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL (v4.0)**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 150,35/m²  (60,8%)  ← DRIVER PRINCIPAL
-      Equipamentos: R$   5,30/m²  ( 2,1%)
-      Mão de Obra:  R$  91,51/m²  (37,0%)
-      TOTAL:        R$ 247,16/m²
-    
-    DRIVER PRINCIPAL: Material (60,8%) — EPS sozinho = 22,9% do custo total.
-    
-    COMPARATIVO vs PIS-ENCH-ARG-25 (25cm):
-      25cm: R$ 310,57/m² → 20cm: R$ 247,16/m²
-      Economia: R$ 63,41/m² (-20,4%)
-      Principal economia: Areia (−R$ 25), Cimento (−R$ 13), M.O. (−R$ 25)
-    
-    Observação Crítica:
-    Se areia A GRANEL em vez de ensacada:
-      Economia: ~R$ 22/m² (−8,9%)
 
-    | Abordagem | Custo/m² | Prazo (100 m²) | Risco | Trade-off |
-    |---|---|---|---|---|
-    | Argamassa 1:4 + EPS capa 5cm (ADOTADO) | R$ 247,16 | 4 dias + 7 cura | Médio | ✅ 20% mais barato que 25cm |
-    | PIS-ENCH-ARG-25 (capa 10cm) | R$ 310,57 | 6 dias + 7 cura | Médio | Capa mais robusta, custo 25% maior |
-    | Concreto usinado + EPS (capa 5cm) | R$ 225,00 | 2 dias + 7 cura | Baixo | Custo M.O. menor, material maior |
-    | Argamassa + areia granel (capa 5cm) | R$ 225,00 | 4 dias + 7 cura | Médio | ⚠️ Precisa acesso caminhão |
+Composição do Custo Unitário:
+Material: R$ 150,35/m ²  (60,8%)  ← DRIVER PRINCIPAL
+Equipamentos: R$   5,30/m ²  ( 2,1%)
+Mão de Obra: R$  91,51/m ²  (37,0%)
+TOTAL: R$ 247,16/m ²
+
+▸ DRIVER PRINCIPAL: Material (60,8%) — EPS sozinho = 22,9% do custo total.
+
+▸ COMPARATIVO vs PIS-ENCH-ARG-25 (25cm):
+▸ 25cm: R$ 310,57/m² → 20cm: R$ 247,16/m²
+▸ Economia: R$ 63,41/m² (-20,4%)
+▸ Principal economia: Areia (−R$ 25), Cimento (−R$ 13), M.O. (−R$ 25)
+
+▸ Observação Crítica:
+▸ Se areia A GRANEL em vez de ensacada:
+▸ Economia: ~R$ 22/m² (−8,9%)
+
+| Abordagem | Custo/m² | Prazo (100 m²) | Risco | Trade-off |
+|---|---|---|---|---|
+| Argamassa 1:4 + EPS capa 5cm (ADOTADO) | R$ 247,16 | 4 dias + 7 cura | Médio | ✅ 20% mais barato que 25cm |
+| PIS-ENCH-ARG-25 (capa 10cm) | R$ 310,57 | 6 dias + 7 cura | Médio | Capa mais robusta, custo 25% maior |
+| Concreto usinado + EPS (capa 5cm) | R$ 225,00 | 2 dias + 7 cura | Baixo | Custo M.O. menor, material maior |
+| Argamassa + areia granel (capa 5cm) | R$ 225,00 | 4 dias + 7 cura | Médio | ⚠️ Precisa acesso caminhão |
 
 * * *
 

@@ -177,17 +177,16 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$  0,00/m²  ( 0,0%)
-      Equipamentos: R$  3,95/m²  (21,7%)
-      Mão de Obra:  R$ 14,26/m²  (78,3%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 18,21/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (78,3%). A demolição de piso é fisicamente 
-    exaustiva (vibração + postura agachada). O custo reflete a necessidade de 
-    ritmo sustentável para não lesionar o operador.
+
+Composição do Custo Unitário:
+Material: R$  0,00/m ²  ( 0,0%)
+Equipamentos: R$  3,95/m ²  (21,7%)
+Mão de Obra: R$ 14,26/m ²  (78,3%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 18,21/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (78,3%). A demolição de piso é fisicamente
+▸ exaustiva (vibração + postura agachada). O custo reflete a necessidade de
+▸ ritmo sustentável para não lesionar o operador.
 
 * * *
 

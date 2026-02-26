@@ -189,17 +189,16 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 20,99/m²  (25,2%)
-      Equipamentos: R$  4,50/m²  ( 5,4%)
-      Mão de Obra:  R$ 57,80/m²  (69,4%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 83,29/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (69,4%). O trabalho intensivo em andaime, somado 
-    ao fator noturno e logística de sacaria, reduz a produtividade em ~50% comparado 
-    ao nível térreo diurno.
+
+Composição do Custo Unitário:
+Material: R$ 20,99/m ²  (25,2%)
+Equipamentos: R$  4,50/m ²  ( 5,4%)
+Mão de Obra: R$ 57,80/m ²  (69,4%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 83,29/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (69,4%). O trabalho intensivo em andaime, somado
+▸ ao fator noturno e logística de sacaria, reduz a produtividade em ~50% comparado
+▸ ao nível térreo diurno.
 
 * * *
 

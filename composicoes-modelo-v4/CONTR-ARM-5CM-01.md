@@ -313,27 +313,26 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL (v4.0)**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 67,21/m²  (49,8%)
-      Equipamentos: R$  8,50/m²  ( 6,3%)
-      Mão de Obra:  R$ 59,15/m²  (43,9%) ← SEGUNDO DRIVER
-      TOTAL:        R$ 134,86/m²
-    
-    DRIVER PRINCIPAL: Material (49,8%) — Tela de aço 4,2mm = R$ 20,17/m² (15,0%).
-    SEGUNDO DRIVER: Mão de Obra (43,9%) — Turno noturno = +40% custo/HH.
-    
-    Economia potencial se turno DIURNO:
-      M.O. diurna: 1,18 HH/m² × R$ 40 (Ped) + R$ 22,50 (Aj) ≈ R$ 47/m²
-      Economia: R$ 12/m² (8,9% do custo total)
 
-    | Abordagem | Custo/m² | Prazo (100 m²) | Risco | Trade-off |
-    |---|---|---|---|---|
-    | Contrapiso armado 5cm tela 4,2mm (ADOTADO) | R$ 134,86 | 15 dias | Médio | ✅ Superior a Q-92, indicado p/ carga |
-    | Contrapiso armado 5cm tela Q-92 | R$ 120,00 | 15 dias | Médio | ⚠️ 70% menos resistência tração |
-    | Contrapiso simples 5cm (sem tela) | R$ 95,00 | 12 dias | Alto | ⚠️ Risco fissuração 3-5 anos |
-    | Contrapiso autonivelante 5cm | R$ 175,00 | 5 dias | Baixo | Custo 30% maior, prazo menor |
+Composição do Custo Unitário:
+Material: R$ 67,21/m ²  (49,8%)
+Equipamentos: R$  8,50/m ²  ( 6,3%)
+Mão de Obra: R$ 59,15/m ²  (43,9%) ← SEGUNDO DRIVER
+TOTAL: R$ 134,86/m ²
+
+▸ DRIVER PRINCIPAL: Material (49,8%) — Tela de aço 4,2mm = R$ 20,17/m² (15,0%).
+▸ SEGUNDO DRIVER: Mão de Obra (43,9%) — Turno noturno = +40% custo/HH.
+
+▸ Economia potencial se turno DIURNO:
+▸ M.O. diurna: 1,18 HH/m² × R$ 40 (Ped) + R$ 22,50 (Aj) ≈ R$ 47/m²
+▸ Economia: R$ 12/m² (8,9% do custo total)
+
+| Abordagem | Custo/m² | Prazo (100 m²) | Risco | Trade-off |
+|---|---|---|---|---|
+| Contrapiso armado 5cm tela 4,2mm (ADOTADO) | R$ 134,86 | 15 dias | Médio | ✅ Superior a Q-92, indicado p/ carga |
+| Contrapiso armado 5cm tela Q-92 | R$ 120,00 | 15 dias | Médio | ⚠️ 70% menos resistência tração |
+| Contrapiso simples 5cm (sem tela) | R$ 95,00 | 12 dias | Alto | ⚠️ Risco fissuração 3-5 anos |
+| Contrapiso autonivelante 5cm | R$ 175,00 | 5 dias | Baixo | Custo 30% maior, prazo menor |
 
 * * *
 

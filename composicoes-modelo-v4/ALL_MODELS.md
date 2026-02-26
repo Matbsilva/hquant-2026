@@ -1,91 +1,10 @@
-# 📚 BIBLIOTECA CENTRAL DE INSUMOS - V4
+# 📋 ALL_MODELS — TODAS AS COMPOSIÇÕES MODELO v5.0
 
-*Concentrado de todos os insumos (Materiais, Equipamentos e Mão de Obra) referenciados pelas Composições Modelo.* 
-*Última atualização: Fevereiro/2026*
+**DATA:** 26/02/2026
+**STATUS:** ✅ ATUALIZADO — Seção 5.1 no formato V5 (bullets ▸, sem blocos indentados)
+**COMPOSIÇÕES:** 20 composições modelo reunidas
 
-| Categoria | Descrição do Insumo | Unid | Preço Unitário | Origens/Ocorrências em Composições |
-|---|---|---|---|---|
-| **------------** | ------------------------------- | ------ | **N/D** | Encontrado em: REG-PISO-4CM.md, REV-PAR-EMB.md, SOC-MAC-EPS.md, SOC-VAZ-TIJ.md |
-| **------------** | ----------------------------------- | ------ | **N/D** | Encontrado em: DEM-PISO-CER.md |
-| **------------** | ------------------------------------ | ------ | **N/D** | Encontrado em: DEM-CONTRAPISO.md, DEM-DW-350.md |
-| **------------** | --------------------------------------- | ------ | **N/D** | Encontrado em: DEM-FORRO-350.md |
-| **------------** | ---------------------------------------- | ------ | **N/D** | Encontrado em: DEM-CER-PAR.md |
-| **Equip** | Andaime Tubular (Locação + Montagem) | diária | **R$ 60,00** | insumos-base.json (Cliente) |
-| **Equip** | Andaime Tubular (Locação) | m²/mês | **R$ 15,00** | Encontrado em: REV-PAR-EMB.md |
-| **Equip** | Andaime Tubular/Fachadeiro (Locação) | m²/mês | **R$ 15,00** | Encontrado em: DEM-DW-350.md, DEM-FORRO-350.md |
-| **Equip** | Betoneira 400L | diária | **R$ 120,00** | Encontrado em: MUR-CNT-14-01.md |
-| **Equip** | Betoneira 400L (Locação rateio) | diária | **R$ 120,00** | Encontrado em: REG-PISO-4CM.md, REV-PAR-EMB.md, SOC-MAC-EPS.md, SOC-VAZ-TIJ.md |
-| **Equip** | Betoneira 400L (Locação) | diária | **R$ 120,00** | Encontrado em: CONTR-ARM-5CM-01.md, PIS-ENCH-ARG-20.md, PIS-ENCH-ARG-25.md |
-| **Equip** | Carrinho Plataforma 600kg | diária | **R$ 30,00** | Encontrado em: LOG-ENT-ENSAC-100.md, LOG-MAT-TRANSP-100.md |
-| **Equip** | Cortador Porcelanato Grande | diária | **R$ 90,00** | insumos-base.json (Manual) |
-| **Equip** | Ferramentas Manuais (desgaste) | vb | **R$ 10,00** | Encontrado em: CONTR-ARM-5CM-01.md, DEM-DW-350.md, DEM-FORRO-350.md, INF-CRT-PAR-15X15.md, INF-CRT-PIS-20X15.md, MUR-BLC-14-01.md, MUR-CNT-14-01.md, REG-PISO-4CM.md, REV-PAR-EMB.md, SOC-MAC-EPS.md, SOC-VAZ-TIJ.md |
-| **Equip** | Ferramentas Manuais (Desgaste/Pás) | vb | **R$ 10,00** | Encontrado em: DEM-CONTRAPISO.md |
-| **Equip** | Ferramentas Manuais (Desgaste/Ponteiras) | vb | **R$ 10,00** | Encontrado em: DEM-CER-PAR.md |
-| **Equip** | Ferramentas Manuais (Gabarito + esponja) | vb | **R$ 13,60** | Encontrado em: IMP-PREP-MEIACANA-01.md |
-| **Equip** | Ferramentas Manuais (Ponteiras/Pás) | vb | **R$ 10,00** | Encontrado em: DEM-PISO-CER.md |
-| **Equip** | Ferramentas Manuais (Rateio desgaste) | vb | **R$ 10,00** | Encontrado em: PIS-ENCH-ARG-20.md, PIS-ENCH-ARG-25.md |
-| **Equip** | Furadeira + Hélice Misturadora | vb | **R$ 50,75** | Encontrado em: IMP-VIAP-7000-01.md |
-| **Equip** | Iluminação LED Portátil (Rateio diária) | diária | **R$ 20,00** | Encontrado em: DEM-FORRO-350.md |
-| **Equip** | Iluminação LED Portátil (Rateio) | diária | **R$ 20,00** | Encontrado em: DEM-CER-PAR.md, DEM-CONTRAPISO.md, DEM-DW-350.md, DEM-PISO-CER.md |
-| **Equip** | Maçarico de alta potência | diária | **R$ 80,00** | insumos-base.json (Manual) |
-| **Equip** | Martelete Rompedor 10/15kg | diária | **R$ 120,00** | Encontrado em: INF-CRT-PAR-15X15.md, INF-CRT-PIS-20X15.md |
-| **Equip** | Martelete Rompedor 10/15kg (Locação) | diária | **R$ 120,00** | Encontrado em: DEM-CONTRAPISO.md |
-| **Equip** | Martelete Rompedor 10kg | diária | **R$ 120,00** | Encontrado em: MUR-CNT-14-01.md |
-| **Equip** | Martelete Rompedor 10kg (Locação) | diária | **R$ 120,00** | Encontrado em: DEM-PISO-CER.md |
-| **Equip** | Martelete Rompedor Leve (Locação) | diária | **R$ 120,00** | Encontrado em: DEM-CER-PAR.md |
-| **Equip** | Nível Laser (Locação) | diária | **R$ 80,00** | Encontrado em: CONTR-ARM-5CM-01.md |
-| **Equip** | Pás / Ferramentas de Carga | vb | **R$ 10,00** | Encontrado em: LOG-ENT-ENSAC-100.md |
-| **Equip** | Serra Mármore + Disco Diamantado | diária | **R$ 60,00** | Encontrado em: INF-CRT-PAR-15X15.md, INF-CRT-PIS-20X15.md |
-| **Mat** | Adesivo Epóxi (Sikadur 31 - lata 1kg) | lata | **R$ 100,00** | Encontrado em: MUR-CNT-14-01.md |
-| **Mat** | Adesivo Estrutural Epóxi (Kit) | kit | **R$ 103,50** | insumos-base.json (Manual) |
-| **Mat** | Aditivo Adesivo (Bianco) | L | **R$ 25,00** | Encontrado em: CONTR-ARM-5CM-01.md |
-| **Mat** | Aditivo Adesivo (Tipo Bianco) | L | **R$ 25,00** | Encontrado em: IMP-PREP-MEIACANA-01.md, PIS-ENCH-ARG-20.md, PIS-ENCH-ARG-25.md |
-| **Mat** | Areia Fina (20kg) | saco | **R$ 6,00** | insumos-base.json (Modelo / Manual) |
-| **Mat** | Areia Média Lavada | kg | **R$ 0,28** | Encontrado em: IMP-PREP-MEIACANA-01.md |
-| **Mat** | Areia Média Lavada (20kg saco) | saco | **R$ 5,50** | Encontrado em: CONTR-ARM-5CM-01.md, PIS-ENCH-ARG-20.md, PIS-ENCH-ARG-25.md |
-| **Mat** | Areia Média Lavada (20kg) | saco | **R$ 5,50** | Encontrado em: MUR-BLC-14-01.md |
-| **Mat** | Areia Média Lavada (Saco 20kg) | saco | **R$ 5,50** | Encontrado em: INF-CRT-PAR-15X15.md, INF-CRT-PIS-20X15.md, MUR-CNT-14-01.md, REG-PISO-4CM.md, REV-PAR-EMB.md, SOC-MAC-EPS.md, SOC-VAZ-TIJ.md |
-| **Mat** | Argamassa Autonivelante (20kg) | saco | **R$ 95,00** | insumos-base.json (Manual) |
-| **Mat** | Argamassa Colante AC-III | kg | **R$ 1,90** | insumos-base.json (Manual) |
-| **Mat** | Argamassa Pronta Matrix 4201 (40kg) | saco | **R$ 28,00** | insumos-base.json (Manual) |
-| **Mat** | Bloco Canaleta Concreto 14×19×39cm | un | **R$ 5,50** | Encontrado em: MUR-CNT-14-01.md |
-| **Mat** | Bloco Canaleta de Concreto (14x19x39cm) | un | **R$ 5,50** | insumos-base.json (Cliente) |
-| **Mat** | Bloco Concreto Vazado 14×19×39cm | un | **R$ 4,50** | Encontrado em: MUR-BLC-14-01.md |
-| **Mat** | Bloco de Concreto (14x19x39cm) | un | **R$ 4,50** | Encontrado em: SOC-MAC-EPS.md |
-| **Mat** | Bloco de Concreto Vazado (14x19x39cm) | un | **R$ 4,50** | insumos-base.json (Cliente) |
-| **Mat** | Cimento Portland CP-II (50kg) | saco | **R$ 34,00** | Encontrado em: CONTR-ARM-5CM-01.md, INF-CRT-PAR-15X15.md, INF-CRT-PIS-20X15.md, MUR-BLC-14-01.md, MUR-CNT-14-01.md, PIS-ENCH-ARG-20.md, PIS-ENCH-ARG-25.md, REG-PISO-4CM.md, REV-PAR-EMB.md, SOC-MAC-EPS.md, SOC-VAZ-TIJ.md |
-| **Mat** | Cimento Portland CP-II (50kg) | kg | **R$ 0,68** | Encontrado em: IMP-PREP-MEIACANA-01.md |
-| **Mat** | EPS Isolamento Térmico T1F | m² | **R$ 39,00** | insumos-base.json (Manual) |
-| **Mat** | EPS Reciclado (100mm) | m² | **R$ 24,00** | insumos-base.json (Manual) |
-| **Mat** | EPS T2 Alta Densidade (100mm equiv.) | m² | **R$ 45,00** | Encontrado em: PIS-ENCH-ARG-20.md, PIS-ENCH-ARG-25.md |
-| **Mat** | EPS T2 Alta Densidade (15cm) | m² | **R$ 67,50** | Encontrado em: SOC-MAC-EPS.md |
-| **Mat** | Impermeabilizante Viaplus 7000 (18kg) | cx | **R$ 250,00** | insumos-base.json (Modelo Referência) |
-| **Mat** | Lã de Rocha (144 kg/m³) | m² | **R$ 130,00** | insumos-base.json (Manual) |
-| **Mat** | Manta Asfáltica 4mm Tipo II | m² | **R$ 35,67** | insumos-base.json (Manual) |
-| **Mat** | Pedrisco / Pedra 0 (Saco 20kg) | saco | **R$ 6,00** | Encontrado em: MUR-CNT-14-01.md, SOC-MAC-EPS.md |
-| **Mat** | Placa Drywall RU (Umidade) | un | **R$ 42,67** | insumos-base.json (Manual) |
-| **Mat** | Primer Asfáltico | L | **R$ 20,67** | insumos-base.json (Manual) |
-| **Mat** | Rodapé Poliestireno Santa Luzia | ml | **R$ 37,00** | insumos-base.json (Manual) |
-| **Mat** | Saco de Ráfia para Entulho (60×90cm) | un | **R$ 2,50** | Encontrado em: LOG-ENT-ENSAC-100.md |
-| **Mat** | Saco de Ráfia para Entulho (60x90cm) | un | **R$ 2,50** | insumos-base.json (Cliente) |
-| **Mat** | Super Adesivo Santa Luzia | tubo | **R$ 48,00** | insumos-base.json (Manual) |
-| **Mat** | Tela de Aço 4,2mm 15×15cm (painel 2×3m) | painel | **R$ 100,00** | Encontrado em: CONTR-ARM-5CM-01.md |
-| **Mat** | Tela de Poliéster (Reforço) | m | **R$ 4,00** | Encontrado em: IMP-VIAP-7000-01.md |
-| **Mat** | Tela de Poliéster (Rolo 50m) | rolo | **R$ 190,00** | insumos-base.json (Modelo Referência) |
-| **Mat** | Tela Soldada Q61 | painel | **R$ 88,33** | insumos-base.json (Manual) |
-| **Mat** | Tela Soldada Q61 (3,4mm - 15×15cm) | m² | **R$ 18,50** | Encontrado em: PIS-ENCH-ARG-20.md, PIS-ENCH-ARG-25.md |
-| **Mat** | Tela Soldada Q92 | m² | **R$ 25,00** | insumos-base.json (Manual) |
-| **Mat** | Tijolo Maciço Comum | un | **R$ 2,20** | insumos-base.json (Padronizado) |
-| **Mat** | Tijolo Maciço Comum (~5x9x19cm) | un | **R$ 1,69** | Encontrado em: SOC-VAZ-TIJ.md |
-| **Mat** | Trincha/Brocha Profissional | un | **R$ 15,00** | Encontrado em: IMP-VIAP-7000-01.md |
-| **Mat** | Vergalhão CA-50 8.0mm (Barra 12m) | barra | **R$ 38,00** | Encontrado em: MUR-CNT-14-01.md |
-| **Mat** | Viaplus 7000 (Caixa 18kg) | cx | **R$ 250,00** | Encontrado em: IMP-VIAP-7000-01.md |
-| **MO** | Ajudante (Servente) | HH | **R$ 22,50** | insumos-base.json (Padronizado) |
-| **MO** | Impermeabilizador (Oficial) | HH | **R$ 40,00** | insumos-base.json (Padronizado) |
-| **MO** | Profissional (Pedreiro/Oficial/Carpinteiro) | HH | **R$ 40,00** | insumos-base.json (Padronizado) |
-| **MO** | Técnico / Engenheiro para Teste | HH | **R$ 90,00** | insumos-base.json (Padronizado) |
-
-
+---
 
 # 🛠️ COMPOSIÇÃO: CONTR-ARM-5CM-01 - CONTRAPISO ARMADO e=5cm SOBRE BASE IMPERMEABILIZADA
 
@@ -402,27 +321,26 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL (v4.0)**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 67,21/m²  (49,8%)
-      Equipamentos: R$  8,50/m²  ( 6,3%)
-      Mão de Obra:  R$ 59,15/m²  (43,9%) ← SEGUNDO DRIVER
-      TOTAL:        R$ 134,86/m²
-    
-    DRIVER PRINCIPAL: Material (49,8%) — Tela de aço 4,2mm = R$ 20,17/m² (15,0%).
-    SEGUNDO DRIVER: Mão de Obra (43,9%) — Turno noturno = +40% custo/HH.
-    
-    Economia potencial se turno DIURNO:
-      M.O. diurna: 1,18 HH/m² × R$ 40 (Ped) + R$ 22,50 (Aj) ≈ R$ 47/m²
-      Economia: R$ 12/m² (8,9% do custo total)
 
-    | Abordagem | Custo/m² | Prazo (100 m²) | Risco | Trade-off |
-    |---|---|---|---|---|
-    | Contrapiso armado 5cm tela 4,2mm (ADOTADO) | R$ 134,86 | 15 dias | Médio | ✅ Superior a Q-92, indicado p/ carga |
-    | Contrapiso armado 5cm tela Q-92 | R$ 120,00 | 15 dias | Médio | ⚠️ 70% menos resistência tração |
-    | Contrapiso simples 5cm (sem tela) | R$ 95,00 | 12 dias | Alto | ⚠️ Risco fissuração 3-5 anos |
-    | Contrapiso autonivelante 5cm | R$ 175,00 | 5 dias | Baixo | Custo 30% maior, prazo menor |
+Composição do Custo Unitário:
+Material: R$ 67,21/m ²  (49,8%)
+Equipamentos: R$  8,50/m ²  ( 6,3%)
+Mão de Obra: R$ 59,15/m ²  (43,9%) ← SEGUNDO DRIVER
+TOTAL: R$ 134,86/m ²
+
+▸ DRIVER PRINCIPAL: Material (49,8%) — Tela de aço 4,2mm = R$ 20,17/m² (15,0%).
+▸ SEGUNDO DRIVER: Mão de Obra (43,9%) — Turno noturno = +40% custo/HH.
+
+▸ Economia potencial se turno DIURNO:
+▸ M.O. diurna: 1,18 HH/m² × R$ 40 (Ped) + R$ 22,50 (Aj) ≈ R$ 47/m²
+▸ Economia: R$ 12/m² (8,9% do custo total)
+
+| Abordagem | Custo/m² | Prazo (100 m²) | Risco | Trade-off |
+|---|---|---|---|---|
+| Contrapiso armado 5cm tela 4,2mm (ADOTADO) | R$ 134,86 | 15 dias | Médio | ✅ Superior a Q-92, indicado p/ carga |
+| Contrapiso armado 5cm tela Q-92 | R$ 120,00 | 15 dias | Médio | ⚠️ 70% menos resistência tração |
+| Contrapiso simples 5cm (sem tela) | R$ 95,00 | 12 dias | Alto | ⚠️ Risco fissuração 3-5 anos |
+| Contrapiso autonivelante 5cm | R$ 175,00 | 5 dias | Baixo | Custo 30% maior, prazo menor |
 
 * * *
 
@@ -623,6 +541,7 @@
 ❍ Está ok ou quer revisar algo antes de prosseguir?
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: DEM-CER-PAR - DEMOLIÇÃO DE REVESTIMENTO CERÂMICO DE PAREDE + ARGAMASSA
 
@@ -798,17 +717,16 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$  0,00/m²  ( 0,0%)
-      Equipamentos: R$  2,70/m²  (18,8%)
-      Mão de Obra:  R$ 11,61/m²  (81,2%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 14,31/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (81,2%). O uso do martelete locado representa
-    quase 20% do custo, mas é o que viabiliza o preço baixo da M.O. Se não houvesse
-    martelete, a M.O. saltaria para mais de R$ 30,00/m².
+
+Composição do Custo Unitário:
+Material: R$  0,00/m ²  ( 0,0%)
+Equipamentos: R$  2,70/m ²  (18,8%)
+Mão de Obra: R$ 11,61/m ²  (81,2%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 14,31/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (81,2%). O uso do martelete locado representa
+▸ quase 20% do custo, mas é o que viabiliza o preço baixo da M.O. Se não houvesse
+▸ martelete, a M.O. saltaria para mais de R$ 30,00/m².
 
 * * *
 
@@ -942,6 +860,7 @@ Nosso cálculo matemático detalhado deu **0,470 HH/m²**. A matemática é perf
 ❍ Está ok ou quer revisar algo antes de prosseguir para a **2.3 (Demolição de Revestimento de Piso)**?
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: DEM-CONTRAPISO - DEMOLIÇÃO DE CONTRAPISO (4-5CM)
 
@@ -1120,18 +1039,17 @@ Nosso cálculo matemático detalhado deu **0,470 HH/m²**. A matemática é perf
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$  0,00/m²  ( 0,0%)
-      Equipamentos: R$  5,20/m²  (19,9%)
-      Mão de Obra:  R$ 20,97/m²  (80,1%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 26,17/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (80,1%). 
-    O volume de material demolido é massivo (100kg/m²). O tempo gasto não é só 
-    quebrando, mas movendo placas pesadas de concreto. O ajudante gasta 50% do 
-    tempo quebrando e 50% do tempo afastando o entulho para poder continuar.
+
+Composição do Custo Unitário:
+Material: R$  0,00/m ²  ( 0,0%)
+Equipamentos: R$  5,20/m ²  (19,9%)
+Mão de Obra: R$ 20,97/m ²  (80,1%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 26,17/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (80,1%).
+▸ O volume de material demolido é massivo (100kg/m²). O tempo gasto não é só
+▸ quebrando, mas movendo placas pesadas de concreto. O ajudante gasta 50% do
+▸ tempo quebrando e 50% do tempo afastando o entulho para poder continuar.
 
 * * *
 
@@ -1264,6 +1182,7 @@ A matemática bate perfeitamente com a referência técnica mais respeitada (TCP
 Would you like me to proceed to **2.5 (Demolição de Drywall)**?```
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: DEM-DW-350 - DEMOLIÇÃO DE PAREDE DRYWALL (H=3,50M)
 
@@ -1442,17 +1361,16 @@ Would you like me to proceed to **2.5 (Demolição de Drywall)**?```
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$  0,00/m²  ( 0,0%)
-      Equipamentos: R$  1,80/m²  (13,4%)
-      Mão de Obra:  R$ 11,61/m²  (86,6%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 13,41/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (86,6%). Embora o Drywall seja fácil de quebrar, 
-    a altura de 3,50m e a necessidade de separar o metal do gesso (para reciclagem 
-    e organização) consomem tempo da equipe.
+
+Composição do Custo Unitário:
+Material: R$  0,00/m ²  ( 0,0%)
+Equipamentos: R$  1,80/m ²  (13,4%)
+Mão de Obra: R$ 11,61/m ²  (86,6%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 13,41/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (86,6%). Embora o Drywall seja fácil de quebrar,
+▸ a altura de 3,50m e a necessidade de separar o metal do gesso (para reciclagem
+▸ e organização) consomem tempo da equipe.
 
 * * *
 
@@ -1585,6 +1503,7 @@ Nosso índice (0,47 HH) está até um pouco mais agressivo/eficiente que o teór
 Would you like me to proceed to **3.1 (Contrapiso 4cm)**?
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: DEM-FORRO-350 - DEMOLIÇÃO DE FORRO E ESTRUTURA (H=3,50M)
 
@@ -1768,17 +1687,16 @@ Would you like me to proceed to **3.1 (Contrapiso 4cm)**?
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$  0,00/m²  ( 0,0%)
-      Equipamentos: R$  1,80/m²  (13,3%)
-      Mão de Obra:  R$ 11,70/m²  (86,7%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 13,50/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (86,7%). Demolição é um serviço puramente 
-    de esforço humano. A altura de 3,50m é o fator que mais impacta, pois obriga 
-    a equipe a montar, subir, descer e arrastar andaimes constantemente.
+
+Composição do Custo Unitário:
+Material: R$  0,00/m ²  ( 0,0%)
+Equipamentos: R$  1,80/m ²  (13,3%)
+Mão de Obra: R$ 11,70/m ²  (86,7%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 13,50/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (86,7%). Demolição é um serviço puramente
+▸ de esforço humano. A altura de 3,50m é o fator que mais impacta, pois obriga
+▸ a equipe a montar, subir, descer e arrastar andaimes constantemente.
 
 * * *
 
@@ -1911,6 +1829,7 @@ A variação é de apenas 4,8%. O índice está matematicamente validado pelas t
 ❍ Está ok ou quer revisar algo antes de prosseguir para a **2.2 (Demolição de Cerâmica Parede)**?
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: DEM-PISO-CER - DEMOLIÇÃO DE REVESTIMENTO DE PISO + ARGAMASSA
 
@@ -2091,17 +2010,16 @@ A variação é de apenas 4,8%. O índice está matematicamente validado pelas t
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$  0,00/m²  ( 0,0%)
-      Equipamentos: R$  3,95/m²  (21,7%)
-      Mão de Obra:  R$ 14,26/m²  (78,3%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 18,21/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (78,3%). A demolição de piso é fisicamente 
-    exaustiva (vibração + postura agachada). O custo reflete a necessidade de 
-    ritmo sustentável para não lesionar o operador.
+
+Composição do Custo Unitário:
+Material: R$  0,00/m ²  ( 0,0%)
+Equipamentos: R$  3,95/m ²  (21,7%)
+Mão de Obra: R$ 14,26/m ²  (78,3%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 18,21/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (78,3%). A demolição de piso é fisicamente
+▸ exaustiva (vibração + postura agachada). O custo reflete a necessidade de
+▸ ritmo sustentável para não lesionar o operador.
 
 * * *
 
@@ -2230,6 +2148,7 @@ Nosso cálculo detalhado deu **0,588 HH/m²**. Diferença de 1,5%. Validação m
 ❍ Está ok ou quer revisar algo antes de prosseguir para a **2.4 (Demolição de Contrapiso)**?```
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: IMP-PREP-MEIACANA-01 - MEIA-CANA (PREPARAÇÃO PARA IMPERMEABILIZAÇÃO)
 
@@ -2497,28 +2416,27 @@ Nosso cálculo detalhado deu **0,588 HH/m²**. Diferença de 1,5%. Validação m
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL (v4.0)**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$  2,72/m  (12,6%)
-      Equipamentos: R$  0,27/m  ( 1,3%)
-      Mão de Obra:  R$ 18,60/m  (86,1%) ← DRIVER PRINCIPAL
-      TOTAL:        R$ 21,59/m
-    
-    DRIVER PRINCIPAL: Mão de Obra (86,1%) — Serviço artesanal de moldagem manual.
-    
-    Observação: O custo de material é quase negligenciável (12,6%). O valor desta
-    composição está 100% na habilidade do pedreiro em moldar a curvatura correta.
-    
-    ⚠️ O Bianco (R$ 450/balde) parece caro mas seu impacto é R$ 1,31/m (6,1%).
-    Se omitido: risco de descolamento = retrabalho de R$ 21,59 + R$ 119 (impermeabilização)
-    = R$ 140/m comprometido. ROI do Bianco: 107:1.
 
-    | Abordagem | Custo/m | Prazo | Risco | Trade-off |
-    |---|---|---|---|---|
-    | Argamassa moldada manual (ADOTADO) | R$ 21,59 | 3 noites + 1 cura | Baixo | ✅ Padrão técnico NBR 9575 |
-    | Meia-cana pré-moldada (espuma PU) | R$ 35,00 | 1 noite | Baixo | Custo 62% maior, prazo menor |
-    | Meia-cana em silicone estrutural | R$ 45,00 | 1 noite | Médio | ⚠️ Aderência duvidosa c/ Viaplus |
+Composição do Custo Unitário:
+Material: R$  2,72/m (12,6%)
+Equipamentos: R$  0,27/m ( 1,3%)
+Mão de Obra: R$ 18,60/m (86,1%) ← DRIVER PRINCIPAL
+TOTAL: R$ 21,59/m
+
+▸ DRIVER PRINCIPAL: Mão de Obra (86,1%) — Serviço artesanal de moldagem manual.
+
+▸ Observação: O custo de material é quase negligenciável (12,6%). O valor desta
+▸ composição está 100% na habilidade do pedreiro em moldar a curvatura correta.
+
+▸ ⚠️ O Bianco (R$ 450/balde) parece caro mas seu impacto é R$ 1,31/m (6,1%).
+▸ Se omitido: risco de descolamento = retrabalho de R$ 21,59 + R$ 119 (impermeabilização)
+▸ = R$ 140/m comprometido. ROI do Bianco: 107:1.
+
+| Abordagem | Custo/m | Prazo | Risco | Trade-off |
+|---|---|---|---|---|
+| Argamassa moldada manual (ADOTADO) | R$ 21,59 | 3 noites + 1 cura | Baixo | ✅ Padrão técnico NBR 9575 |
+| Meia-cana pré-moldada (espuma PU) | R$ 35,00 | 1 noite | Baixo | Custo 62% maior, prazo menor |
+| Meia-cana em silicone estrutural | R$ 45,00 | 1 noite | Médio | ⚠️ Aderência duvidosa c/ Viaplus |
 
 * * *
 
@@ -2716,6 +2634,7 @@ Nosso cálculo detalhado deu **0,588 HH/m²**. Diferença de 1,5%. Validação m
 ❍ Está ok ou quer revisar algo antes de prosseguir?
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: IMP-VIAP-7000-01 - IMPERMEABILIZAÇÃO COM VIAPLUS 7000 (3 DEMÃOS + TELA + TESTE 72H)
 
@@ -3005,32 +2924,31 @@ Nosso cálculo detalhado deu **0,588 HH/m²**. Diferença de 1,5%. Validação m
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL (v4.0)**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 54,83/m²  (47,2%)
-      Equipamentos: R$  1,02/m²  ( 0,9%)
-      Mão de Obra:  R$ 60,22/m²  (51,9%) ← DRIVER PRINCIPAL
-      TOTAL:        R$ 116,07/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (51,9%) — 3 demãos cruzadas + teste 72h.
-    Viaplus 7000 = 43,1% do custo total (maior insumo individual).
-    
-    Observação Crítica:
-    O custo de M.O. é elevado pois inclui 3 demãos com cura entre elas
-    + setuprep de teste de estanqueidade. Em turno diurno, o custo cairia
-    ~17% (sem fator ÷0.85 e sem adicional noturno).
-    
-    ⚠️ CUSTO DE FALHA:
-    Se teste reprovar: refazer 3 demãos = R$ 116/m² × 2 = R$ 232/m²
-    Se infiltração pós-obra: remoção revestimento + refazer = R$ 450-600/m²
 
-    | Abordagem | Custo/m² | Prazo | Risco | Trade-off |
-    |---|---|---|---|---|
-    | Viaplus 7000 — 3 demãos (ADOTADO) | R$ 116,07 | 12 dias | Baixo | ✅ Melhor custo-benefício, flexível |
-    | Manta asfáltica 4mm | R$ 95,00 | 4 dias | Médio | ⚠️ Precisa maçarico + risco incêndio noturno |
-    | Poliureia projetada | R$ 180,00 | 2 dias | Baixo | Custo 55% maior, aplicação rápida |
-    | Viaplus 1000 (rígido) | R$ 85,00 | 8 dias | Alto | ⚠️ Não flexível — fissura em movimentação |
+Composição do Custo Unitário:
+Material: R$ 54,83/m ²  (47,2%)
+Equipamentos: R$  1,02/m ²  ( 0,9%)
+Mão de Obra: R$ 60,22/m ²  (51,9%) ← DRIVER PRINCIPAL
+TOTAL: R$ 116,07/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (51,9%) — 3 demãos cruzadas + teste 72h.
+▸ Viaplus 7000 = 43,1% do custo total (maior insumo individual).
+
+▸ Observação Crítica:
+▸ O custo de M.O. é elevado pois inclui 3 demãos com cura entre elas
+▸ + setuprep de teste de estanqueidade. Em turno diurno, o custo cairia
+▸ ~17% (sem fator ÷0.85 e sem adicional noturno).
+
+▸ ⚠️ CUSTO DE FALHA:
+▸ Se teste reprovar: refazer 3 demãos = R$ 116/m² × 2 = R$ 232/m²
+▸ Se infiltração pós-obra: remoção revestimento + refazer = R$ 450-600/m²
+
+| Abordagem | Custo/m² | Prazo | Risco | Trade-off |
+|---|---|---|---|---|
+| Viaplus 7000 — 3 demãos (ADOTADO) | R$ 116,07 | 12 dias | Baixo | ✅ Melhor custo-benefício, flexível |
+| Manta asfáltica 4mm | R$ 95,00 | 4 dias | Médio | ⚠️ Precisa maçarico + risco incêndio noturno |
+| Poliureia projetada | R$ 180,00 | 2 dias | Baixo | Custo 55% maior, aplicação rápida |
+| Viaplus 1000 (rígido) | R$ 85,00 | 8 dias | Alto | ⚠️ Não flexível — fissura em movimentação |
 
 * * *
 
@@ -3236,6 +3154,7 @@ Nosso cálculo detalhado deu **0,588 HH/m²**. Diferença de 1,5%. Validação m
 ❍ Está ok ou quer revisar algo antes de prosseguir?
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: INF-CRT-PAR-15X15
 
@@ -3415,6 +3334,7 @@ corta a junta entre os blocos ou tijolos, salvando partes fora do rasgo.
 ✅ Composição INF-CRT-PAR-15X15 CONCLUÍDA.
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: INF-CRT-PIS-20X15
 
@@ -3625,6 +3545,7 @@ Aprovar para uso.
 ✅ Composição INF-CRT-PIS-20X15 CONCLUÍDA.
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: LOG-ENT-ENSAC-100
 
@@ -3821,6 +3742,7 @@ sobre o volume geométrico da parede demolida. (O concreto demolido de 1m³ vira
 ✅ Composição LOG-ENT-ENSAC-100 CONCLUÍDA.
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: LOG-MAT-TRANSP-100
 
@@ -4019,6 +3941,7 @@ salva a obra. Acatar custo integral de ~R$ 130/tonelada transportada.
 ✅ Composição LOG-MAT-TRANSP-100 CONCLUÍDA.
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: MUR-BLC-14-01 - MURETA SIMPLES DE BLOCO DE CONCRETO 14CM
 
@@ -4284,6 +4207,7 @@ Uso: contenção simples, delimitação de áreas, base leve.
 ✅ Composição MUR-BLC-14-01 CONCLUÍDA.
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: MUR-CNT-14-01 - MURETA ESTRUTURAL EM CANALETA 14CM COM ANCORAGEM QUÍMICA
 
@@ -4509,14 +4433,14 @@ Uso: contenção simples, delimitação de áreas, base leve.
 
 #### **5.1 ANÁLISE DE CUSTO / COMPARATIVO**
 
-    Comparativo Muretas 14cm (Altura ~20cm):
-    1.1 Simples (Bloco comum): R$  66,07/m
-    1.2 Estrutural (Canaleta + Graute + Epóxi): R$ 123,77/m
-    
-    Variação: +87% de custo.
-    Onde está o custo extra?
-    • Material: +R$ 22,56/m (Epóxi R$2 + Aço R$4 + Bloco Canaleta R$3 + Insumos M.Conc)
-    • M.Obra:   +R$ 30,14/m (+76% HH devido a furação, epóxi, armação e grauteamento)
+▸ Comparativo Muretas 14cm (Altura ~20cm):
+▸ 1.1 Simples (Bloco comum): R$ 66,07/m
+▸ 1.2 Estrutural (Canaleta + Graute + Epóxi): R$ 123,77/m
+
+▸ Variação: +87% de custo.
+▸ Onde está o custo extra?
+▸ Material: +R$ 22,56/m (Epóxi R$2 + Aço R$4 + Bloco Canaleta R$3 + Insumos M.Conc)
+▸ M.Obra: +R$ 30,14/m (+76% HH devido a furação, epóxi, armação e grauteamento)
 
 * * *
 
@@ -4589,6 +4513,7 @@ Uso: contenção simples, delimitação de áreas, base leve.
 ✅ Composição MUR-CNT-14-01 CONCLUÍDA.
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: PIS-ENCH-ARG-20 - ENCHIMENTO DE PISO (H=20CM) COM GRELHA DE EPS E CONTRAPISO EM ARGAMASSA ARMADA
 
@@ -4939,31 +4864,30 @@ Uso: contenção simples, delimitação de áreas, base leve.
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL (v4.0)**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 150,35/m²  (60,8%)  ← DRIVER PRINCIPAL
-      Equipamentos: R$   5,30/m²  ( 2,1%)
-      Mão de Obra:  R$  91,51/m²  (37,0%)
-      TOTAL:        R$ 247,16/m²
-    
-    DRIVER PRINCIPAL: Material (60,8%) — EPS sozinho = 22,9% do custo total.
-    
-    COMPARATIVO vs PIS-ENCH-ARG-25 (25cm):
-      25cm: R$ 310,57/m² → 20cm: R$ 247,16/m²
-      Economia: R$ 63,41/m² (-20,4%)
-      Principal economia: Areia (−R$ 25), Cimento (−R$ 13), M.O. (−R$ 25)
-    
-    Observação Crítica:
-    Se areia A GRANEL em vez de ensacada:
-      Economia: ~R$ 22/m² (−8,9%)
 
-    | Abordagem | Custo/m² | Prazo (100 m²) | Risco | Trade-off |
-    |---|---|---|---|---|
-    | Argamassa 1:4 + EPS capa 5cm (ADOTADO) | R$ 247,16 | 4 dias + 7 cura | Médio | ✅ 20% mais barato que 25cm |
-    | PIS-ENCH-ARG-25 (capa 10cm) | R$ 310,57 | 6 dias + 7 cura | Médio | Capa mais robusta, custo 25% maior |
-    | Concreto usinado + EPS (capa 5cm) | R$ 225,00 | 2 dias + 7 cura | Baixo | Custo M.O. menor, material maior |
-    | Argamassa + areia granel (capa 5cm) | R$ 225,00 | 4 dias + 7 cura | Médio | ⚠️ Precisa acesso caminhão |
+Composição do Custo Unitário:
+Material: R$ 150,35/m ²  (60,8%)  ← DRIVER PRINCIPAL
+Equipamentos: R$   5,30/m ²  ( 2,1%)
+Mão de Obra: R$  91,51/m ²  (37,0%)
+TOTAL: R$ 247,16/m ²
+
+▸ DRIVER PRINCIPAL: Material (60,8%) — EPS sozinho = 22,9% do custo total.
+
+▸ COMPARATIVO vs PIS-ENCH-ARG-25 (25cm):
+▸ 25cm: R$ 310,57/m² → 20cm: R$ 247,16/m²
+▸ Economia: R$ 63,41/m² (-20,4%)
+▸ Principal economia: Areia (−R$ 25), Cimento (−R$ 13), M.O. (−R$ 25)
+
+▸ Observação Crítica:
+▸ Se areia A GRANEL em vez de ensacada:
+▸ Economia: ~R$ 22/m² (−8,9%)
+
+| Abordagem | Custo/m² | Prazo (100 m²) | Risco | Trade-off |
+|---|---|---|---|---|
+| Argamassa 1:4 + EPS capa 5cm (ADOTADO) | R$ 247,16 | 4 dias + 7 cura | Médio | ✅ 20% mais barato que 25cm |
+| PIS-ENCH-ARG-25 (capa 10cm) | R$ 310,57 | 6 dias + 7 cura | Médio | Capa mais robusta, custo 25% maior |
+| Concreto usinado + EPS (capa 5cm) | R$ 225,00 | 2 dias + 7 cura | Baixo | Custo M.O. menor, material maior |
+| Argamassa + areia granel (capa 5cm) | R$ 225,00 | 4 dias + 7 cura | Médio | ⚠️ Precisa acesso caminhão |
 
 * * *
 
@@ -5175,6 +5099,7 @@ Uso: contenção simples, delimitação de áreas, base leve.
 ❍ Está ok ou quer revisar algo antes de prosseguir?
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: PIS-ENCH-ARG-25 - ENCHIMENTO DE PISO (H=25CM) COM GRELHA DE EPS E CONTRAPISO EM ARGAMASSA ARMADA
 
@@ -5520,33 +5445,32 @@ Uso: contenção simples, delimitação de áreas, base leve.
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL (v4.0)**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 188,43/m²  (60,7%)  ← DRIVER PRINCIPAL
-      Equipamentos: R$   5,30/m²  ( 1,7%)
-      Mão de Obra:  R$ 116,84/m²  (37,6%)  ← SEGUNDO DRIVER
-      TOTAL:        R$ 310,57/m²
-    
-    DRIVER PRINCIPAL: Material (60,7%) — Areia ensacada sozinha = 22,8% do custo total.
-    SEGUNDO DRIVER: Mão de Obra (37,6%) — HH alto por causa da logística manual.
-    
-    Observação Crítica:
-    1. Se areia vier A GRANEL em vez de ensacada:
-       Economia: ~R$ 35/m² (-11,3% no custo total)
-       Custo areia granel: ~R$ 2,50/saco equiv. vs R$ 5,50 ensacada
-    
-    2. Se usar concreto usinado em vez de argamassa manual:
-       A mão de obra cairia ~60% (bombeamento vs transporte manual)
-       Mas custo material subiria ~40% (concreto usinado > argamassa)
-       Trade-off: pode compensar em obras > 500 m²
 
-    | Abordagem | Custo/m² | Prazo (264 m²) | Risco | Trade-off |
-    |---|---|---|---|---|
-    | Argamassa 1:4 + EPS (ADOTADO) | R$ 310,57 | 14 dias + 7 cura | Médio | ✅ Custo menor, logística pesada |
-    | Concreto usinado + EPS | R$ 285,00 | 5 dias + 7 cura | Baixo | Custo M.O. menor, material maior |
-    | Argamassa + areia granel | R$ 275,00 | 14 dias + 7 cura | Médio | ⚠️ Precisa acesso para caminhão |
-    | Laje nervurada pré-moldada | R$ 350,00 | 7 dias + 14 cura | Baixo | Custo alto, prazo médio |
+Composição do Custo Unitário:
+Material: R$ 188,43/m ²  (60,7%)  ← DRIVER PRINCIPAL
+Equipamentos: R$   5,30/m ²  ( 1,7%)
+Mão de Obra: R$ 116,84/m ²  (37,6%)  ← SEGUNDO DRIVER
+TOTAL: R$ 310,57/m ²
+
+▸ DRIVER PRINCIPAL: Material (60,7%) — Areia ensacada sozinha = 22,8% do custo total.
+▸ SEGUNDO DRIVER: Mão de Obra (37,6%) — HH alto por causa da logística manual.
+
+▸ Observação Crítica:
+▸ 1. Se areia vier A GRANEL em vez de ensacada:
+▸ Economia: ~R$ 35/m² (-11,3% no custo total)
+▸ Custo areia granel: ~R$ 2,50/saco equiv. vs R$ 5,50 ensacada
+
+▸ 2. Se usar concreto usinado em vez de argamassa manual:
+▸ A mão de obra cairia ~60% (bombeamento vs transporte manual)
+▸ Mas custo material subiria ~40% (concreto usinado > argamassa)
+▸ Trade-off: pode compensar em obras > 500 m²
+
+| Abordagem | Custo/m² | Prazo (264 m²) | Risco | Trade-off |
+|---|---|---|---|---|
+| Argamassa 1:4 + EPS (ADOTADO) | R$ 310,57 | 14 dias + 7 cura | Médio | ✅ Custo menor, logística pesada |
+| Concreto usinado + EPS | R$ 285,00 | 5 dias + 7 cura | Baixo | Custo M.O. menor, material maior |
+| Argamassa + areia granel | R$ 275,00 | 14 dias + 7 cura | Médio | ⚠️ Precisa acesso para caminhão |
+| Laje nervurada pré-moldada | R$ 350,00 | 7 dias + 14 cura | Baixo | Custo alto, prazo médio |
 
 * * *
 
@@ -5801,6 +5725,7 @@ Uso: contenção simples, delimitação de áreas, base leve.
 ❍ Está ok ou quer revisar algo antes de prosseguir?
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: REG-PISO-4CM - CONTRAPISO SIMPLES 4CM (SEM TELA)
 
@@ -5995,16 +5920,15 @@ Uso: contenção simples, delimitação de áreas, base leve.
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 31,93/m²  (51,8%)  ← DRIVER PRINCIPAL
-      Equipamentos: R$  1,40/m²  ( 2,2%)
-      Mão de Obra:  R$ 28,37/m²  (46,0%)
-      TOTAL:        R$ 61,70/m²
-    
-    DRIVER PRINCIPAL: Material (51,8%). O custo da areia ensacada pesa muito. 
-    A logística de elevator/doca IMPEDE o uso de granel, justificando o sobrecusto.
+
+Composição do Custo Unitário:
+Material: R$ 31,93/m ²  (51,8%)  ← DRIVER PRINCIPAL
+Equipamentos: R$  1,40/m ²  ( 2,2%)
+Mão de Obra: R$ 28,37/m ²  (46,0%)
+TOTAL: R$ 61,70/m ²
+
+▸ DRIVER PRINCIPAL: Material (51,8%). O custo da areia ensacada pesa muito.
+▸ A logística de elevator/doca IMPEDE o uso de granel, justificando o sobrecusto.
 
 * * *
 
@@ -6109,6 +6033,7 @@ Base TCPO (0,80 HH) ÷ 0,85 (Fator Noturno) = 0,941 HH. Validação matemática 
 Would you like me to proceed to **3.2 (Revestimento de Parede)**?
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: REV-PAR-EMB - REVESTIMENTO DE PAREDE (CHAPISCO + EMBOÇO)
 
@@ -6301,17 +6226,16 @@ Would you like me to proceed to **3.2 (Revestimento de Parede)**?
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 20,99/m²  (25,2%)
-      Equipamentos: R$  4,50/m²  ( 5,4%)
-      Mão de Obra:  R$ 57,80/m²  (69,4%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 83,29/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (69,4%). O trabalho intensivo em andaime, somado 
-    ao fator noturno e logística de sacaria, reduz a produtividade em ~50% comparado 
-    ao nível térreo diurno.
+
+Composição do Custo Unitário:
+Material: R$ 20,99/m ²  (25,2%)
+Equipamentos: R$  4,50/m ²  ( 5,4%)
+Mão de Obra: R$ 57,80/m ²  (69,4%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 83,29/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (69,4%). O trabalho intensivo em andaime, somado
+▸ ao fator noturno e logística de sacaria, reduz a produtividade em ~50% comparado
+▸ ao nível térreo diurno.
 
 * * *
 
@@ -6391,6 +6315,7 @@ Base CPOS (1,50 HH) ÷ 0,85 (Noturno) = 1,76 HH. Adicionando ajuste logístico d
 ✅ **Índice realista.** Cobre os custos de segurança e logística vertical. **Aprovar para uso comercial.**
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: SOC-MAC-EPS - SÓCULO MACIÇO EM BLOCO DE CONCRETO + EPS + CAPA (0,80x2,00M)
 
@@ -6607,18 +6532,17 @@ Base CPOS (1,50 HH) ÷ 0,85 (Noturno) = 1,76 HH. Adicionando ajuste logístico d
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 203,22/un (46,4%)
-      Equipamentos: R$   2,60/un ( 0,6%)
-      Mão de Obra:  R$ 232,46/un (53,0%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 438,28/un
-    
-    DRIVER PRINCIPAL: Mão de Obra (53,0%), seguida intimamente pelo Material (46,4%).
-    Curiosidade: O custo de material deste sóculo de bloco+EPS (R$ 203) é quase
-    idêntico ao do sóculo de tijolo maciço (R$ 206). No entanto, como a Mão de Obra
-    cai drasticamente, este sóculo fica R$ 132 MAIS BARATO por unidade!
+
+Composição do Custo Unitário:
+Material: R$ 203,22/un (46,4%)
+Equipamentos: R$   2,60/un ( 0,6%)
+Mão de Obra: R$ 232,46/un (53,0%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 438,28/un
+
+▸ DRIVER PRINCIPAL: Mão de Obra (53,0%), seguida intimamente pelo Material (46,4%).
+▸ Curiosidade: O custo de material deste sóculo de bloco+EPS (R$ 203) é quase
+▸ idêntico ao do sóculo de tijolo maciço (R$ 206). No entanto, como a Mão de Obra
+▸ cai drasticamente, este sóculo fica R$ 132 MAIS BARATO por unidade!
 
 * * *
 
@@ -6743,6 +6667,7 @@ Se pegarmos o histórico da Expertise Quantiza de 7,60 HH/un e removermos o fato
 ❍ Está ok ou quer revisar algo antes de prosseguir para o **Grupo 2 (Demolições - Item 2.1 Forro)**?
 
 
+---
 
 # 🛠️ COMPOSIÇÃO: SOC-VAZ-TIJ - SÓCULO VAZADO EM TIJOLO MACIÇO (0,80x2,00M)
 
@@ -6949,17 +6874,16 @@ Se pegarmos o histórico da Expertise Quantiza de 7,60 HH/un e removermos o fato
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 206,98/un (36,3%)
-      Equipamentos: R$   2,60/un ( 0,4%)
-      Mão de Obra:  R$ 361,05/un (63,3%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 570,63/un
-    
-    DRIVER PRINCIPAL: Mão de Obra (63,3%). 
-    O tijolo maciço é barato, mas o tempo de assentamento e emboço de 
-    pequenas faces cheias de cantos consome horas de pedreiro oficial.
+
+Composição do Custo Unitário:
+Material: R$ 206,98/un (36,3%)
+Equipamentos: R$   2,60/un ( 0,4%)
+Mão de Obra: R$ 361,05/un (63,3%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 570,63/un
+
+▸ DRIVER PRINCIPAL: Mão de Obra (63,3%).
+▸ O tijolo maciço é barato, mas o tempo de assentamento e emboço de
+▸ pequenas faces cheias de cantos consome horas de pedreiro oficial.
 
 * * *
 
@@ -7078,3 +7002,7 @@ Qualquer engenheiro de campo sabe que uma dupla faz no máximo 1 a 2 sóculos pe
 
 **[4. CONCLUSÃO]**
 ✅ **Índice preciso e defensável.** Protege a empresa do "ralo financeiro" que são os serviços de acabamento miúdo. O valor de R$ 570,63/unidade reflete a engenharia real. **Aprovar para uso comercial.**
+
+
+---
+

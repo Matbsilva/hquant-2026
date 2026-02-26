@@ -264,28 +264,27 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL (v4.0)**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$  2,72/m  (12,6%)
-      Equipamentos: R$  0,27/m  ( 1,3%)
-      Mão de Obra:  R$ 18,60/m  (86,1%) ← DRIVER PRINCIPAL
-      TOTAL:        R$ 21,59/m
-    
-    DRIVER PRINCIPAL: Mão de Obra (86,1%) — Serviço artesanal de moldagem manual.
-    
-    Observação: O custo de material é quase negligenciável (12,6%). O valor desta
-    composição está 100% na habilidade do pedreiro em moldar a curvatura correta.
-    
-    ⚠️ O Bianco (R$ 450/balde) parece caro mas seu impacto é R$ 1,31/m (6,1%).
-    Se omitido: risco de descolamento = retrabalho de R$ 21,59 + R$ 119 (impermeabilização)
-    = R$ 140/m comprometido. ROI do Bianco: 107:1.
 
-    | Abordagem | Custo/m | Prazo | Risco | Trade-off |
-    |---|---|---|---|---|
-    | Argamassa moldada manual (ADOTADO) | R$ 21,59 | 3 noites + 1 cura | Baixo | ✅ Padrão técnico NBR 9575 |
-    | Meia-cana pré-moldada (espuma PU) | R$ 35,00 | 1 noite | Baixo | Custo 62% maior, prazo menor |
-    | Meia-cana em silicone estrutural | R$ 45,00 | 1 noite | Médio | ⚠️ Aderência duvidosa c/ Viaplus |
+Composição do Custo Unitário:
+Material: R$  2,72/m (12,6%)
+Equipamentos: R$  0,27/m ( 1,3%)
+Mão de Obra: R$ 18,60/m (86,1%) ← DRIVER PRINCIPAL
+TOTAL: R$ 21,59/m
+
+▸ DRIVER PRINCIPAL: Mão de Obra (86,1%) — Serviço artesanal de moldagem manual.
+
+▸ Observação: O custo de material é quase negligenciável (12,6%). O valor desta
+▸ composição está 100% na habilidade do pedreiro em moldar a curvatura correta.
+
+▸ ⚠️ O Bianco (R$ 450/balde) parece caro mas seu impacto é R$ 1,31/m (6,1%).
+▸ Se omitido: risco de descolamento = retrabalho de R$ 21,59 + R$ 119 (impermeabilização)
+▸ = R$ 140/m comprometido. ROI do Bianco: 107:1.
+
+| Abordagem | Custo/m | Prazo | Risco | Trade-off |
+|---|---|---|---|---|
+| Argamassa moldada manual (ADOTADO) | R$ 21,59 | 3 noites + 1 cura | Baixo | ✅ Padrão técnico NBR 9575 |
+| Meia-cana pré-moldada (espuma PU) | R$ 35,00 | 1 noite | Baixo | Custo 62% maior, prazo menor |
+| Meia-cana em silicone estrutural | R$ 45,00 | 1 noite | Médio | ⚠️ Aderência duvidosa c/ Viaplus |
 
 * * *
 

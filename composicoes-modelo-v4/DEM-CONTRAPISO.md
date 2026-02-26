@@ -175,18 +175,17 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$  0,00/m²  ( 0,0%)
-      Equipamentos: R$  5,20/m²  (19,9%)
-      Mão de Obra:  R$ 20,97/m²  (80,1%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 26,17/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (80,1%). 
-    O volume de material demolido é massivo (100kg/m²). O tempo gasto não é só 
-    quebrando, mas movendo placas pesadas de concreto. O ajudante gasta 50% do 
-    tempo quebrando e 50% do tempo afastando o entulho para poder continuar.
+
+Composição do Custo Unitário:
+Material: R$  0,00/m ²  ( 0,0%)
+Equipamentos: R$  5,20/m ²  (19,9%)
+Mão de Obra: R$ 20,97/m ²  (80,1%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 26,17/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (80,1%).
+▸ O volume de material demolido é massivo (100kg/m²). O tempo gasto não é só
+▸ quebrando, mas movendo placas pesadas de concreto. O ajudante gasta 50% do
+▸ tempo quebrando e 50% do tempo afastando o entulho para poder continuar.
 
 * * *
 

@@ -172,17 +172,16 @@
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$  0,00/m²  ( 0,0%)
-      Equipamentos: R$  2,70/m²  (18,8%)
-      Mão de Obra:  R$ 11,61/m²  (81,2%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 14,31/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (81,2%). O uso do martelete locado representa
-    quase 20% do custo, mas é o que viabiliza o preço baixo da M.O. Se não houvesse
-    martelete, a M.O. saltaria para mais de R$ 30,00/m².
+
+Composição do Custo Unitário:
+Material: R$  0,00/m ²  ( 0,0%)
+Equipamentos: R$  2,70/m ²  (18,8%)
+Mão de Obra: R$ 11,61/m ²  (81,2%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 14,31/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (81,2%). O uso do martelete locado representa
+▸ quase 20% do custo, mas é o que viabiliza o preço baixo da M.O. Se não houvesse
+▸ martelete, a M.O. saltaria para mais de R$ 30,00/m².
 
 * * *
 

@@ -220,18 +220,17 @@ Tudo validado. Iniciando a geração 100% aderente ao Padrão Ouro v4.0.
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 20,99/m²  (25,2%)
-      Equipamentos: R$  4,50/m²  ( 5,4%)
-      Mão de Obra:  R$ 57,80/m²  (69,4%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 83,29/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (69,4%). 
-    Reboco já é um serviço intensivo em M.O. Adicionando altura (andaime), 
-    noturno (0,85) e logística de sacaria, a produtividade cai pela metade 
-    em relação a um reboco térreo diurno.
+
+Composição do Custo Unitário:
+Material: R$ 20,99/m ²  (25,2%)
+Equipamentos: R$  4,50/m ²  ( 5,4%)
+Mão de Obra: R$ 57,80/m ²  (69,4%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 83,29/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (69,4%).
+▸ Reboco já é um serviço intensivo em M.O. Adicionando altura (andaime),
+▸ noturno (0,85) e logística de sacaria, a produtividade cai pela metade
+▸ em relação a um reboco térreo diurno.
 
 * * *
 
@@ -665,27 +664,26 @@ Nosso índice (1,88) está perfeitamente calibrado.
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL (v4.0)**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 67,21/m²  (49,8%)
-      Equipamentos: R$  8,50/m²  ( 6,3%)
-      Mão de Obra:  R$ 59,15/m²  (43,9%) ← SEGUNDO DRIVER
-      TOTAL:        R$ 134,86/m²
-    
-    DRIVER PRINCIPAL: Material (49,8%) — Tela de aço 4,2mm = R$ 20,17/m² (15,0%).
-    SEGUNDO DRIVER: Mão de Obra (43,9%) — Turno noturno = +40% custo/HH.
-    
-    Economia potencial se turno DIURNO:
-      M.O. diurna: 1,18 HH/m² × R$ 40 (Ped) + R$ 22,50 (Aj) ≈ R$ 47/m²
-      Economia: R$ 12/m² (8,9% do custo total)
-    
-    | Abordagem | Custo/m² | Prazo (100 m²) | Risco | Trade-off |
-    |---|---|---|---|---|
-    | Contrapiso armado 5cm tela 4,2mm (ADOTADO) | R$ 134,86 | 15 dias | Médio | ✅ Superior a Q-92, indicado p/ carga |
-    | Contrapiso armado 5cm tela Q-92 | R$ 120,00 | 15 dias | Médio | ⚠️ 70% menos resistência tração |
-    | Contrapiso simples 5cm (sem tela) | R$ 95,00 | 12 dias | Alto | ⚠️ Risco fissuração 3-5 anos |
-    | Contrapiso autonivelante 5cm | R$ 175,00 | 5 dias | Baixo | Custo 30% maior, prazo menor |
+
+Composição do Custo Unitário:
+Material: R$ 67,21/m ²  (49,8%)
+Equipamentos: R$  8,50/m ²  ( 6,3%)
+Mão de Obra: R$ 59,15/m ²  (43,9%) ← SEGUNDO DRIVER
+TOTAL: R$ 134,86/m ²
+
+▸ DRIVER PRINCIPAL: Material (49,8%) — Tela de aço 4,2mm = R$ 20,17/m² (15,0%).
+▸ SEGUNDO DRIVER: Mão de Obra (43,9%) — Turno noturno = +40% custo/HH.
+
+▸ Economia potencial se turno DIURNO:
+▸ M.O. diurna: 1,18 HH/m² × R$ 40 (Ped) + R$ 22,50 (Aj) ≈ R$ 47/m²
+▸ Economia: R$ 12/m² (8,9% do custo total)
+
+| Abordagem | Custo/m² | Prazo (100 m²) | Risco | Trade-off |
+|---|---|---|---|---|
+| Contrapiso armado 5cm tela 4,2mm (ADOTADO) | R$ 134,86 | 15 dias | Médio | ✅ Superior a Q-92, indicado p/ carga |
+| Contrapiso armado 5cm tela Q-92 | R$ 120,00 | 15 dias | Médio | ⚠️ 70% menos resistência tração |
+| Contrapiso simples 5cm (sem tela) | R$ 95,00 | 12 dias | Alto | ⚠️ Risco fissuração 3-5 anos |
+| Contrapiso autonivelante 5cm | R$ 175,00 | 5 dias | Baixo | Custo 30% maior, prazo menor |
 
 * * *
 
@@ -1225,31 +1223,30 @@ Nosso índice (1,88) está perfeitamente calibrado.
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL (v4.0)**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 150,35/m²  (60,8%)  ← DRIVER PRINCIPAL
-      Equipamentos: R$   5,30/m²  ( 2,1%)
-      Mão de Obra:  R$  91,51/m²  (37,0%)
-      TOTAL:        R$ 247,16/m²
-    
-    DRIVER PRINCIPAL: Material (60,8%) — EPS sozinho = 22,9% do custo total.
-    
-    COMPARATIVO vs PIS-ENCH-ARG-25 (25cm):
-      25cm: R$ 310,57/m² → 20cm: R$ 247,16/m²
-      Economia: R$ 63,41/m² (-20,4%)
-      Principal economia: Areia (−R$ 25), Cimento (−R$ 13), M.O. (−R$ 25)
-    
-    Observação Crítica:
-    Se areia A GRANEL em vez de ensacada:
-      Economia: ~R$ 22/m² (−8,9%)
-    
-    | Abordagem | Custo/m² | Prazo (100 m²) | Risco | Trade-off |
-    |---|---|---|---|---|
-    | Argamassa 1:4 + EPS capa 5cm (ADOTADO) | R$ 247,16 | 4 dias + 7 cura | Médio | ✅ 20% mais barato que 25cm |
-    | PIS-ENCH-ARG-25 (capa 10cm) | R$ 310,57 | 6 dias + 7 cura | Médio | Capa mais robusta, custo 25% maior |
-    | Concreto usinado + EPS (capa 5cm) | R$ 225,00 | 2 dias + 7 cura | Baixo | Custo M.O. menor, material maior |
-    | Argamassa + areia granel (capa 5cm) | R$ 225,00 | 4 dias + 7 cura | Médio | ⚠️ Precisa acesso caminhão |
+
+Composição do Custo Unitário:
+Material: R$ 150,35/m ²  (60,8%)  ← DRIVER PRINCIPAL
+Equipamentos: R$   5,30/m ²  ( 2,1%)
+Mão de Obra: R$  91,51/m ²  (37,0%)
+TOTAL: R$ 247,16/m ²
+
+▸ DRIVER PRINCIPAL: Material (60,8%) — EPS sozinho = 22,9% do custo total.
+
+▸ COMPARATIVO vs PIS-ENCH-ARG-25 (25cm):
+▸ 25cm: R$ 310,57/m² → 20cm: R$ 247,16/m²
+▸ Economia: R$ 63,41/m² (-20,4%)
+▸ Principal economia: Areia (−R$ 25), Cimento (−R$ 13), M.O. (−R$ 25)
+
+▸ Observação Crítica:
+▸ Se areia A GRANEL em vez de ensacada:
+▸ Economia: ~R$ 22/m² (−8,9%)
+
+| Abordagem | Custo/m² | Prazo (100 m²) | Risco | Trade-off |
+|---|---|---|---|---|
+| Argamassa 1:4 + EPS capa 5cm (ADOTADO) | R$ 247,16 | 4 dias + 7 cura | Médio | ✅ 20% mais barato que 25cm |
+| PIS-ENCH-ARG-25 (capa 10cm) | R$ 310,57 | 6 dias + 7 cura | Médio | Capa mais robusta, custo 25% maior |
+| Concreto usinado + EPS (capa 5cm) | R$ 225,00 | 2 dias + 7 cura | Baixo | Custo M.O. menor, material maior |
+| Argamassa + areia granel (capa 5cm) | R$ 225,00 | 4 dias + 7 cura | Médio | ⚠️ Precisa acesso caminhão |
 
 * * *
 
@@ -2039,32 +2036,31 @@ Nosso índice (1,88) está perfeitamente calibrado.
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL (v4.0)**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$ 54,83/m²  (47,2%)
-      Equipamentos: R$  1,02/m²  ( 0,9%)
-      Mão de Obra:  R$ 60,22/m²  (51,9%) ← DRIVER PRINCIPAL
-      TOTAL:        R$ 116,07/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (51,9%) — 3 demãos cruzadas + teste 72h.
-    Viaplus 7000 = 43,1% do custo total (maior insumo individual).
-    
-    Observação Crítica:
-    O custo de M.O. é elevado pois inclui 3 demãos com cura entre elas
-    + setuprep de teste de estanqueidade. Em turno diurno, o custo cairia
-    ~17% (sem fator ÷0.85 e sem adicional noturno).
-    
-    ⚠️ CUSTO DE FALHA:
-    Se teste reprovar: refazer 3 demãos = R$ 116/m² × 2 = R$ 232/m²
-    Se infiltração pós-obra: remoção revestimento + refazer = R$ 450-600/m²
-    
-    | Abordagem | Custo/m² | Prazo | Risco | Trade-off |
-    |---|---|---|---|---|
-    | Viaplus 7000 — 3 demãos (ADOTADO) | R$ 116,07 | 12 dias | Baixo | ✅ Melhor custo-benefício, flexível |
-    | Manta asfáltica 4mm | R$ 95,00 | 4 dias | Médio | ⚠️ Precisa maçarico + risco incêndio noturno |
-    | Poliureia projetada | R$ 180,00 | 2 dias | Baixo | Custo 55% maior, aplicação rápida |
-    | Viaplus 1000 (rígido) | R$ 85,00 | 8 dias | Alto | ⚠️ Não flexível — fissura em movimentação |
+
+Composição do Custo Unitário:
+Material: R$ 54,83/m ²  (47,2%)
+Equipamentos: R$  1,02/m ²  ( 0,9%)
+Mão de Obra: R$ 60,22/m ²  (51,9%) ← DRIVER PRINCIPAL
+TOTAL: R$ 116,07/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (51,9%) — 3 demãos cruzadas + teste 72h.
+▸ Viaplus 7000 = 43,1% do custo total (maior insumo individual).
+
+▸ Observação Crítica:
+▸ O custo de M.O. é elevado pois inclui 3 demãos com cura entre elas
+▸ + setuprep de teste de estanqueidade. Em turno diurno, o custo cairia
+▸ ~17% (sem fator ÷0.85 e sem adicional noturno).
+
+▸ ⚠️ CUSTO DE FALHA:
+▸ Se teste reprovar: refazer 3 demãos = R$ 116/m² × 2 = R$ 232/m²
+▸ Se infiltração pós-obra: remoção revestimento + refazer = R$ 450-600/m²
+
+| Abordagem | Custo/m² | Prazo | Risco | Trade-off |
+|---|---|---|---|---|
+| Viaplus 7000 — 3 demãos (ADOTADO) | R$ 116,07 | 12 dias | Baixo | ✅ Melhor custo-benefício, flexível |
+| Manta asfáltica 4mm | R$ 95,00 | 4 dias | Médio | ⚠️ Precisa maçarico + risco incêndio noturno |
+| Poliureia projetada | R$ 180,00 | 2 dias | Baixo | Custo 55% maior, aplicação rápida |
+| Viaplus 1000 (rígido) | R$ 85,00 | 8 dias | Alto | ⚠️ Não flexível — fissura em movimentação |
 
 * * *
 
@@ -2440,17 +2436,16 @@ Nosso índice (1,88) está perfeitamente calibrado.
 
 #### **5.1 ANÁLISE DE CUSTO + DRIVER PRINCIPAL**
 
-    5.1 ANÁLISE DE CUSTO:
-    
-    Composição do Custo Unitário:
-      Material:     R$  0,00/m²  ( 0,0%)
-      Equipamentos: R$  1,80/m²  (13,3%)
-      Mão de Obra:  R$ 11,70/m²  (86,7%)  ← DRIVER PRINCIPAL
-      TOTAL:        R$ 13,50/m²
-    
-    DRIVER PRINCIPAL: Mão de Obra (86,7%). Demolição é um serviço puramente 
-    de esforço humano. A altura de 3,50m é o fator que mais impacta, pois obriga 
-    a equipe a montar, subir, descer e arrastar andaimes constantemente.
+
+Composição do Custo Unitário:
+Material: R$  0,00/m ²  ( 0,0%)
+Equipamentos: R$  1,80/m ²  (13,3%)
+Mão de Obra: R$ 11,70/m ²  (86,7%)  ← DRIVER PRINCIPAL
+TOTAL: R$ 13,50/m ²
+
+▸ DRIVER PRINCIPAL: Mão de Obra (86,7%). Demolição é um serviço puramente
+▸ de esforço humano. A altura de 3,50m é o fator que mais impacta, pois obriga
+▸ a equipe a montar, subir, descer e arrastar andaimes constantemente.
 
 * * *
 
