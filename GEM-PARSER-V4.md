@@ -110,6 +110,10 @@ Sub-seções: 7.1 Nota (4 Blocos), 7.2 Fontes, 7.3 Quadro Produtividade, 7.4 An�
 - Separadores `* * *` entre seções
 - Tabelas markdown completas (preservar alinhamento)
 - Sub-seções numeradas (2.2, 3.1, 5.1, 6.1, etc.) em texto normal e bold (`**2.2 OBSERVAÇÕES:**`)
+- **PALAVRAS-CHAVE VISUAIS (NOVO):** A interface do sistema recônhece e destaca automaticamente termos críticos. Sempre que aplicável (especialmente nas Seções 1, 5 e 7), use extamente estas palavras em MAIÚSCULAS no texto:
+  - `DRIVER PRINCIPAL` ou `SEGUNDO DRIVER` (para destacar os maiores ofensores de custo)
+  - `NOTA:` ou `CRÍTICO:` ou `ALERTA ACORDADO:` (para destacar atenção)
+  - `Economia:` ou `Trade-off:` (para apontar oportunidades de economia)
 
 ---
 

@@ -352,20 +352,54 @@ function Md({ text }) {
       return;
     }
 
-    if (t.includes('**')) {
+    const formatRich = (text) => {
+      let t2 = text.replace(/\*\*/g, '');
+      const kws = [
+        { r: /(DRIVER PRINCIPAL)/gi, c: C.a, bg: 'rgba(245,158,11,0.1)', i: '🔥 ' },
+        { r: /(SEGUNDO DRIVER)/gi, c: '#60A5FA', bg: 'rgba(96,165,250,0.1)', i: '💧 ' },
+        { r: /(CRÍTICO:?|ALERTA ACORDADO:?|NOTA:?)/gi, c: '#EF4444', bg: 'rgba(239,68,68,0.1)', i: '⚠️ ' },
+        { r: /(Economia:?|-R\$|\+R\$|Trade-off:?)/gi, c: '#22C55E', bg: 'rgba(34,197,94,0.1)', i: '💡 ' }
+      ];
+
+      let matched = false;
+      let el = t2;
+      for (const kw of kws) {
+        if (kw.r.test(t2)) {
+          matched = true;
+          // Split by the keyword and wrap it in a styled pill
+          const parts = t2.split(kw.r);
+          el = parts.map((p, pIdx) => {
+            if (p.match(kw.r)) {
+              return <span key={pIdx} style={{ background: kw.bg, color: kw.c, padding: '2px 6px', borderRadius: 4, fontWeight: 700, fontSize: 11, letterSpacing: '0.5px' }}>{kw.i}{p.toUpperCase()}</span>;
+            }
+            return p;
+          });
+          break; // apply only the first major matching rule per line for simplicity
+        }
+      }
+
+      // If no custom semantic keyword matched, but the original text had bold (**), render standard logic
+      if (!matched && text.includes('**')) {
+        const parts = text.split(/(\*\*[^*]+\*\*)/g);
+        return parts.map((p, pi) => p.startsWith('**') ? <strong key={pi} style={{ color: C.t, fontWeight: 600 }}>{p.replace(/\*\*/g, '')}</strong> : p);
+      }
+
+      return matched ? el : t2;
+    };
+
+    if (t.includes('**') || /(DRIVER|NOTA|CRÍTICO|ALERTA|Economia|Trade-off)/i.test(t)) {
       // Don't format the first line if it's the 5.1 block continuation, but here we just render it.
       // If it's part of the composition unit cost analysis:
       if (t.includes('Material: R$') || t.includes('Equipamentos: R$') || t.includes('Mão de Obra: R$')) {
         els.push(
           <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 16px', margin: '4px 0', background: 'rgba(255,255,255,0.02)', borderRadius: 6, fontSize: 12, color: C.lt }}>
-            <span>{t.replace(/\*\*/g, '')}</span>
+            <span>{formatRich(t)}</span>
           </div>
         );
         return;
       }
 
-      const parts = t.split(/(\*\*[^*]+\*\*)/g);
-      els.push(<div key={i} style={{ margin: isIndented ? '4px 0 4px 12px' : '6px 0', fontSize: 13, color: C.lt, lineHeight: 1.6 }}>{parts.map((p, pi) => p.startsWith('**') ? <strong key={pi} style={{ color: C.t, fontWeight: 600 }}>{p.replace(/\*\*/g, '')}</strong> : p)}</div>);
+      els.push(<div key={i} style={{ margin: isIndented ? '4px 0 4px 12px' : '6px 0', fontSize: 13, color: C.lt, lineHeight: 1.6 }}>{formatRich(t)}</div>);
       return;
     }
 

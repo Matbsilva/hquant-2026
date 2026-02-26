@@ -24,6 +24,7 @@ REGRAS RÍGIDAS DE EXTRAÇÃO:
 4. TOLERÂNCIA A SEPARADORES: As tabelas podem usar separadores curtos (---|---) ou longos (----------|----------). Ambos são válidos.
 5. TOLERÂNCIA A ESPAÇAMENTO: Pode haver espaços extras ou colunas com largura variável. Focalize no conteúdo, não na formatação.
 6. O JSON deve ser puro, sem markdown backticks \`\`\`.
+7. PALAVRAS-CHAVE VISUAIS: Sempre que a IA gerar as Seções 1, 5 ou 7, OBRIGATORIAMENTE use os termos exatos em MAIÚSCULAS: "DRIVER PRINCIPAL", "SEGUNDO DRIVER", "NOTA:", "CRÍTICO:", "Economia:" ou "Trade-off:". O frontend possui CSS especial para destacá-las.
 
 Retorne EXATAMENTE este formato:
 {"composicoes": [{ "codigo": "...", "titulo": "...", "unidade": "...", "grupo": "...", "tags": [...], "custo_unitario": 123.45, "hh_unitario": 2.50, "equipe": "...", "produtividade": "...", "peso_unitario": 123.0 }]}

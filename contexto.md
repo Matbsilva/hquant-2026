@@ -14,6 +14,10 @@ Toda nova interação com um Assistente IA sênior deve começar pela leitura de
 *   **Mat (Product/Business Owner & Executor):** Detentor da visão do produto, define requisitos técnicos e estéticos da construtora/orçamento, realiza curadoria humana e executa comandos locais de controle, push e deploy em produção.
 *   **IA (Arquiteto de Software & Engenheiro Sênior):** Concebe ideias eficientes, desenvolve novas ferramentas, manipula lógicas avançadas de código (React, Node, Regex, Parsing), planeja integrações nativas e garante a execução otimizada da estética premium UI/UX.
 
+### 1.3. Regra de Ouro: Textos Ditados
+*   **Contexto:** O Mat (usuário) frequentemente utiliza **digitação por voz (ditado)** para se comunicar e enviar requisições.
+*   **Ação da IA:** A IA deve **sempre** interpretar o texto com tolerância hiper-elevada a erros de digitação, pontuação, troca de palavras por fonemas parecidos e falhas de concordância. Se a intenção do usuário ficar dúbia devido ao ditado, a IA deve **perguntar/confirmar** antes de agir, assumindo sempre a interpretação técnica mais coerente com o contexto de engenharia de custos.
+
 ---
 
 ## 2. Visão do Produto e Funcionalidades Core
