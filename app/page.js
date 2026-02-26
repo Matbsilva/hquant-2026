@@ -466,6 +466,18 @@ export default function Home() {
   const [seqMap, setSeqMap] = useState({});
   const [validationWarning, setValidationWarning] = useState(null);
 
+  // --- COMPUTED STATES ---
+  const proj = pid ? projetos.find(p => p.id === pid) : null;
+  const comp = cid ? composicoes.find(c => c.id === cid) : null;
+  const pComps = pid ? composicoes.filter(c => c.projeto_id === pid) : [];
+  const pName = (id) => projetos.find(p => p.id === id)?.nome || '—';
+  const pCnt = (id) => composicoes.filter(c => c.projeto_id === id).length;
+  const tot = composicoes.length;
+  const sR = q.trim() ? composicoes.filter(c => {
+    const s = q.toLowerCase();
+    return [c.titulo, c.codigo, c.grupo, ...(c.tags || [])].some(f => (f || '').toLowerCase().includes(s));
+  }) : [];
+
   useEffect(() => {
     if (vw !== 'proj') {
       if (Object.keys(seqMap).length > 0) setSeqMap({});
@@ -527,17 +539,6 @@ export default function Home() {
     handleResize(); window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  const proj = pid ? projetos.find(p => p.id === pid) : null;
-  const comp = cid ? composicoes.find(c => c.id === cid) : null;
-  const pComps = pid ? composicoes.filter(c => c.projeto_id === pid) : [];
-  const pName = (id) => projetos.find(p => p.id === id)?.nome || '—';
-  const pCnt = (id) => composicoes.filter(c => c.projeto_id === id).length;
-  const tot = composicoes.length;
-  const sR = q.trim() ? composicoes.filter(c => {
-    const s = q.toLowerCase();
-    return [c.titulo, c.codigo, c.grupo, ...(c.tags || [])].some(f => (f || '').toLowerCase().includes(s));
-  }) : [];
 
   // CRUD
   const addP = async () => {
