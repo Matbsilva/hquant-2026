@@ -375,7 +375,8 @@ function Md({ text }) {
 
     // Parse indented bullet points explicitly as they are common in V4
     if (t.startsWith('- ') || t.startsWith('* ') || t.startsWith('• ')) {
-      let clean = t.replace(/^[-*•]\s*/, '');
+      let clean = t.replace(/^[-*•]\s*/, '').trim();
+      if (clean === '**' || clean === '' || clean === '▸ **') return;
       const parts = clean.split(/(\*\*[^*]+\*\*)/g);
       els.push(
         <div key={i} style={{ margin: '8px 0 8px 12px', fontSize: 12, lineHeight: 1.6, color: C.lt }}>
@@ -854,11 +855,9 @@ export default function Home() {
                     <div style={{ minWidth: 0, flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
                         {c.codigo && <span style={{ ...bg(A), fontSize: 10, padding: '3px 8px', letterSpacing: '0.5px' }}>{c.codigo}</span>}
-                        {/* Mostrar o Escopo Detalhado (TÍTULO OFICIAL COMPLETO) na frente do código */}
-                        <span style={{ fontSize: 13, color: '#FCD34D', fontWeight: 600, fontFamily: FS }}>{cleanMd(c.titulo)}</span>
+                        {/* Mostrar o TÍTULO OFICIAL COMPLETO na frente do código */}
+                        <span style={{ fontSize: 13, color: '#FFFFFF', fontWeight: 700, fontFamily: FS }}>{cleanMd(c.titulo)}</span>
                       </div>
-                      {/* Aqui mantemos o título simplificado caso haja */}
-                      <div style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.4, color: '#FFFFFF', marginBottom: 6 }}>{cleanMd(c.titulo)}</div>
 
                       {(() => {
                         const mData = c.conteudo_completo.match(/\*\*DATA:\*\*\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/DATA:\s*(.*?)(?:\n|$|\|)/i);
