@@ -203,8 +203,8 @@ function splitComps(text) {
   const parts = text.split(/(?=^#\s*(?:🛠️|🏗️)?\s*(?:COMPOSIÇÃO|ITEM\s))/m).filter(t => t.trim().length > 50);
   if (parts.length > 1) return parts;
 
-  // Method 2: Split by --- or * * * separator followed by # header
-  const parts2 = text.split(/\n(?:---|[* ]{3,})\n+(?=\s*#)/m).filter(t => t.trim().length > 50);
+  // Method 2: Split by --- or * * * separator followed exactly by # 🛠️ or 🏗️
+  const parts2 = text.split(/\n(?:---|[* ]{3,})\n+(?=\s*#\s*(?:🛠️|🏗️)?\s*(?:COMPOSIÇÃO|ITEM\s))/m).filter(t => t.trim().length > 50);
   if (parts2.length > 1) return parts2;
 
   // Method 3: Split by "✅ Composição ... CONCLUÍDA" markers (each composition ends with this)
