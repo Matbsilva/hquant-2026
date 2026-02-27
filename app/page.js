@@ -44,15 +44,13 @@ function parseComp(text) {
     || ex(/COMPOSIÇÃO:\s*(.+)/i);
 
   let titulo = null;
-  const tituloM = text.match(/(?:🛠️|🏗️)?\s*COMPOSIÇÃO[^-]*-\s*(.+)/i)
-    || text.match(/(?:🛠️|🏗️)?\s*ITEM\s*[\d.]+:\s*(.+)/i);
-  if (tituloM) {
-    titulo = tituloM[1].trim();
+  const tituloM2 = text.match(/(?:\*\*TÍTULO:\*\*|TÍTULO:)\s*(.+?)(?:\s*$|\||\n)/im);
+  if (tituloM2) {
+    titulo = tituloM2[1].trim();
   } else {
-    const tituloM2 = text.match(/(?:\*\*TÍTULO:\*\*|TÍTULO:)\s*(.+?)(?:\s*$|\||\n)/im);
-    if (tituloM2) {
-      titulo = tituloM2[1].trim();
-    }
+    const tituloM = text.match(/(?:🛠️|🏗️)?\s*COMPOSIÇÃO[^-]*-\s*(.+)/i)
+      || text.match(/(?:🛠️|🏗️)?\s*ITEM\s*[\d.]+:\s*(.+)/i);
+    if (tituloM) titulo = tituloM[1].trim();
   }
 
   const unidade = ex(/\*\*UNIDADE:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/UNIDADE:\s*(.+?)(?:\s*\||\s*$)/im);
@@ -855,8 +853,13 @@ export default function Home() {
                     <div style={{ minWidth: 0, flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
                         {c.codigo && <span style={{ ...bg(A), fontSize: 10, padding: '3px 8px', letterSpacing: '0.5px' }}>{c.codigo}</span>}
-                        {/* Mostrar o TÍTULO OFICIAL COMPLETO na frente do código */}
-                        <span style={{ fontSize: 13, color: '#FFFFFF', fontWeight: 700, fontFamily: FS }}>{cleanMd(c.titulo)}</span>
+                      </div>
+
+                      {/* Line 2: Código Técnico em Branco + Título Completo */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
+                        {c.codigo && <span style={{ fontSize: 13, color: '#FFFFFF', fontWeight: 800, fontFamily: FS }}>{c.codigo}</span>}
+                        {c.codigo && c.titulo && <span style={{ color: TM, fontSize: 13 }}>-</span>}
+                        <span style={{ fontSize: 13, color: '#FFFFFF', fontWeight: 600, fontFamily: FS }}>{cleanMd(c.titulo)}</span>
                       </div>
 
                       {(() => {
