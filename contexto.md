@@ -68,6 +68,16 @@ Toda nova feature, deploy ou bugfix crítico desenvolvido colaborativamente entr
 
 ---
 
+### [27 de Fevereiro de 2026] - Suporte a Composições Legadas (V4.5)
+- **Objetivo/Motivo:** Ampliar a compatibilidade do motor de extração (Parser) para suportar graciosamente o formato V4.5 antigo, sem quebrar o formato V6+. O sistema antigo utilizava divisores e emojis diferentes (`* * *`, `🏗️`) e formato de tabela diferente para a mão de obra.
+- **Alterações Arquiteturais ou UI:**
+    - Atualização das funções `splitComps`, `parseComp` e `parseCompDetail` no `lib/parsers.js` e `app/page.js` usando regex avançado.
+    - Suporte adicionado para o emoji `🏗️` e `🛠️` alternados nos títulos de composição.
+    - Correção da extração do "HH Unitário" nas tabelas da V4: o código agora filtra o array de colunas extraindo o último valor numérico puro que NÃO carrega a string explícita "HH" (que representava o total em V4). 
+- **Status:** Concluído, com commit e deploy na Vercel CI/CD via Git.
+
+---
+
 ### [24 de Fevereiro de 2026] - Implementação do Tema Corporate (Gold & Slate) e Logo H-QUANT
 - **Objetivo/Motivo:** Elevar a percepção de valor e profissionalismo do software H-QUANT. Transitar da paleta original "Dev/Tech" (Preto Escuro e Laranja Cyber) para a identidade visual oficial sugerida pela logo projetada pela empresa.
 - **Alterações Arquiteturais ou UI:**

@@ -41,9 +41,8 @@ function parseComp(text) {
     || ex(/CÓDIGO:\s*(.+?)(?:\s*\||\s*$)/im)
     || ex(/COMPOSIÇÃO:\s*(.+)/i);
 
-  // TÍTULO: Try many patterns
-  const titulo = ex(/🛠️\s*COMPOSIÇÃO[^-]*-\s*(.+)/i)
-    || ex(/🛠️\s*ITEM\s*[\d.]+:\s*(.+)/i)
+  const titulo = ex(/(?:🛠️|🏗️)?\s*COMPOSIÇÃO[^-]*-\s*(.+)/i)
+    || ex(/(?:🛠️|🏗️)?\s*ITEM\s*[\d.]+:\s*(.+)/i)
     || ex(/\*\*TÍTULO:\*\*\s*(.+?)(?:\s*$)/im)
     || ex(/TÍTULO:\s*(.+?)(?:\s*$)/im);
 
@@ -84,8 +83,10 @@ function parseComp(text) {
       // Find the HH value — look for a decimal number that is NOT a currency value
       const numVals = cols.filter(c => /^[\d.,]+\s*(HH)?$/.test(c.trim()));
       if (numVals.length > 0) {
-        // The last pure numeric value in TOTAL M.O. row is typically HH
-        hh = parseNum(numVals[numVals.length - 1].replace(/\s*HH$/, ''));
+        // No formato V4, o último valor pode ser o total ("759,33 HH") e o H/H unitário é o valor sem sigla ("2,500")
+        const cleanVals = numVals.filter(c => !c.toLowerCase().includes('hh'));
+        const targetStr = cleanVals.length > 0 ? cleanVals[cleanVals.length - 1] : numVals[numVals.length - 1].replace(/\s*HH$/i, '');
+        hh = parseNum(targetStr);
       }
       break;
     }
@@ -177,7 +178,9 @@ function parseCompDetail(text) {
         if (/^[\d\-]+$/.test(nome.trim())) continue;
         const numVals = cols.filter(c => /^[\d.,]+\s*(HH)?$/.test(c.trim()));
         if (nome && numVals.length > 0) {
-          hhProfs.push({ nome, hh: parseNum(numVals[numVals.length - 1].replace(/\s*HH$/, '')) });
+          const cleanVals = numVals.filter(c => !c.toLowerCase().includes('hh'));
+          const targetStr = cleanVals.length > 0 ? cleanVals[cleanVals.length - 1] : numVals[numVals.length - 1].replace(/\s*HH$/i, '');
+          hhProfs.push({ nome, hh: parseNum(targetStr) });
         }
       }
     }
@@ -196,16 +199,16 @@ function parseCompDetail(text) {
 }
 
 function splitComps(text) {
-  // Method 1: Split by # 🛠️ COMPOSIÇÃO headers
-  const parts = text.split(/(?=^#\s*🛠️\s*(?:COMPOSIÇÃO|ITEM\s))/m).filter(t => t.trim().length > 50);
+  // Method 1: Split by # 🛠️ ou 🏗️ COMPOSIÇÃO headers
+  const parts = text.split(/(?=^#\s*(?:🛠️|🏗️)?\s*(?:COMPOSIÇÃO|ITEM\s))/m).filter(t => t.trim().length > 50);
   if (parts.length > 1) return parts;
 
-  // Method 2: Split by --- separator followed by # header
-  const parts2 = text.split(/\n---\n(?=\s*#)/m).filter(t => t.trim().length > 50);
+  // Method 2: Split by --- or * * * separator followed by # header
+  const parts2 = text.split(/\n(?:---|[* ]{3,})\n+(?=\s*#)/m).filter(t => t.trim().length > 50);
   if (parts2.length > 1) return parts2;
 
   // Method 3: Split by "✅ Composição ... CONCLUÍDA" markers (each composition ends with this)
-  const parts3 = text.split(/(?<=✅\s*Composição\s+[\w-]+\s+CONCLUÍDA[^\n]*\n)(?=[\s\S]*?#\s*🛠️)/m).filter(t => t.trim().length > 50);
+  const parts3 = text.split(/(?<=✅\s*Composição\s+[\w-]+\s+CONCLUÍDA[^\n]*\n)(?=[\s\S]*?#\s*(?:🛠️|🏗️)?)/m).filter(t => t.trim().length > 50);
   if (parts3.length > 1) return parts3;
 
   return [text];
