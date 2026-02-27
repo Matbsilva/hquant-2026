@@ -41,10 +41,17 @@ function parseComp(text) {
     || ex(/CÓDIGO:\s*(.+?)(?:\s*\||\s*$)/im)
     || ex(/COMPOSIÇÃO:\s*(.+)/i);
 
-  const titulo = ex(/(?:🛠️|🏗️)?\s*COMPOSIÇÃO[^-]*-\s*(.+)/i)
-    || ex(/(?:🛠️|🏗️)?\s*ITEM\s*[\d.]+:\s*(.+)/i)
-    || ex(/\*\*TÍTULO:\*\*\s*(.+?)(?:\s*$)/im)
-    || ex(/TÍTULO:\s*(.+?)(?:\s*$)/im);
+  let titulo = null;
+  const tituloM = text.match(/(?:🛠️|🏗️)?\s*COMPOSIÇÃO[^-]*-\s*(.+)/i)
+    || text.match(/(?:🛠️|🏗️)?\s*ITEM\s*[\d.]+:\s*(.+)/i);
+  if (tituloM) {
+    titulo = tituloM[1].trim();
+  } else {
+    const tituloM2 = text.match(/(?:\*\*TÍTULO:\*\*|TÍTULO:)\s*(.+?)(?:\s*$|\||\n)/im);
+    if (tituloM2) {
+      titulo = tituloM2[1].trim();
+    }
+  }
 
   const unidade = ex(/\*\*UNIDADE:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/UNIDADE:\s*(.+?)(?:\s*\||\s*$)/im);
   const grupo = ex(/\*\*GRUPO:\*\*\s*(.+?)(?:\s*\||\s*$)/im) || ex(/GRUPO:\s*(.+?)(?:\s*\||\s*$)/im);
