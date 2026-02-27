@@ -13,8 +13,10 @@ Este documento guarda as ideias, melhorias e funcionalidades planejadas para o f
 | A8 | Recolher e expandir painel lateral UI/UX | UI | Alta | ✅ Concluído |
 | A9 | Confiabilidade de fonte (🟢🟡🔴) | Biblioteca | Baixa | ⏳ Pendente |
 | A10 | Versionamento composições (v1, v2) | Supabase | Baixa | ⏳ Pendente |
-| A10 | Exportação Notion | Integração | Futuro | ⏳ Pendente |
-| A11 | Exclusão em Lote (Selecionar várias composições para apagar) | UI | Alta | ⏳ Pendente |
+| A11 | Exclusão em Lote (Selecionar várias composições para apagar) | UI | Alta | ✅ Concluído |
+| F1 | Refatoração de Estado c/ Zustand (Migração do page.js) | Arquitetura | Máxima | ⏳ Pronto para Iniciar |
+| F2 | Segurança via NextAuth (Credentials Admin Mestre) | Backend | Máxima | ⏳ Pronto para Iniciar |
+| F3 | Rate Limiter (Proteção de Token da API Gemini) | Backend | Alta | ⏳ Pronto para Iniciar |
 
 ---
 

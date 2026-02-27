@@ -1,0 +1,20 @@
+34c15d39ad71493da5ccbfcd0f39885e2c7e3536 feat: renderizacao do escopo detalhado na listagem de composicoes v8
+232dc7d2600ade1de5d50d404089e2448ee7fa82 fix: regex titulo no v8
+9bfffb96deeab17009fc92d8eb11899c160c29d3 fix: reverte falha de fatiamento do v8 nas funcoes splitComps evitando corte em linhas secao
+f0834af975449a510746289662aaa0a795e0d7af fix: corrigo exibicao que corrompia metadados inline aglutinados no renderizador v4
+3e66a4056e1b4084abe1e2388652ddd4df43f48c feat: suporte ao formato legado v4.5 e correcao da extracao de HH unitario
+d971c853a0985caa163212203082cd82df1987b2 feat(ui): add detail cost pills to closed cards and fix equipment cost parsing from Section 5
+b9c7c887f73ae4331f93bc9e6449abde22988509 fix(ui): restore scoped variable extraction in composition list loop to resolve ReferenceError
+e49130fbef79fa3c3ec316035e5cd28873c6991b fix(ui): hoist turnoV and fatorV declarations to fix ReferenceError crash on new layout grid
+88977c64df67e5e54d4326be305b2c98f4d55271 feat(ui): refine composition grid colors and merge turno/fator per user request
+e14cfe3e30dc8d01e6720d54e96f953723f8fe10 chore: force deploy to update UI indicators layout
+80b2f6d9643500ffe7c41b4a968ecb9a1c83637c feat(ui): reorganize composition indicators into 3 rows and update colors per user request
+6a98f6c20220ce23ee5d99d0ca724418de497727 fix(hooks): move computed variables above useEffect to prevent Temporal Dead Zone ReferenceError in minified bundle causing React error 423
+bdab8ef7ff7d1f9e30b20e9c6836673c83fad4db fix(md): replace p tags with div tags for inline metadata to prevent React hydration mismatch (#423) in production
+2ec630531d02cf4f4c261d3f31b07210c19912ae fix(page): move theme constants to top to prevent ReferenceError in production
+666bcbad8d88f6891e8ebfca26d30805a413bd1a docs: update contexto.md with latest drag and drop features and ui improvements
+bcc9ef8ef6fd6f926c5456b650881a2fcbed72b4 feat: implement drag and drop order, turno/fator extraction, FAB button, section validation warning, and reorganize indicators
+0bf930276e67a64698724309f6ee51f01725cfcf style: add borders and hover glow to Todos, Cancelar and Batch Excluir buttons
+d7324638f5fc6f6f075597991c595bb3c583e22a style: distinct colors and hover effects for Baixar MD, Selecionar, and Plus buttons
+c44788ce82bf323b6f8df4147cc8fd87926d6778 feat: add Jest tests for parsers & normalizer (50/50 pass), extract lib/parsers.js
+42b285b682ed68c62bc710200acfd49658f8adc4 feat: multi-select, sticky header, search buttons, individual MD download

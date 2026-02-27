@@ -139,12 +139,62 @@ Toda nova feature, deploy ou bugfix crítico desenvolvido colaborativamente entr
 
 ---
 
+### [27 de Fevereiro de 2026] - Gestão em Lote, Header Sticky e Download MD
+- **Objetivo/Motivo:** Aumentar a escala de manipulação da biblioteca, permitindo que o usuário apague dezenas de composições de uma vez ou baixe os dados crus em Markdown original.
+- **Alterações Arquiteturais ou UI:**
+    - Adição de função "Multi-select" na lista de composições, criando suporte para "Batch Excluir" (Exclusão em Lote).
+    - Implementado `Sticky Header` com botões de Seleção e Busca fixos para manter as opções à mão em listas longas.
+    - Ativação do botão de "Download MD" de forma individual por composição.
+- **Status:** Concluído (Feature A11 preenchida).
+
+---
+
+### [27 de Fevereiro de 2026] - Cobertura de Testes Unitários (Jest) e Refatoração P1
+- **Objetivo/Motivo:** Blindar os algoritmos cruciais no Motor Parser que processa o Markdown, impedindo que futuras atualizações quebrem as conversões de Orçamento e Histograma.
+- **Alterações Arquiteturais ou UI:**
+    - O pacote de motor Regex da página principal foi destacado para `lib/parsers.js`.
+    - Integração de ambiente de Testes Javascript utilizando `Jest` com implementação da primeira suite `__tests__/parsers.test.js` (Cobertura validando normalize.js e parsers.js).
+- **Status:** Concluído.
+
+---
+
+### [27 de Fevereiro de 2026] - Resiliência do Motor Parser (Suporte V4 e Correção V8)
+- **Objetivo/Motivo:** Garantir que o sistema leia com perfeição o acervo legado (Gero Antigo - Formato V4.5 com `🏗️ COMPOSIÇÃO` e metadados inline) e corrigir a falha de fatiamento no novo formato V8.
+- **Alterações Arquiteturais ou UI:**
+    - Correção no renderizador visual `<Md />` para evitar a corrupção visual ao processar metadados aglutinados (ex: `**TÍTULO:**...**UNIDADE:**`) comuns nos layouts antigos.
+    - Refatoração profunda na função `splitComps` e ajuste do Regex de título para impedir que o sistema partisse erroneamente uma única composição V8 em múltiplas partes quando encontrava quebras nas seções.
+- **Status:** Concluído e em produção.
+
+---
+
+### [27 de Fevereiro de 2026] - Evolução da Listagem UI e Correção de Totais (Equipamentos)
+- **Objetivo/Motivo:** Facilitar a identificação rápida das composições na tela inicial adicionando o escopo detalhado diretamente nos cards, e corrigir um bug crítico matemático onde o cálculo total em algumas composições estava calculando a mais.
+- **Alterações Arquiteturais ou UI:**
+    - Injeção da renderização do Escopo Detalhado (Título Oficial) na lista, em fonte secundária clara, para facilitar o reconhecimento pela equipe.
+    - Correção do erro no parser de equipamentos (Seção 5) que estava puxando ou multiplicando fatores e superestimando o valor Direto Total na V8.
+    - Inclusão das "Cost Pills" (Indicadores compactos de custo/HH/peso/etc.) na visualização fechada dos cards da listagem interativa (Multi-select).
+- **Status:** Concluído e em produção.
+
+---
+
+### [27 de Fevereiro de 2026] - Segurança (NextAuth/Zustand) e Correção de Bugs (Motor Parser e Markdown)
+- **Objetivo/Motivo:** Implementação da arquitetura de segurança (Autenticação e Rate Limiting), migração de estado global e correção de bugs reportados na renderização do Markdown e extração de valores da Seção 5.
+- **Alterações Arquiteturais ou UI:**
+    - **Segurança (NextAuth):** Criado `route.js` e `middleware.js` protegendo a aplicação com `CredentialsProvider` e senha mestra via `.env.local` (`ADMIN_PASSWORD`).
+    - **Rate Limiter:** Utilitário in-memory na pasta `lib/` aplicado à rota de importação AI limitando a 10 requisições por minuto.
+    - **Global Store (Zustand):** Substituição massiva de hooks `useState` no `app/page.js` pela store global (`lib/store.js`). Adicionado `SessionProvider` e Botão "Sair" na Sidebar.
+    - **Correção Motor Parser (Custo e Peso):** O regex que capturava o `CUSTO DIRETO TOTAL` na importação Regex da interface estava engolindo equivocadamente a segunda coluna (Valor Total) ao invés da unitária. A lógica foi aprimorada para extrair a primeira coluna de valor matemático limpo. Adicionada tolerância para extrair `Peso Total de Materiais` unitário na Seção 5 via `parseCompDetail`.
+    - **Correção Renderizador UI (`<Md />`):** O renderizador customizado do frontend ignorava cabeçalhos do tipo H3 (tags iniciadas com `### `), o que causava vazamento visual nas sessões 1, 5, 6 e 7. A correção abrange `###`, `####` e `#####` unificadamente.
+- **Status:** Concluído e verificado via `npm run build`.
+
+---
+
 ## 5. Próximos Passos (Pronto para Iniciar)
 
 Quando um novo assistente assumir, ele deve iniciar IMEDIATAMENTE a **Fase 2: Refatoração Arquitetural**. O arquivo `page.js` possui +800 linhas e precisa ser modularizado **antes** da criação de novas features.
 
 **Fase 2: Refatoração (`app/page.js` -> Componentes)**
-- Extrair `parsers.js` (Regex e limpeza) para `lib/`
+- Extrair `parsers.js` (Regex e limpeza) para `lib/` (Parcialmente extraído)
 - Extrair `<Md />` para `components/Md.js`
 - Extrair Sidebar, Modais e Views (`HomeView`, `ProjectView`, `CompDetailView`) para `components/`
 - *Regra:* Não alterar regras de negócio durante a refatoração. Apenas separar em arquivos e garantir que o build (`npm run build`) continua passando.

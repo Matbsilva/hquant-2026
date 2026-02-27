@@ -30,30 +30,7 @@ Retorne EXATAMENTE este formato:
 {"composicoes": [{ "codigo": "...", "titulo": "...", "unidade": "...", "grupo": "...", "tags": [...], "custo_unitario": 123.45, "hh_unitario": 2.50, "equipe": "...", "produtividade": "...", "peso_unitario": 123.0 }]}
 `;
 
-// Rate limiting: max 10 requests per minute per IP
-const rateLimitMap = new Map();
-const RATE_LIMIT_WINDOW_MS = 60 * 1000;
-const RATE_LIMIT_MAX = 10;
-
-function checkRateLimit(ip) {
-    const now = Date.now();
-    const entry = rateLimitMap.get(ip);
-    if (!entry || (now - entry.start) > RATE_LIMIT_WINDOW_MS) {
-        rateLimitMap.set(ip, { start: now, count: 1 });
-        return true;
-    }
-    if (entry.count >= RATE_LIMIT_MAX) return false;
-    entry.count++;
-    return true;
-}
-
-// Cleanup stale entries periodically
-setInterval(() => {
-    const now = Date.now();
-    for (const [ip, entry] of rateLimitMap) {
-        if (now - entry.start > RATE_LIMIT_WINDOW_MS * 2) rateLimitMap.delete(ip);
-    }
-}, 5 * 60 * 1000);
+import { checkRateLimit } from '../../../lib/rateLimit';
 
 // Max text size: 500KB (ALL_MODELS.md is ~372KB, so this gives comfortable headroom)
 const MAX_TEXT_SIZE = 500 * 1024;
