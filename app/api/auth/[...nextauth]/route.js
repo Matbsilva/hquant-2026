@@ -20,7 +20,9 @@ export const authOptions = {
     session: {
         strategy: "jwt",
     },
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET || "fallback_secret_for_development_only_123",
+    // Vercel deployment requires a base URL to match the callback
+    ...(process.env.VERCEL_URL && { url: `https://${process.env.VERCEL_URL}` })
 };
 
 const handler = NextAuth(authOptions);

@@ -183,9 +183,17 @@ Toda nova feature, deploy ou bugfix crítico desenvolvido colaborativamente entr
     - **Segurança (NextAuth):** Criado `route.js` e `middleware.js` protegendo a aplicação com `CredentialsProvider` e senha mestra via `.env.local` (`ADMIN_PASSWORD`).
     - **Rate Limiter:** Utilitário in-memory na pasta `lib/` aplicado à rota de importação AI limitando a 10 requisições por minuto.
     - **Global Store (Zustand):** Substituição massiva de hooks `useState` no `app/page.js` pela store global (`lib/store.js`). Adicionado `SessionProvider` e Botão "Sair" na Sidebar.
-    - **Correção Motor Parser (Custo e Peso):** O regex que capturava o `CUSTO DIRETO TOTAL` na importação Regex da interface estava engolindo equivocadamente a segunda coluna (Valor Total) ao invés da unitária. A lógica foi aprimorada para extrair a primeira coluna de valor matemático limpo. Adicionada tolerância para extrair `Peso Total de Materiais` unitário na Seção 5 via `parseCompDetail`.
-    - **Correção Renderizador UI (`<Md />`):** O renderizador customizado do frontend ignorava cabeçalhos do tipo H3 (tags iniciadas com `### `), o que causava vazamento visual nas sessões 1, 5, 6 e 7. A correção abrange `###`, `####` e `#####` unificadamente.
-- **Status:** Concluído e verificado via `npm run build`.
+    - **Correção Motor Parser (Custo e Preço Total):** O regex que capturava o `CUSTO DIRETO TOTAL` estava engolindo equivocadamente a segunda coluna (Valor Total) ao invés da unitária na extração. A lógica foi aprimorada para extrair a primeira coluna de valor numérico. Este erro respingava no Custo Material, Custo Equipamentos e Custo M.O. que também estavam extraindo totais ao invés de unitários.
+    - **Correção Renderizador UI (`<Md />`):** O renderizador customizado do frontend ignorava cabeçalhos do tipo H3 (tags iniciadas com `### `), o que causava vazamento do código raw visual nas sessões 1, 5, 6 e 7. A correção agora abrange `###`, `####` e `#####` unificadamente.
+- **Status:** Concluído, Em Produção (Vercel) e aguardando Validação.
+
+**Plano de Testes e Validação:**
+1. **Segurança:** Abrir a URL do Vercel (ou `localhost:3000`) em guia anônima. O sistema deverá barrar e pedir login. Autenticar com `nino1092` no campo password (ignorando campo de username)
+2. **Importação:**
+   - Copiar a composição `CIV-REV-EXT-TORRE` gerada pelo Google Gemini.
+   - Colar na interface e "Importar IA".
+   - Verificar se as tags Markdown (### SEÇÃO X) sumiram, sendo substituídas pelos Headers Dourados.
+3. **Cálculos e Parsing:** Enviar as composições em lote para o parser, verificando se os valores capturados no "Preview Regex" e nos painéis estão como unitários e o Total da Composição está batendo com a Planilha Oficial.
 
 ---
 
