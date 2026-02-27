@@ -292,15 +292,33 @@ function Md({ text }) {
     // ignore empty lines unless they were skipped by table loop
     if (!t) return;
 
-    if (t === '---' || t === '***' || t === '* * *') { els.push(<hr key={i} style={{ border: 'none', borderTop: `1px solid ${C.bd}`, margin: '20px 0' }} />); return; }
-
-    if (t.startsWith('### ')) { const txt = t.slice(4).replace(/\*\*/g, ''); lastH = txt; els.push(<h3 key={i} style={{ color: C.ay, fontSize: 15, fontWeight: 700, margin: '28px 0 12px', padding: '6px 0', borderBottom: `1px solid ${C.bd}` }}>{txt}</h3>); return; }
-
     if (t.startsWith('#### ') || t.startsWith('##### ')) {
       const txt = t.replace(/^#+\s+/, '').replace(/\*\*/g, '');
       lastH = txt;
       els.push(<h4 key={i} style={{ color: C.a, fontSize: 12, fontWeight: 700, margin: '24px 0 10px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>{txt}</h4>);
       return;
+    }
+
+    // Fix for glued metadata like "TÍTULO:** Execução...**UNIDADE:** m²" on a single line
+    if (t.includes('**') && (t.includes('TÍTULO:**') || t.includes('UNIDADE:**') || t.includes('GRUPO:**'))) {
+      const parts = t.split(/(\*\*[A-ZÀ-Ú0-9\s/]+:\*\*)/g).filter(Boolean);
+      if (parts.length > 1) {
+        let metaEls = [];
+        for (let j = 0; j < parts.length; j += 2) {
+          // Se for o primeiro texto sem marcador (ex: "PISO-COMP-1.1"), apenas ignora ou coloca como div
+          if (!parts[j].startsWith('**')) {
+            if (parts[j].trim()) metaEls.push(<div key={i + '-' + j} style={{ margin: '6px 0', fontSize: 12, color: C.lt }}>{parts[j].replace(/\*\*/g, '')}</div>);
+            j--; // Reajusta o índice para pegar o próximo par (Key: Value)
+            continue;
+          }
+          if (j + 1 >= parts.length) break;
+          const key = parts[j].replace(/\*\*/g, '').replace(':', '');
+          const val = (parts[j + 1] || '').trim();
+          metaEls.push(<div key={i + '-' + j} style={{ margin: '6px 0', fontSize: 12, lineHeight: 1.6 }}><span style={{ color: C.a, fontWeight: 600 }}>{key}:</span> <span style={{ color: C.lt }}>{val.replace(/\*\*/g, '')}</span></div>);
+        }
+        els.push(<div key={i}>{metaEls}</div>);
+        return;
+      }
     }
 
     if (t.startsWith('# ') && t.includes('🛠️')) { els.push(<h2 key={i} style={{ color: C.a, fontSize: 16, fontWeight: 800, margin: '14px 0 12px' }}>{t.slice(2).replace(/\*\*/g, '')}</h2>); return; }
