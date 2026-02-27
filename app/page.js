@@ -851,6 +851,8 @@ export default function Home() {
                     {(() => {
                       const mData = c.conteudo_completo.match(/\*\*DATA:\*\*\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/DATA:\s*(.*?)(?:\n|$|\|)/i);
                       const dataV = mData ? mData[1].split(/\*\*/)[0].trim() : '';
+                      const mEscopo = c.conteudo_completo.match(/ESCOPO DETALHADO\*?\*?\s*\n+([\s\S]*?)(?:(?:###|\n\s*\n\s*\*\*|1\.2 CONDIÇÕES|1\.2 MÉTODO|ESPECIFICAÇÕES TÉCNICAS|⚠️ PREMISSAS|MÉTODO EXECUTIVO))/i);
+                      const escopoV = mEscopo ? mEscopo[1].replace(/\*/g, '').replace(/\n/g, ' ').trim() : '';
                       const mTurno = c.conteudo_completo.match(/\*\*TURNO:\*\*\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/TURNO:\s*(.*?)(?:\n|$|\|)/i);
                       const turnoV = mTurno ? mTurno[1].split(/\*\*/)[0].trim() : '';
                       const mFator = c.conteudo_completo.match(/\*\*FATOR:\*\*\s*(.*?)(?:\n|$|\|)/i) || c.conteudo_completo.match(/FATOR:\s*(.*?)(?:\n|$|\|)/i);
@@ -867,6 +869,12 @@ export default function Home() {
                             {qrefDetailV && <span><strong style={{ color: TL, fontWeight: 600 }}>REF:</strong> {qrefDetailV} &nbsp; </span>}
                             {det.equipe && <span style={{ whiteSpace: 'normal', display: 'block' }}><strong style={{ color: TL, fontWeight: 600 }}>EQUIPE:</strong> {det.equipe.slice(0, 200)}{det.equipe.length > 200 ? '...' : ''}</span>}
                           </div>
+
+                          {escopoV && (
+                            <div style={{ fontSize: 11, color: TL, lineHeight: 1.5, background: 'rgba(255,255,255,0.02)', padding: '8px 12px', borderRadius: 6, borderLeft: `2px solid ${A}` }}>
+                              {escopoV.slice(0, 250)}{escopoV.length > 250 ? '...' : ''}
+                            </div>
+                          )}
 
                           {/* Resumo de Indicadores (Cartão Fechado) */}
                           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 2 }}>
