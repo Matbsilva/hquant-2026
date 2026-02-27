@@ -845,7 +845,10 @@ export default function Home() {
                   <div style={{ minWidth: 0, flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6, flexWrap: 'wrap' }}>
                       {c.codigo && <span style={{ ...bg(A), fontSize: 10, padding: '3px 8px', letterSpacing: '0.5px' }}>{c.codigo}</span>}
+                      {/* Mostrar o Escopo Detalhado (TÍTULO OFICIAL COMPLETO) na frente do código */}
+                      <span style={{ fontSize: 13, color: '#FCD34D', fontWeight: 600, fontFamily: FS }}>{cleanMd(c.titulo)}</span>
                     </div>
+                    {/* Aqui mantemos o título simplificado caso haja */}
                     <div style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.4, color: '#FFFFFF', marginBottom: 6 }}>{cleanMd(c.titulo)}</div>
 
                     {(() => {
@@ -871,8 +874,8 @@ export default function Home() {
                           </div>
 
                           {escopoV && (
-                            <div style={{ fontSize: 11, color: TL, lineHeight: 1.5, background: 'rgba(255,255,255,0.02)', padding: '8px 12px', borderRadius: 6, borderLeft: `2px solid ${A}` }}>
-                              {escopoV.slice(0, 250)}{escopoV.length > 250 ? '...' : ''}
+                            <div style={{ fontSize: 11, color: TL, lineHeight: 1.5, background: 'rgba(255,255,255,0.02)', padding: '8px 12px', borderRadius: 6, borderLeft: `2px solid ${A}`, wordBreak: 'break-word', whiteSpace: 'normal' }}>
+                              {escopoV}
                             </div>
                           )}
 
