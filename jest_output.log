@@ -1,0 +1,81 @@
+FAIL __tests__/parsers.test.js
+  cleanMd
+    √ strips bold and headers (5 ms)
+    √ truncates at metadata keys (2 ms)
+    √ returns empty for null/undefined (2 ms)
+  parseNum
+    √ parses BR number with comma decimal (1 ms)
+    √ parses simple decimal
+    √ parses integer (1 ms)
+    √ returns null for empty/null (1 ms)
+    √ returns null for non-numeric (2 ms)
+  parseComp (MUR-BLC-14-01)
+    √ extracts codigo (2 ms)
+    × extracts titulo (3 ms)
+    √ extracts unidade = m
+    √ extracts grupo
+    √ extracts quantidade ref
+    √ extracts tags (1 ms)
+    √ extracts custo direto total = 66.07
+    √ extracts HH total = 0.8941
+  parseCompDetail (MUR-BLC-14-01)
+    √ extracts custo_material from SUBTOTAL (5 ms)
+    √ extracts custo_mo from TOTAL M.O. (1 ms)
+    √ extracts peso_total from SUBTOTAL row (1 ms)
+    √ extracts hhProfs with correct professions (1 ms)
+    √ HH values match
+    √ extracts equipe string
+    √ calculates produtividade (1 ms)
+  splitComps
+    √ single composition returns array of 1 (2 ms)
+    √ two compositions separated by header (1 ms)
+  normalizeComposition
+    √ returns empty string for null (1 ms)
+    √ is idempotent (applying twice gives same result) (3 ms)
+    √ normalizes line endings (1 ms)
+    √ replaces --- with * * * (1 ms)
+    √ limits excessive blank lines
+  parseComp on all v4 fixtures
+    √ CONTR-ARM-5CM-01.md: extracts codigo and custo (1 ms)
+    √ DEM-CER-PAR.md: extracts codigo and custo (1 ms)
+    √ DEM-CONTRAPISO.md: extracts codigo and custo (1 ms)
+    √ DEM-DW-350.md: extracts codigo and custo (1 ms)
+    √ DEM-FORRO-350.md: extracts codigo and custo (1 ms)
+    √ DEM-PISO-CER.md: extracts codigo and custo (1 ms)
+    √ IMP-PREP-MEIACANA-01.md: extracts codigo and custo (14 ms)
+    √ IMP-VIAP-7000-01.md: extracts codigo and custo (3 ms)
+    √ INF-CRT-PAR-15X15.md: extracts codigo and custo (2 ms)
+    √ INF-CRT-PIS-20X15.md: extracts codigo and custo (1 ms)
+    √ LOG-ENT-ENSAC-100.md: extracts codigo and custo (1 ms)
+    √ LOG-MAT-TRANSP-100.md: extracts codigo and custo
+    √ MUR-BLC-14-01.md: extracts codigo and custo (2 ms)
+    √ MUR-CNT-14-01.md: extracts codigo and custo (1 ms)
+    √ PIS-ENCH-ARG-20.md: extracts codigo and custo (9 ms)
+    √ PIS-ENCH-ARG-25.md: extracts codigo and custo (1 ms)
+    √ REG-PISO-4CM.md: extracts codigo and custo (1 ms)
+    √ REV-PAR-EMB.md: extracts codigo and custo (1 ms)
+    √ SOC-MAC-EPS.md: extracts codigo and custo (1 ms)
+    √ SOC-VAZ-TIJ.md: extracts codigo and custo (2 ms)
+
+  ● parseComp (MUR-BLC-14-01) › extracts titulo
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: "MURETA SIMPLES"
+    Received string:    "Mureta Simples de Bloco de Concreto Vazado 14cm — Contenção sobre Laje"
+
+    [0m [90m 59 |[39m
+     [90m 60 |[39m     test([32m'extracts titulo'[39m[33m,[39m () [33m=>[39m {
+    [31m[1m>[22m[39m[90m 61 |[39m         expect(result[33m.[39mtitulo)[33m.[39mtoContain([32m'MURETA SIMPLES'[39m)[33m;[39m
+     [90m    |[39m                               [31m[1m^[22m[39m
+     [90m 62 |[39m     })[33m;[39m
+     [90m 63 |[39m
+     [90m 64 |[39m     test([32m'extracts unidade = m'[39m[33m,[39m () [33m=>[39m {[0m
+
+      at Object.toContain (__tests__/parsers.test.js:61:31)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 49 passed, 50 total
+Snapshots:   0 total
+Time:        1.051 s
+Ran all test suites.

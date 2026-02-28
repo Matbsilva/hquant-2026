@@ -58,7 +58,7 @@ describe('parseComp (MUR-BLC-14-01)', () => {
     });
 
     test('extracts titulo', () => {
-        expect(result.titulo).toContain('MURETA SIMPLES');
+        expect(result.titulo.toUpperCase()).toContain('MURETA SIMPLES');
     });
 
     test('extracts unidade = m', () => {

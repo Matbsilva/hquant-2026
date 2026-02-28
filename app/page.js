@@ -177,29 +177,91 @@ function parseCompDetail(text) {
     if (eqSum > 0) custo_equip = eqSum;
   }
 
-  // 4. M.O. por Profissão (Seção 3 only)
+  // 4. M.O. por Profissão (Seção 5 priority, then Seção 3 fallback)
+  const sec5StartIndex = lines.findIndex(l => l.includes('SEÇÃO 5') || l.includes('INDICADORES'));
+  const sec6StartIndex = lines.findIndex(l => l.includes('SEÇÃO 6') || l.includes('SEGURANÇA'));
+
   const hhProfs = [];
-  if (sec3StartIndex > -1) {
+
+  // Attempt 1: Explicitly check Section 5 for detailed HH indicators
+  if (sec5StartIndex > -1) {
+    let end = sec6StartIndex > -1 ? sec6StartIndex : lines.length;
+    for (let i = sec5StartIndex; i < end; i++) {
+      const l = lines[i];
+      if (!l.includes('|')) continue;
+      if (isSeparator(l)) continue;
+
+      const cols = l.split('|').map(x => x.replace(/\*\*/g, '').trim()).filter(Boolean);
+      if (cols.length >= 2) {
+        const ind = cols[0];
+        const cleanInd = ind.replace(/^HH\s+/i, '').trim();
+
+        // Blacklist common non-human indicators
+        if (/Custo|Total|Peso|Indice|Índice|Produtividade|Equip|Mat/i.test(ind)) continue;
+
+        // Only capture indicators that explicitly start with "HH " and represent a role
+        if (/^HH\s/i.test(ind)) {
+          const valCol = cols.find(c => /^[\d.,]+$/.test(c));
+          if (valCol) {
+            hhProfs.push({ nome: cleanInd, hh: parseNum(valCol) });
+          }
+        }
+      }
+    }
+  }
+
+  // Attempt 2: Fallback to Section 3 if NO roles found in Section 5
+  if (hhProfs.length === 0 && sec3StartIndex > -1) {
     let end = lines.length;
     ['SEÇÃO 4', 'QUANTITATIVOS', 'SEÇÃO 5', 'INDICADORES', 'SEÇÃO 6'].forEach(kw => {
       const idx = lines.findIndex(l => l.includes(kw));
       if (idx > -1 && idx > sec3StartIndex) end = Math.min(end, idx);
     });
+
+    let hhAjustadoIdx = -1;
+
     for (let i = sec3StartIndex; i < end; i++) {
       const l = lines[i];
       if (/TOTAL M\.O/i.test(l) || /SEÇÃO [456789]/i.test(l)) break;
       if (!l.includes('|')) continue;
       if (isSeparator(l)) continue;
-      if (/Função|HH Base|HH Ajustado|Custo|Peso|Indice|Índice|Expertise|TCPO|SINAPI|Manual/i.test(l)) continue;
+
       const cols = l.split('|').map(x => x.replace(/\*\*/g, '').trim()).filter(Boolean);
-      if (cols.length >= 4) {
+
+      // Map the header row to find the intended HH column (prefer 'Ajustado', fallback to 'Base')
+      if (hhAjustadoIdx === -1) {
+        if (cols.some(c => /Função/i.test(c) || /HH/i.test(c))) {
+          hhAjustadoIdx = cols.findIndex(c => /Ajustado/i.test(c));
+          if (hhAjustadoIdx === -1) {
+            hhAjustadoIdx = cols.findIndex(c => /Base/i.test(c) && !/Custo/i.test(c));
+          }
+          if (hhAjustadoIdx === -1) {
+            hhAjustadoIdx = 1; // Default fallback index
+          }
+          continue; // Skip the header row itself
+        }
+      }
+
+      if (/Custo|Peso|Indice|Índice|Expertise|TCPO|SINAPI|Manual/i.test(l)) continue;
+
+      if (cols.length >= 2) {
         const nome = cols[0];
-        // Skip if nome looks like a number or separator
         if (/^[\d\-]+$/.test(nome.trim())) continue;
-        const numVals = cols.filter(c => /^[\d.,]+\s*(HH)?$/.test(c.trim()));
-        if (nome && numVals.length > 0) {
-          const cleanVals = numVals.filter(c => !c.toLowerCase().includes('hh'));
-          const targetStr = cleanVals.length > 0 ? cleanVals[cleanVals.length - 1] : numVals[numVals.length - 1].replace(/\s*HH$/i, '');
+
+        let targetStr = null;
+        // If we detected a valid index, we pull directly from it
+        if (hhAjustadoIdx > 0 && cols[hhAjustadoIdx]) {
+          targetStr = cols[hhAjustadoIdx].replace(/\s*HH$/i, '');
+        } else {
+          // Fallback scanner (old logic)
+          const numVals = cols.filter(c => /^[\d.,]+\s*(HH)?$/.test(c.trim()));
+          if (numVals.length > 0) {
+            const cleanVals = numVals.filter(c => !c.toLowerCase().includes('hh'));
+            targetStr = cleanVals.length > 0 ? cleanVals[cleanVals.length - 1] : numVals[numVals.length - 1].replace(/\s*HH$/i, '');
+          }
+        }
+
+        if (nome && targetStr && /^[\d.,]+$/.test(targetStr)) {
           hhProfs.push({ nome, hh: parseNum(targetStr) });
         }
       }
@@ -379,12 +441,14 @@ function Md({ text }) {
     // Parse indented bullet points explicitly as they are common in V4
     if (t.startsWith('- ') || t.startsWith('* ') || t.startsWith('• ')) {
       let clean = t.replace(/^[-*•]\s*/, '').trim();
-      if (clean === '**' || clean === '' || clean === '▸ **') return;
+      if (clean.replace(/\*/g, '').trim() === '' || clean === '▸ **') return;
       const parts = clean.split(/(\*\*[^*]+\*\*)/g);
+      const cleanParts = parts.filter(p => p.replace(/\*/g, '').trim() !== '');
+      if (cleanParts.length === 0) return;
       els.push(
         <div key={i} style={{ margin: '8px 0 8px 12px', fontSize: 12, lineHeight: 1.6, color: C.lt }}>
           <span style={{ color: C.a, marginRight: 6 }}>▸</span>
-          {parts.map((p, pi) => p.startsWith('**') ? <strong key={pi} style={{ color: '#E7E5E4', fontWeight: 600 }}>{p.replace(/\*\*/g, '')}</strong> : p)}
+          {cleanParts.map((p, pi) => p.startsWith('**') ? <strong key={pi} style={{ color: '#E7E5E4', fontWeight: 600 }}>{p.replace(/\*\*/g, '')}</strong> : p)}
         </div>
       );
       return;
